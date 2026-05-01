@@ -588,56 +588,72 @@
         }
         feed.prepend(card);
 
-        // RANDOM TIMING (Between 4 and 10 seconds)
-        const nextTime = Math.floor(Math.random() * 6000) + 4000;
-        setTimeout(addWin, nextTime);
+        
+
+      <script>
+    // 1. DYNAMIC NAMES & LIVE FEED LOGIC
+    const prefixes = ["Alpha", "Whale", "Satoshi", "Elena", "Sarah", "John", "Market", "FX", "Crypto", "Pro", "Expert", "Elite", "Legend", "Zen", "Macro", "Swift", "Quant", "Prime", "Apex"];
+    const suffixes = ["_Elite", "_King", "99", "_Trader", "_V", "_X", "_Pro", "_Whale", "_Minder", "_FX", "888", "101", "_Alpha", "_Cap", "_Node"];
+    const pairs = ["EUR/USD", "BTC/USDT", "XAU/USD", "GBP/JPY", "ETH/USD", "BNB/BTC"];
+    const usedNames = new Set();
+
+    function generateUniqueName() {
+        let name = ""; let attempts = 0;
+        while (attempts < 500) {
+            const pre = prefixes[Math.floor(Math.random() * prefixes.length)];
+            const post = suffixes[Math.floor(Math.random() * suffixes.length)];
+            name = Math.random() > 0.5 ? pre + post : pre + (Math.floor(Math.random() * 900) + 10);
+            if (!usedNames.has(name)) { usedNames.add(name); return name; }
+            attempts++;
+        }
+        return "Trader_" + Math.floor(Math.random() * 9999);
     }
 
-    // Replace your old setInterval with this
-    addWin();
-    </script>
-<script>
-    /** 
-     * ADMIN UPDATE FUNCTION
-     * Use this to move the bar smoothly to a new percentage.
-     * Example: updateBar(90);
-     */
-    function updateBar(newValue) {
-        // 1. Smoothly slide the green progress bar
-        const bar = document.getElementById('adminMovingBar');
-        if(bar) bar.style.width = newValue + '%';
-        
-        // 2. Change the text number on screen
-        const text = document.getElementById('trade-percent-text');
-        if(text) text.innerText = newValue;
-    } 
+    function triggerLiveWin() {
+        const feed = document.getElementById('master-live-win-feed');
+        if (!feed) return;
+        const user = generateUniqueName();
+        const profit = (Math.random() * 8000 + 100).toFixed(2);
+        const card = document.createElement('div');
+        card.className = "win-card glass p-4 border-l-4 border-emerald-500 bg-emerald-950/10 mb-4";
+        card.innerHTML = `<div class="flex justify-between text-[10px] font-black"><span>${user}</span><span class="text-emerald-400">WIN</span></div><div class="flex justify-between text-xs font-bold font-mono"><span>BTC/USDT</span><span class="text-emerald-400 font-black">+$${profit}</span></div>`;
+        if (feed.children.length >= 3) feed.removeChild(feed.lastChild);
+        feed.prepend(card);
+        setTimeout(triggerLiveWin, Math.floor(Math.random() * 6000) + 4000);
+    }
 
-    // This part is for testing: 
-    // It moves the bar to 85% automatically after 3 seconds 
-    // so you can see the smooth loading effect.
-    setTimeout(() => {
-        updateBar(85);
-    }, 3000);
-    
- SIDEBAR TOGGLE ENGINE --- */
+    // 2. SIDEBAR TOGGLE ENGINE
     function toggleSideMenu() {
         const sideNav = document.getElementById('side-nav');
         if (sideNav) {
             sideNav.classList.toggle('active');
-        } else {
-            console.error("Sidebar element not found! Check if id='side-nav' exists.");
         }
     }
 
-    /* Optional: This closes the menu if you click outside of it */
+    // 3. PROGRESS BAR ENGINE
+    function updateBar(newValue) {
+        const bar = document.getElementById('adminMovingBar');
+        const text = document.getElementById('trade-percent-text');
+        if(bar) bar.style.width = newValue + '%';
+        if(text) text.innerText = newValue;
+    }
+
+    // 4. INITIALIZE EVERYTHING
+    window.onload = function() {
+        triggerLiveWin();
+        setTimeout(() => updateBar(85), 3000);
+    };
+
+    // CLOSE SIDEBAR ON OUTSIDE CLICK
     window.onclick = function(event) {
         const sideNav = document.getElementById('side-nav');
-        if (event.target == sideNav) {
-            sideNav.classList.remove('active');
+        const burger = document.getElementById('burger-trigger');
+        if (sideNav && sideNav.classList.contains('active')) {
+            if (!sideNav.contains(event.target) && !burger.contains(event.target)) {
+                sideNav.classList.remove('active');
+            }
         }
-    }
-    
+    };
 </script>
-
 </body>
 </html>
