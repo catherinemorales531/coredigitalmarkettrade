@@ -15,6 +15,7 @@
             --spark-silver: #cbd5e1;
             --neon-blue: #3b82f6;
         }
+
         
         body {
             font-family: 'Inter', sans-serif;
@@ -55,6 +56,29 @@
         .progress-fill { height: 100%; background: linear-gradient(90deg, #10b981, #34d399); box-shadow: 0 0 15px rgba(16, 185, 129, 0.6); width: 60%; transition: width 2.5s cubic-bezier(0.4, 0, 0.2, 1); }
 
         /* --- ASSETS & BUTTONS --- */
+
+        /* Ensures the header stays on one perfect line */
+        .header-container {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 12px 16px !important;
+            flex-wrap: nowrap !important;
+        }
+
+        /* Prevents name from wrapping */
+        .single-name {
+            white-space: nowrap !important;
+            font-size: 18px !important;
+            font-weight: 900;
+        }
+
+        /* Space between Pulse and Burger Menu */
+        .menu-group {
+            display: flex;
+            align-items: center;
+            gap: 30px; /* This keeps the Pulse away from the Burger Icon */
+        }
         .currency-logo { width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); }
         .btn-deposit-master { background: linear-gradient(180deg, #84cc16 0%, #4d7c0f 100%); color: white; padding: 8px 24px; border-radius: 6px; font-size: 11px; font-weight: 900; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); }
 
@@ -145,23 +169,39 @@
         <!-- MAIN SECTION -->
         <div class="lg:col-span-3 space-y-6">
             
-            <!-- 2. INSTITUTIONAL HEADER BAR -->
-            <div class="glass p-4 flex justify-between items-center bg-indigo-950/20">
-                <div class="flex items-center gap-6">
-                    <div class="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shadow-xl">
+
+            <!-- 1. MASTER HEADER: LOGO -> JOHN -> MESSAGE | SPACE | PULSE -> BURGER -->
+            <div class="glass header-container bg-indigo-950/20 mb-6">
+                <!-- LEFT GROUP: Logo, Name, Messages -->
+                <div class="flex items-center gap-4">
+                    <!-- HUMAN LOGO -->
+                    <div class="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shadow-lg">
                         <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" /></svg>
                     </div>
-                    <span class="name-text font-black silver-text uppercase tracking-tight">John Doe</span>
-                    <div class="flex items-center gap-3 bg-white/5 border border-white/10 px-5 py-2 rounded-xl">
-                        <svg class="w-6 h-6 text-[#ff8a9e]" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                        <span class="text-sm font-bold silver-text tracking-tight">1 Messages</span>
+
+                    <!-- NAME (ONLY JOHN) -->
+                    <span class="single-name silver-text uppercase">JOHN</span>
+
+                    <!-- MESSAGE ICON -->
+                    <div class="message-badge" style="background: rgba(255,255,255,0.06); padding: 6px 12px; border-radius: 10px; display: flex; align-items: center; gap: 8px;">
+                        <svg class="w-5 h-5 text-[#ff8a9e]" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        <span class="text-xs font-bold silver-text">1 Messages</span>
                     </div>
-                    <div class="ammunition-pulse ml-2"></div>
                 </div>
-                <!-- BURGER TRIGGER -->
-                <div id="burger-trigger" onclick="toggleSideMenu()" class="space-y-1.5 cursor-pointer opacity-40 hover:opacity-100 transition">
-                    <div class="w-8 h-0.5 bg-white"></div><div class="w-8 h-0.5 bg-white"></div><div class="w-8 h-0.5 bg-white"></div>
+
+                <!-- RIGHT GROUP: Continuous Pulse & Burger Menu -->
+                <div class="menu-group">
+                    <!-- CONTINUOUS PULSE ICON -->
+                    <div class="ammunition-pulse"></div>
+
+                    <!-- BURGER MENU (NEV) -->
+                    <div onclick="toggleSideMenu()" class="flex flex-col gap-1.5 cursor-pointer opacity-60 hover:opacity-100 transition">
+                        <div class="w-8 h-0.5 bg-white"></div>
+                        <div class="w-8 h-0.5 bg-white"></div>
+                        <div class="w-8 h-0.5 bg-white"></div>
+                    </div>
                 </div>
+
             </div>
 
             <!-- 3. TOTAL BALANCE -->
