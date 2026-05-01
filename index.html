@@ -3,71 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Institutional Terminal - Final Complete</title>
-    <!-- Core Libraries -->
+    <title>Institutional Global Trading Terminal - Master Pro</title>
+    <!-- Core Frameworks -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <!-- Professional Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    
     <style>
-
-        /* --- INSTITUTIONAL SIDEBAR OVERLAY --- */
-        #side-nav {
-            position: fixed;
-            top: 0; left: -100%; /* Hidden */
-            width: 100%; height: 100vh;
-            background: var(--shiva-gradient);
-            background-image: url('https://www.transparenttextures.com/patterns/stardust.png'), var(--shiva-gradient);
-            z-index: 99999;
-            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-y: auto;
-            padding: 20px;
-        }
-        #side-nav.active { left: 0; }
-
-        /* --- CONTINUOUS LIVE AMMUNITION PULSE --- */
-        .ammunition-pulse {
-            width: 10px; height: 10px;
-            background: #fff; /* White core */
-            border-radius: 50%;
-            position: relative;
-            box-shadow: 0 0 10px #3b82f6;
-        }
-        .ammunition-pulse::before {
-            content: ''; position: absolute;
-            top: -5px; left: -5px; right: -5px; bottom: -5px;
-            border: 1px solid #3b82f6; border-radius: 50%;
-            animation: pulse-ring 2s infinite ease-out;
-        }
-        @keyframes pulse-ring {
-            0% { transform: scale(0.5); opacity: 0; }
-            50% { opacity: 0.6; }
-            100% { transform: scale(2.5); opacity: 0; }
-        }
-
-        /* --- MENU ROW STYLING --- */
-        .sidebar-row {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 16px 0;
-            border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
-            color: var(--spark-silver);
-            font-size: 15px; font-weight: 500;
-        }
-        .sidebar-icon { width: 35px; display: flex; align-items: center; font-size: 18px; }
-        .chevron-v { font-size: 10px; opacity: 0.5; }
-
-        /* --- IDENTITY CARD --- */
-        .id-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 10px;
-            padding: 15px;
-            display: flex; align-items: center; gap: 15px;
-            margin: 30px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
         :root {
+            /* SHIVA COSMIC THEME */
             --shiva-gradient: radial-gradient(circle at 20% 35%, #1b1035 0%, #0a061a 100%);
             --spark-silver: #cbd5e1;
             --neon-blue: #3b82f6;
@@ -78,309 +21,201 @@
             background: var(--shiva-gradient);
             background-image: url('https://www.transparenttextures.com/patterns/stardust.png'), var(--shiva-gradient);
             background-attachment: fixed;
-            color: white; margin: 0; padding: 20px;
+            color: white; margin: 0; padding: 10px;
         }
+        @media (min-width: 1024px) { body { padding: 20px; } }
 
-        /* Essential High-Standard Components */
+        /* GLASSMORPHISM & SILVER TYPOGRAPHY */
         .glass { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; }
-        .silver-text { color: var(--spark-silver); text-shadow: 0 0 10px rgba(203, 213, 225, 0.25); }
+        .silver-text { color: var(--spark-silver); text-shadow: 0 0 10px rgba(203, 213, 225, 0.3); }
         .mono { font-family: 'JetBrains Mono', monospace; }
 
-        /* Trading Progress (MATCH PHOTO) */
-        .vertical-label { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 9px; font-weight: 900; letter-spacing: 0.15em; color: rgba(255,255,255,0.4); }
-        .reload-icon { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--neon-blue); display: flex; align-items: center; justify-content: center; color: var(--neon-blue); font-size: 20px; }
+        /* --- AMMUNITION PULSE LIVE IDENTIFICATION --- */
+        .ammunition-pulse {
+            width: 12px; height: 12px; background: #fff; border-radius: 50%; position: relative; box-shadow: 0 0 10px #3b82f6;
+        }
+        .ammunition-pulse::before {
+            content: ''; position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px;
+            border: 2px solid #3b82f6; border-radius: 50%; animation: pulse-ring 2s infinite ease-out;
+        }
+        @keyframes pulse-ring { 0% { transform: scale(0.5); opacity: 0; } 50% { opacity: 0.6; } 100% { transform: scale(3); opacity: 0; } }
 
-        /* Asset Section Buttons */
+        /* --- FULL SCREEN SIDEBAR (JOHN DOE STYLE) --- */
+        #side-nav {
+            position: fixed; top: 0; left: -100%; width: 100%; height: 100vh;
+            background: var(--shiva-gradient); background-image: url('https://www.transparenttextures.com/patterns/stardust.png'), var(--shiva-gradient);
+            z-index: 99999; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; padding: 20px;
+        }
+        #side-nav.active { left: 0; }
+        .sidebar-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 0.5px solid rgba(255, 255, 255, 0.1); color: var(--spark-silver); font-size: 15px; font-weight: 600; }
+        .id-verify-card { background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(30,58,138,0.3)); border: 1px solid rgba(59,130,246,0.4); border-radius: 12px; padding: 18px; display: flex; align-items: center; gap: 15px; margin: 30px 0; }
+
+        /* --- TRADING PROGRESS (TEAL MATCH) --- */
+        .progress-box { background: #004d4d; border-radius: 12px; padding: 20px; position: relative; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #10b981, #34d399); box-shadow: 0 0 15px rgba(16, 185, 129, 0.6); width: 60%; transition: width 2.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* --- ASSETS & BUTTONS --- */
+        .currency-logo { width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); }
         .btn-deposit-master { background: linear-gradient(180deg, #84cc16 0%, #4d7c0f 100%); color: white; padding: 8px 24px; border-radius: 6px; font-size: 11px; font-weight: 900; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); }
 
-        /* Sidebar UI */
-        .badge-red { background: #ef5350; color: white; padding: 4px 14px; border-top-right-radius: 20px; border-bottom-left-radius: 20px; font-size: 11px; font-weight: 900; }
-        .select-field { background: #d1d5db !important; color: #1e293b !important; padding: 12px; border-radius: 10px; width: 100%; font-weight: 700; appearance: none; }
-        .amount-box { background: #1e1b2e; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; display: flex; align-items: center; justify-content: space-between; }
-        .amount-label { background: #2d2a45; padding: 6px 12px; font-size: 10px; font-weight: 900; color: #94a3b8; border-radius: 4px; margin: 4px auto; text-align: center; display: block; width: 80px; }
-        .demo-btn { background: #f87171; border: 2px solid #004d4d; border-radius: 8px; font-weight: 900; }
-
-        /* Forex BG Cards */
+        /* --- FOREX BG BONUS CARDS --- */
         .forex-bg-card {
-            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), 
-                        url('https://images.unsplash.com/photo-1611974715853-2b8ef959d05d?auto=format&fit=crop&q=80&w=500');
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('https://images.unsplash.com/photo-1611974715853-2b8ef959d05d?auto=format&fit=crop&q=80&w=500');
             background-size: cover; background-position: center; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px;
         }
 
+        /* --- SIDEBAR COMPONENTS --- */
+        .badge-red { background: #ef5350; color: white; padding: 4px 14px; border-top-right-radius: 20px; border-bottom-left-radius: 20px; font-size: 11px; font-weight: 900; }
+        .select-field { background: #cbd5e1 !important; color: #1e293b !important; padding: 12px; border-radius: 8px; width: 100%; font-weight: 700; appearance: none; }
+        .amount-tag-box { background: #2d2a45; padding: 6px 12px; font-size: 10px; font-weight: 900; color: #94a3b8; border-radius: 4px; margin: 4px auto; text-align: center; width: 85px; }
+        .demo-btn { background: #f87171; border: 2px solid #004d4d; border-radius: 8px; font-weight: 900; }
+
         /* Animations */
-        .win-card { animation: fadeInUp 0.5s ease-out; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .win-card { animation: fadeInUp 0.6s ease-out; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        th { font-size: 10px; color: #94a3b8; text-transform: uppercase; padding: 15px; font-weight: 800; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        td { font-size: 12px; padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.02); }
-        /* --- TOTAL MOBILE PROFESSIONAL OPTIMIZATION --- */
+        /* MOBILE PROFESSIONAL OPTIMIZATION */
         @media (max-width: 768px) {
-            /* 1. Tighten overall spacing */
-            body { padding: 6px !important; }
-            .glass { padding: 10px !important; margin-bottom: 10px !important; }
-            
-            /* 2. Force Header into one professional line */
-            .header-row, .glass.p-4.flex.justify-between.items-center {
-                display: flex !important;
-                flex-direction: row !important;
-                justify-content: space-between !important;
-                align-items: center !important;
-                gap: 5px !important;
+            .grid-mod { display: grid !important; grid-template-cols: repeat(2, 1fr) !important; gap: 8px !important; }
+            .text-4xl { font-size: 1.15rem !important; }
+                .name-text { font-size: 16px !important; }
             }
-            .name-text { font-size: 14px !important; }
-            .message-badge { padding: 4px 8px !important; font-size: 10px !important; gap: 4px !important; }
 
-            /* 3. Scale the massive balance and large text */
-            .text-4xl { font-size: 1.1rem !important; overflow: hidden; text-overflow: ellipsis; }
-            .text-3xl { font-size: 1.3rem !important; }
-
-            /* 4. GRID FORCING: Keep Stats and Bonus Cards side-by-side */
-            /* This stops them from becoming a long vertical list */
-            .grid-cols-1.md\:grid-cols-3 {
-                display: grid !important;
-                grid-template-cols: repeat(2, 1fr) !important;
-                gap: 8px !important;
+            /* Institutional Action Colors */
+            .buy-btn-vibrant { 
+                background-color: #10b981 !important; 
+                color: white !important;
+                box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+                border: 1px solid rgba(255, 255, 255, 0.1);
             }
-            
-            /* 5. Scale down the Asset Table fonts */
-            td, th { padding: 8px !important; font-size: 10px !important; }
-            .currency-logo { width: 24px !important; height: 24px !important; }
-            .btn-deposit-master { padding: 4px 10px !important; font-size: 9px !important; }
-
-            /* 6. Sidebar Inputs - Professional compacting */
-            .select-field { padding: 8px !important; font-size: 12px !important; }
-            .amount-box input { font-size: 14px !important; }
-            .buy-btn, .sell-btn { padding: 10px !important; font-size: 14px !important; }
-
-            /* 7. Hide non-essential desktop decorations to keep it moderate */
-            .vertical-label { display: none !important; }
-        }/* --- TOTAL MOBILE PROFESSIONAL OPTIMIZATION --- */
-        @media (max-width: 768px) {
-            /* 1. Tighten overall spacing */
-            body { padding: 6px !important; }
-            .glass { padding: 10px !important; margin-bottom: 10px !important; }
-            
-            /* 2. Force Header into one professional line */
-            .header-row, .glass.p-4.flex.justify-between.items-center {
-                display: flex !important;
-                flex-direction: row !important;
-                justify-content: space-between !important;
-                align-items: center !important;
-                gap: 5px !important;
+            .sell-btn-vibrant { 
+                background-color: #ef4444 !important; 
+                color: white !important;
+                box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+                border: 1px solid rgba(255, 255, 255, 0.1);
             }
-            .name-text { font-size: 14px !important; }
-            .message-badge { padding: 4px 8px !important; font-size: 10px !important; gap: 4px !important; }
-
-            /* 3. Scale the massive balance and large text */
-            .text-4xl { font-size: 1.1rem !important; overflow: hidden; text-overflow: ellipsis; }
-            .text-3xl { font-size: 1.3rem !important; }
-
-            /* 4. GRID FORCING: Keep Stats and Bonus Cards side-by-side */
-            /* This stops them from becoming a long vertical list */
-            .grid-cols-1.md\:grid-cols-3 {
-                display: grid !important;
-                grid-template-cols: repeat(2, 1fr) !important;
-                gap: 8px !important;
-            }
-            
-            /* 5. Scale down the Asset Table fonts */
-            td, th { padding: 8px !important; font-size: 10px !important; }
-            .currency-logo { width: 24px !important; height: 24px !important; }
-            .btn-deposit-master { padding: 4px 10px !important; font-size: 9px !important; }
-
-            /* 6. Sidebar Inputs - Professional compacting */
-            .select-field { padding: 8px !important; font-size: 12px !important; }
-            .amount-box input { font-size: 14px !important; }
-            .buy-btn, .sell-btn { padding: 10px !important; font-size: 14px !important; }
-
-            /* 7. Hide non-essential desktop decorations to keep it moderate */
-            .vertical-label { display: none !important; }
-            
-        }/* --- TOTAL MOBILE PROFESSIONAL OPTIMIZATION --- */
-        @media (max-width: 768px) {
-            /* 1. Tighten overall spacing */
-            body { padding: 6px !important; }
-            .glass { padding: 10px !important; margin-bottom: 10px !important; }
-            
-            /* 2. Force Header into one professional line */
-            .header-row, .glass.p-4.flex.justify-between.items-center {
-                display: flex !important;
-                flex-direction: row !important;
-                justify-content: space-between !important;
-                align-items: center !important;
-                gap: 5px !important;
-            }
-            .name-text { font-size: 14px !important; }
-            .message-badge { padding: 4px 8px !important; font-size: 10px !important; gap: 4px !important; }
-
-            /* 3. Scale the massive balance and large text */
-            .text-4xl { font-size: 1.1rem !important; overflow: hidden; text-overflow: ellipsis; }
-            .text-3xl { font-size: 1.3rem !important; }
-
-            /* 4. GRID FORCING: Keep Stats and Bonus Cards side-by-side */
-            /* This stops them from becoming a long vertical list */
-            .grid-cols-1.md\:grid-cols-3 {
-                display: grid !important;
-                grid-template-cols: repeat(2, 1fr) !important;
-                gap: 8px !important;
-            }
-            
-            /* 5. Scale down the Asset Table fonts */
-            td, th { padding: 8px !important; font-size: 10px !important; }
-            .currency-logo { width: 24px !important; height: 24px !important; }
-            .btn-deposit-master { padding: 4px 10px !important; font-size: 9px !important; }
-
-            /* 6. Sidebar Inputs - Professional compacting */
-            .select-field { padding: 8px !important; font-size: 12px !important; }
-            .amount-box input { font-size: 14px !important; }
-            .buy-btn, .sell-btn { padding: 10px !important; font-size: 14px !important; }
-
-            /* 7. Hide non-essential desktop decorations to keep it moderate */
-            .vertical-label { display: none !important; }
-        }vvvvvv
+        }
     </style>
 </head>
 <body>
 
-    <!-- FULL SCREEN INSTITUTIONAL SIDEBAR -->
+    <!-- 1. INSTITUTIONAL SIDEBAR OVERLAY -->
     <div id="side-nav">
-        <!-- Close Control -->
         <div onclick="toggleSideMenu()" class="text-3xl text-white opacity-40 mb-6 cursor-pointer w-fit">✕</div>
-
-        <!-- 1. PROFILE HEADER (Matched to Screenshot) -->
-        <div class="flex items-center gap-5 mb-8">
-            <div class="w-18 h-18 rounded-full border-2 border-white/20 p-0.5">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150" class="w-full h-full rounded-full object-cover shadow-xl">
+        <div class="flex items-center gap-5 mb-10">
+            <div class="w-18 h-18 rounded-full border-2 border-white/20 p-1">
+                <div class="w-full h-full rounded-full bg-white/10 flex items-center justify-center overflow-hidden">
+                    <svg class="w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" /></svg>
+                </div>
             </div>
             <div>
-                <h2 class="text-xl font-bold silver-text tracking-tight">Alexandra FX</h2>
-                <div class="flex items-center gap-3 mt-1.5">
+                <h2 class="text-2xl font-black silver-text uppercase tracking-tight">John Doe</h2>
+                <div class="flex items-center gap-3 mt-1">
                     <div class="ammunition-pulse"></div>
-                    <span class="text-xs font-medium text-gray-300">Live Account</span>
+                    <span class="text-xs font-bold text-blue-400 tracking-widest uppercase">Live Account</span>
                 </div>
             </div>
         </div>
-
-        <!-- 2. INSTITUTIONAL MENU (Detailed Icons) -->
         <div class="flex flex-col">
-            <div class="sidebar-row"><span>🏠 Dashboard</span><span class="chevron-v">▼</span></div>
-            <div class="sidebar-row"><span>📊 Trade</span><span class="chevron-v">▼</span></div>
-            <div class="sidebar-row"><span>💳 Transactions ▼</span><span class="chevron-v">▼</span></div>
-            <div class="sidebar-row"><span>📥 Deposit ▼</span><span class="chevron-v">▼</span></div>
-            <div class="sidebar-row"><span>📤 Withdraw ▼</span><span class="chevron-v">▼</span></div>
-            <div class="sidebar-row"><span>👥 Copy Experts</span><span class="chevron-v">▼</span></div>
-            <div class="sidebar-row"><span>🎧 Signals</span><span class="chevron-v">▼</span></div>
-            <div class="sidebar-row"><span>👤 Invite Friends</span><span class="chevron-v">▼</span></div>
-            <div class="sidebar-row"><span>📈 Stocks</span><span class="chevron-v">▼</span></div>
-            <div class="sidebar-row"><span>🛡️ Security & 2FA</span><span class="chevron-v">▼</span></div>
+            <div class="sidebar-row"><span>🏠 Dashboard</span><span>▼</span></div>
+            <div class="sidebar-row"><span>📊 Trade</span><span>▼</span></div>
+            <div class="sidebar-row"><span>💳 Transactions</span><span>▼</span></div>
+            <div class="sidebar-row"><span>📥 Deposit</span><span>▼</span></div>
+            <div class="sidebar-row"><span>📤 Withdraw</span><span>▼</span></div>
+            <div class="sidebar-row"><span>👥 Copy Experts</span><span>▼</span></div>
+            <div class="sidebar-row"><span>🎧 Signals</span><span>▼</span></div>
+            <div class="sidebar-row"><span>👤 Invite Friends</span><span>▼</span></div>
+            <div class="sidebar-row"><span>📈 Stocks</span><span>▼</span></div>
+            <div class="sidebar-row"><span>🛡️ Security & 2FA</span><span>▼</span></div>
         </div>
-
-        <!-- 3. IDENTITY VERIFICATION CARD -->
-        <div class="id-card">
-            <div class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center border border-white/20 shadow-inner">
-                <svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+        <div class="id-verify-card">
+            <div class="w-14 h-14 bg-blue-600/20 rounded-xl flex items-center justify-center border border-blue-400/30">
+                <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             </div>
             <div>
-                <p class="font-bold silver-text text-sm uppercase">Identity Verification</p>
-                <p class="text-[10px] font-bold text-gray-500">Lv.1 Verified</p>
+                <p class="font-black silver-text text-sm uppercase tracking-wider">Identity Verification</p>
+                <p class="text-[10px] font-bold text-blue-300 opacity-70">Lv.1 Verified</p>
             </div>
         </div>
-
-        <!-- 4. LOG OUT -->
-        <div class="w-full py-3.5 border border-white/20 rounded text-center font-bold text-white tracking-widest mt-6">
-            Log Out
-        </div>
+        <button class="w-full py-4 border border-white/20 rounded text-center font-bold text-white tracking-widest mt-6 uppercase">Log Out</button>
     </div>
-    
-
 
     <div class="max-w-[1750px] mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
         
-        <!-- MAIN DASHBOARD CONTENT (LEFT 3 COLUMNS) -->
+        <!-- MAIN SECTION -->
         <div class="lg:col-span-3 space-y-6">
             
-            <!-- 1. Header: One Straight Line -->
+            <!-- 2. INSTITUTIONAL HEADER BAR -->
             <div class="glass p-4 flex justify-between items-center bg-indigo-950/20">
                 <div class="flex items-center gap-6">
                     <div class="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shadow-xl">
                         <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" /></svg>
                     </div>
-                    <span class="text-xl font-black silver-text uppercase tracking-tight">JOHN DOE</span>
+                    <span class="name-text font-black silver-text uppercase tracking-tight">John Doe</span>
                     <div class="flex items-center gap-3 bg-white/5 border border-white/10 px-5 py-2 rounded-xl">
                         <svg class="w-6 h-6 text-[#ff8a9e]" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
                         <span class="text-sm font-bold silver-text tracking-tight">1 Messages</span>
                     </div>
+                    <div class="ammunition-pulse ml-2"></div>
                 </div>
-
-<div onclick="toggleSideMenu()" class="space-y-1.5 cursor-pointer opacity-60 hover:opacity-100 transition">
-    <div class="w-8 h-0.5 bg-white"></div>
-    <div class="w-8 h-0.5 bg-white"></div>
-    <div class="w-8 h-0.5 bg-white"></div>
-</div>
-                
+                <!-- BURGER TRIGGER -->
+                <div id="burger-trigger" onclick="toggleSideMenu()" class="space-y-1.5 cursor-pointer opacity-40 hover:opacity-100 transition">
+                    <div class="w-8 h-0.5 bg-white"></div><div class="w-8 h-0.5 bg-white"></div><div class="w-8 h-0.5 bg-white"></div>
+                </div>
             </div>
-<!-- 2. TOTAL BALANCE (FULL WIDTH) -->
-            <div class="glass p-7 bg-gradient-to-r from-purple-900/30 border-l-4 border-blue-400 mb-6">
+
+            <!-- 3. TOTAL BALANCE -->
+            <div class="glass p-7 bg-gradient-to-r from-purple-900/30 border-l-4 border-blue-400">
                 <div class="flex items-center gap-3 mb-2">
                     <div class="w-8 h-8 rounded-full bg-blue-700 flex items-center justify-center text-[10px] font-bold">S</div>
                     <span class="text-gray-400 text-xs font-bold uppercase tracking-widest">Total Balance</span>
                 </div>
                 <div class="text-4xl font-black silver-text tracking-tighter truncate">$ 5,000,000,000,000,000,000,000,000,000.00</div>
             </div>
-<!-- 3. TRADING PROGRESS (TEAL BOX WITH MOVING BAR) -->
-            <div class="glass p-6 bg-[#004d4d] relative overflow-hidden mb-6" style="border: none;">
-                <div class="flex items-center gap-4">
-                    <!-- Icon in dark circle -->
-                    <div class="w-10 h-10 rounded-full bg-[#1e293b] flex items-center justify-center shadow-lg">
-                        <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
-                        </svg>
+
+            <!-- 4. TRADING PROGRESS -->
+            <div class="progress-box">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-neon-blue">↻</div>
+                        <span class="text-xs font-bold text-gray-200">Trading Progress</span>
                     </div>
-                    <span class="text-sm font-bold text-gray-200">Trading Progress</span>
+                    <div class="text-3xl font-black silver-text">% <span id="progress-val">85</span></div>
                 </div>
-
-                <!-- Big Percentage Number -->
-                <div class="text-3xl font-black silver-text mt-2 ml-14">
-                    % <span id="trade-percent-text">60</span>
-                </div>
-
-                <!-- THE SMOOTH MOVING BAR (Bottom Line) -->
-                <div id="adminMovingBar" 
-                     style="position: absolute; bottom: 0; left: 0; height: 6px; background: #34d399; box-shadow: 0 0 15px #34d399; width: 60%; transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);">
+                <div class="w-full h-1.5 bg-white/10 rounded-full mt-4 overflow-hidden">
+                    <div id="adminMovingBar" class="progress-fill" style="width: 85%;"></div>
                 </div>
             </div>
 
-            <!-- 3. Assets Section (Official Logos) -->
+            <!-- 5. ASSET TABLE -->
             <div class="glass overflow-hidden">
-                <div class="grid grid-cols-3 p-4 bg-black/30 text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                    <div>Currency</div><div>Amount</div><div class="text-right pr-6">Action</div>
-                </div>
+                <div class="grid grid-cols-3 p-4 bg-black/30 text-[10px] font-black text-gray-500 uppercase tracking-widest"><div>Currency</div><div>Amount</div><div class="text-right pr-6">Action</div></div>
                 <div class="flex flex-col">
-                    <div class="grid grid-cols-3 p-4 items-center border-b border-white/5">
-                        <div class="flex items-center gap-4"><img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="w-8 h-8 rounded-full"><span class="font-bold text-lg silver-text">BTC</span></div>
+                    <div class="grid grid-cols-3 p-4 items-center asset-row">
+                        <div class="flex items-center gap-4"><img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="currency-logo"><span class="font-bold text-lg silver-text">BTC</span></div>
                         <div class="mono text-xl text-emerald-400 font-bold">1100</div>
                         <div class="text-right"><button class="btn-deposit-master">DEPOSIT</button></div>
                     </div>
-                    <div class="grid grid-cols-3 p-4 items-center border-b border-white/5">
-                        <div class="flex items-center gap-4"><img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" class="w-8 h-8 rounded-full"><span class="font-bold text-lg silver-text">ETH</span></div>
+                    <div class="grid grid-cols-3 p-4 items-center asset-row">
+                        <div class="flex items-center gap-4"><img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" class="currency-logo"><span class="font-bold text-lg silver-text">ETH</span></div>
                         <div class="mono text-xl text-white/30 font-bold">0</div>
                         <div class="text-right"><button class="btn-deposit-master">DEPOSIT</button></div>
                     </div>
-                    <div class="grid grid-cols-3 p-4 items-center border-b border-white/5">
-                        <div class="flex items-center gap-4"><img src="https://cryptologos.cc/logos/tether-usdt-logo.png" class="w-8 h-8 rounded-full"><span class="font-bold text-lg silver-text">USDT</span></div>
+                    <div class="grid grid-cols-3 p-4 items-center asset-row">
+                        <div class="flex items-center gap-4"><img src="https://cryptologos.cc/logos/tether-usdt-logo.png" class="currency-logo"><span class="font-bold text-lg silver-text">USDT</span></div>
                         <div class="mono text-xl text-white/30 font-bold">0</div>
                         <div class="text-right"><button class="btn-deposit-master">DEPOSIT</button></div>
                     </div>
                     <div class="grid grid-cols-3 p-4 items-center">
-                        <div class="flex items-center gap-4"><img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" class="w-8 h-8 rounded-full"><span class="font-bold text-lg silver-text">BNB</span></div>
+                        <div class="flex items-center gap-4"><img src="https://cryptologos.cc/logos/bnb-bnb-logo.png" class="currency-logo"><span class="font-bold text-lg silver-text">BNB</span></div>
                         <div class="mono text-xl text-white/30 font-bold">0</div>
                         <div class="text-right"><button class="btn-deposit-master">DEPOSIT</button></div>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. Stats with Icons -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <!-- 6. STATS ROW -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 grid-mod">
                 <div class="glass p-6 flex items-center gap-5 bg-blue-900/20 border-b-4 border-blue-500 shadow-2xl">
                     <div class="text-4xl">🏆</div><div><p class="text-[10px] text-gray-400 font-black uppercase mb-1">Total Profits</p><p class="text-2xl font-bold silver-text">$ 228,098.50</p></div>
                 </div>
@@ -392,116 +227,102 @@
                 </div>
             </div>
 
-            <!-- 5. Bonus & Link (Forex BG) -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <!-- 7. BONUS CARDS -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 grid-mod">
                 <div class="forex-bg-card p-6 h-40 flex flex-col justify-between">
-                    <div class="flex justify-between items-start"><span class="text-[11px] font-black text-gray-300">Trade Bonus</span><span style="background:#26a69a; color:white; padding:2px 10px; border-radius:10px; font-size:10px; font-weight:900;">USD</span></div>
-                    <p class="text-3xl font-black mt-3">0.00</p>
+                    <div class="flex justify-between items-start"><span class="text-[11px] font-black text-gray-300 uppercase">Trade Bonus</span><span style="background:#26a69a; color:white; padding:2px 10px; border-radius:10px; font-size:10px; font-weight:900;">USD</span></div>
+                    <p class="text-3xl font-black silver-text">0.00</p>
                 </div>
                 <div class="forex-bg-card p-6 h-40 flex flex-col justify-between">
-                    <div class="flex justify-between items-start"><span class="text-[11px] font-black text-gray-300">Referral Bonus</span><span style="background:#26a69a; color:white; padding:2px 10px; border-radius:10px; font-size:10px; font-weight:900;">USD</span></div>
-                    <p class="text-3xl font-black mt-3">1,000.00</p>
+                    <div class="flex justify-between items-start"><span class="text-[11px] font-black text-gray-300 uppercase">Referral Bonus</span><span style="background:#26a69a; color:white; padding:2px 10px; border-radius:10px; font-size:10px; font-weight:900;">USD</span></div>
+                    <p class="text-3xl font-black silver-text">1,000.00</p>
                 </div>
                 <div class="forex-bg-card p-6 h-40">
                     <div class="flex justify-between items-start"><span class="text-[11px] font-black text-gray-300 uppercase">Referral Link</span><span style="background:#00bcd4; padding:2px 10px; border-radius:10px; font-size:10px; font-weight:900;">REF</span></div>
-                    <div class="mt-4"><div class="bg-white text-black px-4 py-2 rounded text-[11px] inline-block font-black">trade.DigitalFXTr</div><br><button class="mt-2 bg-blue-600 px-8 py-2 rounded-lg text-[10px] font-black uppercase">Copy</button></div>
+                    <div class="mt-4"><div class="bg-white text-black px-4 py-1.5 rounded text-[11px] inline-block font-black">trade.DigitalFXTr</div><br><button class="mt-2 bg-blue-600 px-8 py-2 rounded-lg text-[10px] font-black shadow-lg">Copy</button></div>
                 </div>
             </div>
 
-            <!-- 6. Advanced Trading terminal -->
+            <!-- 8. TRADING TERMINAL -->
             <div class="glass p-1 h-[500px] overflow-hidden">
-                <div id="tradingview_full_final" style="height: 100%;"></div>
+                <div id="tradingview_master" style="height: 100%;"></div>
                 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                <script type="text/javascript">
-                    new TradingView.widget({ "autosize": true, "symbol": "FX:EURUSD", "theme": "dark", "container_id": "tradingview_full_final" });
-                </script>
+                <script type="text/javascript">new TradingView.widget({ "autosize": true, "symbol": "FX:EURUSD", "theme": "dark", "container_id": "tradingview_master" });</script>
             </div>
 
-            <!-- 7. Recent Trading Activity Table (Specific Data) -->
+            <!-- 9. RECENT ACTIVITY RECORD -->
             <div class="glass overflow-hidden">
                 <h3 class="p-5 text-xs font-black text-emerald-400 border-b border-white/5 uppercase bg-white/5 tracking-widest">Recent Activity Record</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead><tr><th>ID</th><th>Time</th><th>Symbol</th><th>Amount</th><th>Strike</th><th>End Time</th><th>Status</th></tr></thead>
-                        <tbody><tr class="border-t border-white/5"><td class="silver-text font-bold">34906LM</td><td class="text-gray-400">2025.04.23 13:39:56</td><td class="font-black">BCH/BTC</td><td class="text-red-500 font-bold">$19.00</td><td class="text-red-400">↓8.19004</td><td class="text-emerald-400">↑8,303.20</td><td class="text-gray-400 italic">6.30.15 Manual Loss</td></tr></tbody>
+                        <tbody><tr class="border-t border-white/5"><td class="silver-text font-bold">34906LM</td><td class="text-gray-400">2025.04.23 13:39:56</td><td class="font-black">BCH/BTC</td><td class="text-red-500 font-bold">$19.00</td><td class="text-red-400">↓8.19004</td><td class="text-emerald-400">↑8,303.20</td><td class="text-gray-400 italic">Loss Manual</td></tr></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- SIDEBAR (RIGHT COLUMN) -->
+        <!-- RIGHT SIDEBAR (MARKET SIDE) -->
         <div class="lg:col-span-1 space-y-5">
             <div class="glass p-6 bg-[#002b2b] flex flex-col h-full min-h-[1450px]">
                 <h2 class="text-2xl font-black mb-8 silver-text tracking-tighter uppercase">Live Trading</h2>
                 
-                <!-- Red Sparkline Card -->
-                <div class="bg-[#121326] p-6 rounded-2xl mb-6 relative border border-white/5 overflow-hidden shadow-inner">
-                    <div class="flex justify-between items-start mb-1"><span class="text-gray-400 text-[10px] font-black uppercase">USD Trade Balance</span><span class="badge-red absolute top-0 right-0">USD</span></div>
+                <div class="bg-[#121326] p-6 rounded-2xl mb-6 relative border border-white/5 overflow-hidden">
+                    <div class="flex justify-between items-start mb-1"><span class="text-gray-400 text-[10px] font-black uppercase">USD BALANCE</span><span class="badge-red absolute top-0 right-0">USD</span></div>
                     <div class="text-sm font-mono silver-text mb-4">999,499,999,948,599.98</div>
-                    <div id="sidebar-red-spark" class="h-28"></div>
+                    <div id="red-chart-sidebar" class="h-32"></div>
                 </div>
 
-                <!-- Input Controls -->
                 <div class="space-y-4">
                     <select class="select-field"><option>Cryptocurrency</option></select>
                     <select class="select-field"><option>BCH/BTC</option></select>
                     <select class="select-field"><option>53% & 22%</option></select>
                     <div class="text-[13px] text-green-400 font-bold">↑ 0.9628% GROWTH</div>
 
-                    <div class="amount-box">
+                    <div class="flex items-center bg-[#1e1b2e] rounded-lg border border-white/10 overflow-hidden">
                         <button class="w-12 h-14 flex items-center justify-center font-bold text-2xl text-teal-400 bg-white/5">-</button>
                         <input type="text" value="100.00" class="flex-1 bg-transparent text-center font-black text-xl border-none">
                         <button class="w-12 h-14 flex items-center justify-center font-bold text-2xl text-teal-400 bg-white/5">+</button>
                     </div>
-                    <div class="amount-label uppercase">Amount</div>
+                    <div class="amount-tag-box uppercase">Amount</div>
 
                     <select class="select-field text-center"><option>1 min</option></select>
 
-                    <!-- ACTION SECTION (PRICE LABELS MATCH) -->
+
+                    <!-- ACTION SECTION (VIBRANT COLORS) -->
                     <div class="mt-6">
-                        <div class="text-sm text-green-500 font-black mb-1">$53.00</div>
-                        <button class="w-full py-4 rounded-lg bg-[#10b981] font-black uppercase text-lg text-white shadow-xl">BUY</button>
+                        <!-- Label for Buy -->
+                        <div class="text-sm font-black mb-1" style="color: #10b981;">$53.00</div>
+                        <button class="buy-btn-vibrant w-full py-4 rounded-lg font-black uppercase text-xl shadow-2xl tracking-widest">
+                            BUY
+                        </button>
                     </div>
                     
-                    <div class="mt-2">
-                        <div class="text-sm text-red-500 font-black mb-1">$22.00</div>
-                        <button class="w-full py-4 rounded-lg bg-[#ef4444] font-black uppercase text-lg text-white shadow-xl">SELL</button>
+                    <div class="mt-4">
+                        <!-- Label for Sell -->
+                        <div class="text-sm font-black mb-1" style="color: #ef4444;">$22.00</div>
+                        <button class="sell-btn-vibrant w-full py-4 rounded-lg font-black uppercase text-xl shadow-2xl tracking-widest">
+                            SELL
+                        </button>
                     </div>
 
-                    <!-- Indicators -->
                     <div class="pt-6 space-y-4">
                         <div class="glass p-3 flex justify-between items-center bg-blue-900/10"><span class="text-[10px] text-gray-500 font-black">App Status</span><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-blue-500"></div><span class="text-sm font-black">$37.00</span></div></div>
                         <div class="glass p-4 bg-emerald-950/20 flex items-center gap-4"><span class="text-3xl">📈</span><div><p class="text-[10px] font-black uppercase">LIKE SB 331K</p><p class="text-[8px] text-emerald-400 mono">● LIVE: 101083:85</p></div></div>
                     </div>
-                    
 
-            <!-- START CORE DIGITAL WINNING TRADES LIVEHI -->
-<div class="mt-8 border-t border-white/5 pt-6">
-    
-    <!-- Updated Title -->
-    <p class="text-[10px] font-black text-gray-500 mb-5 text-center uppercase tracking-[0.2em] silver-text">
-        Core Digital Winning Trades Live
-    </p>
+                    <div class="glass p-5 mt-6 bg-indigo-950/20">
+                        <p class="text-[10px] font-black text-gray-500 mb-4 uppercase text-center tracking-[0.2em]">Institutional Gauge</p>
+                        <div class="gauge-container"><div class="gauge-arc"><div class="gauge-needle" id="gaugeNeedle"></div></div><div class="absolute bottom-0 flex justify-between w-full px-4 text-[8px] font-bold text-gray-500"><span>Sell</span><span class="text-emerald-400">Strong Buy</span></div></div>
+                    </div>
 
-    <!-- The Dynamic Container (ID stays the same for the JavaScript to work) -->
-    <div id="master-live-win-feed" class="space-y-4 max-h-[380px] overflow-hidden px-1">
-        
-        <!-- Professional Loading State -->
-        <div class="flex flex-col items-center justify-center py-10 opacity-40">
-            <div class="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mb-3"></div>
-            <p class="text-[9px] font-bold uppercase tracking-widest animate-pulse">
-                Establishing Live Link...
-            </p>
-        </div>
+                    <div class="mt-8 border-t border-white/5 pt-6">
+                        <p class="text-[10px] font-black text-gray-600 mb-4 text-center uppercase tracking-[0.2em]">Core Digital Winning Trades Live</p>
+                        <div id="master-live-win-feed" class="space-y-4 max-h-[350px] overflow-hidden"></div>
+                    </div>
 
-    </div>
-</div>
-<!-- END WINNING TRADES SECTION -->
-                    
-                    
-                    <!-- Demo Request & Executive Buttons -->
-                    <div class="space-y-3 pt-4">
-                        <button class="demo-btn w-full py-3 text-sm uppercase">Demo Request</button>
+                    <div class="space-y-4 mt-8">
+                        <button class="demo-btn w-full py-4 rounded text-sm font-black uppercase shadow-lg text-white">Demo Request</button>
                         <div class="bg-gradient-to-r from-orange-500 to-red-600 p-5 rounded-2xl text-center shadow-2xl">
                             <p class="text-[10px] font-black text-white/90 mb-1 uppercase tracking-widest">Account <span class="bg-white/30 px-2 rounded">I E C</span></p>
                             <p class="text-xl font-black tracking-tighter silver-text">▶ EXECUTIVE</p>
@@ -512,17 +333,16 @@
         </div>
     </div>
 
-    <!-- Live Floating Support Widget -->
+    <!-- Live Support Widget -->
     <div class="fixed bottom-8 right-8 flex items-center gap-5 z-50">
-        <div class="bg-white p-4 px-6 rounded-3xl shadow-2xl text-black border-t-4 border-blue-600">
+        <div class="bg-white p-4 px-6 rounded-3xl shadow-2xl text-black border-t-4 border-blue-600 hidden lg:block">
             <p class="text-xs font-black uppercase tracking-tight">We're Online!</p><p class="text-[11px] text-gray-500">How may I assist you today?</p>
         </div>
-        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center shadow-2xl border-4 border-white/20 cursor-pointer">💬</div>
+        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center shadow-2xl border-4 border-white/20">💬</div>
     </div>
 
     <script>
-        // Red Sparkline Mini Chart
-        new ApexCharts(document.querySelector("#sidebar-red-spark"), {
+        new ApexCharts(document.querySelector("#red-chart-sidebar"), {
             series: [{ data: [45, 52, 38, 45, 19, 23, 41, 10, 15, 8] }],
             chart: { type: 'area', height: 110, sparkline: { enabled: true } },
             stroke: { curve: 'smooth', width: 2, colors: ['#ff4d4d'] },
@@ -530,130 +350,28 @@
             tooltip: { enabled: false }
         }).render();
 
-        
-// 1. MASSIVE DATA POOLS (Thousands of combinations)
-    const prefixes = ["Alpha", "Whale", "Satoshi", "Elena", "Sarah", "John", "Market", "FX", "Crypto", "Bull", "Bear", "London", "Tokyo", "NYC", "Pro", "Expert", "Whiz", "Maniac", "Master", "Elite", "Legend", "Zen", "Macro", "Swift", "Giga", "Quant", "Delta", "Prime", "Apex"];
-    const suffixes = ["_Elite", "_King", "99", "_Trader", "_V", "_X", "_Pro", "_Whale", "_Minder", "_FX", "888", "101", "_Guru", "_Maniac", "33", "77", "_Alpha"];
-    const pairs = ["EUR/USD", "BTC/USDT", "XAU/USD", "GBP/JPY", "ETH/USD", "SOL/USDT", "BNB/BTC", "USD/JPY"];
-    
-    // 2. THE 24-HOUR MEMORY (Prevents repeats)
-    const usedNames = new Set();
-
-    function generateUniqueName() {
-        let name = "";
-        let attempts = 0;
-        
-        while (attempts < 500) {
-            const pre = prefixes[Math.floor(Math.random() * prefixes.length)];
-            const post = suffixes[Math.floor(Math.random() * suffixes.length)];
-            const num = Math.floor(Math.random() * 900) + 10;
-            
-            // Randomly choose a name style
-            name = Math.random() > 0.5 ? pre + post : pre + num;
-            
-            if (!usedNames.has(name)) {
-                usedNames.add(name);
-                return name;
-            }
-            attempts++;
-        }
-        return "Trader_" + Math.floor(Math.random() * 9999);
-    }
-
-    function addWin() {
-        // NOTE: We are using the ID 'master-live-win-feed' found on line 364 of your code
+        const traders = ["Global_Elite", "Satoshi_H", "Elena_FX", "Whale_Alex", "Market_King", "Alpha_Delta", "Tokyo_Pro"];
         const feed = document.getElementById('master-live-win-feed');
-        if (!feed) return;
+        const sessionMemory = new Set();
 
-        const user = generateUniqueName();
-        const pair = pairs[Math.floor(Math.random() * pairs.length)];
-        const profit = (Math.random() * 8000 + 100).toFixed(2);
-        
-        const card = document.createElement('div');
-        card.className = "win-card glass p-4 border-l-4 border-emerald-500 bg-emerald-950/10 mb-4";
-        card.innerHTML = `
-            <div class="flex justify-between text-[10px] font-black mb-1">
-                <span class="silver-text">${user}</span>
-                <span class="text-emerald-400">WIN</span>
-            </div>
-            <div class="flex justify-between text-xs font-bold font-mono">
-                <span>${pair}</span>
-                <span class="text-emerald-400 font-black">+$${profit}</span>
-            </div>
-            <div class="text-[8px] text-gray-600 mt-2 italic">Institutional Verified • Just now</div>
-        `;
-
-        if (feed.children.length >= 3) {
-            feed.removeChild(feed.lastChild);
+        function addWin() {
+            let user = traders[Math.floor(Math.random() * traders.length)];
+            if (sessionMemory.has(user)) { user += Math.floor(Math.random() * 999); }
+            sessionMemory.add(user);
+            const profit = (Math.random() * 8000 + 100).toFixed(2);
+            const card = document.createElement('div');
+            card.className = "win-card glass p-4 border-l-4 border-emerald-500 bg-emerald-950/10";
+            card.innerHTML = `<div class="flex justify-between text-[10px] font-black mb-1"><span>${user}</span><span class="text-emerald-400">WIN</span></div><div class="flex justify-between text-xs font-bold"><span>EUR/USD</span><span class="text-emerald-400 font-black">+$${profit}</span></div>`;
+            if (feed.children.length >= 3) feed.removeChild(feed.lastChild);
+            feed.prepend(card);
+            document.getElementById('gaugeNeedle').style.transform = `rotate(${Math.floor(Math.random() * 120) - 60}deg)`;
+            setTimeout(addWin, Math.floor(Math.random() * 5000) + 4000);
         }
-        feed.prepend(card);
 
-        
+        function toggleSideMenu() { document.getElementById('side-nav').classList.toggle('active'); }
+        function updateBar(val) { document.getElementById('adminMovingBar').style.width = val + '%'; document.getElementById('progress-val').innerText = val; }
 
-      <script>
-    // 1. DYNAMIC NAMES & LIVE FEED LOGIC
-    const prefixes = ["Alpha", "Whale", "Satoshi", "Elena", "Sarah", "John", "Market", "FX", "Crypto", "Pro", "Expert", "Elite", "Legend", "Zen", "Macro", "Swift", "Quant", "Prime", "Apex"];
-    const suffixes = ["_Elite", "_King", "99", "_Trader", "_V", "_X", "_Pro", "_Whale", "_Minder", "_FX", "888", "101", "_Alpha", "_Cap", "_Node"];
-    const pairs = ["EUR/USD", "BTC/USDT", "XAU/USD", "GBP/JPY", "ETH/USD", "BNB/BTC"];
-    const usedNames = new Set();
-
-    function generateUniqueName() {
-        let name = ""; let attempts = 0;
-        while (attempts < 500) {
-            const pre = prefixes[Math.floor(Math.random() * prefixes.length)];
-            const post = suffixes[Math.floor(Math.random() * suffixes.length)];
-            name = Math.random() > 0.5 ? pre + post : pre + (Math.floor(Math.random() * 900) + 10);
-            if (!usedNames.has(name)) { usedNames.add(name); return name; }
-            attempts++;
-        }
-        return "Trader_" + Math.floor(Math.random() * 9999);
-    }
-
-    function triggerLiveWin() {
-        const feed = document.getElementById('master-live-win-feed');
-        if (!feed) return;
-        const user = generateUniqueName();
-        const profit = (Math.random() * 8000 + 100).toFixed(2);
-        const card = document.createElement('div');
-        card.className = "win-card glass p-4 border-l-4 border-emerald-500 bg-emerald-950/10 mb-4";
-        card.innerHTML = `<div class="flex justify-between text-[10px] font-black"><span>${user}</span><span class="text-emerald-400">WIN</span></div><div class="flex justify-between text-xs font-bold font-mono"><span>BTC/USDT</span><span class="text-emerald-400 font-black">+$${profit}</span></div>`;
-        if (feed.children.length >= 3) feed.removeChild(feed.lastChild);
-        feed.prepend(card);
-        setTimeout(triggerLiveWin, Math.floor(Math.random() * 6000) + 4000);
-    }
-
-    // 2. SIDEBAR TOGGLE ENGINE
-    function toggleSideMenu() {
-        const sideNav = document.getElementById('side-nav');
-        if (sideNav) {
-            sideNav.classList.toggle('active');
-        }
-    }
-
-    // 3. PROGRESS BAR ENGINE
-    function updateBar(newValue) {
-        const bar = document.getElementById('adminMovingBar');
-        const text = document.getElementById('trade-percent-text');
-        if(bar) bar.style.width = newValue + '%';
-        if(text) text.innerText = newValue;
-    }
-
-    // 4. INITIALIZE EVERYTHING
-    window.onload = function() {
-        triggerLiveWin();
-        setTimeout(() => updateBar(85), 3000);
-    };
-
-    // CLOSE SIDEBAR ON OUTSIDE CLICK
-    window.onclick = function(event) {
-        const sideNav = document.getElementById('side-nav');
-        const burger = document.getElementById('burger-trigger');
-        if (sideNav && sideNav.classList.contains('active')) {
-            if (!sideNav.contains(event.target) && !burger.contains(event.target)) {
-                sideNav.classList.remove('active');
-            }
-        }
-    };
-</script>
+        window.onload = () => { addWin(); setTimeout(() => updateBar(85), 3000); };
+    </script>
 </body>
 </html>
