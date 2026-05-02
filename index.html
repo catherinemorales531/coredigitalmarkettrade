@@ -358,10 +358,17 @@
     </div>
 
     <div class="inst-input-group"><span class="inst-label">Order Type</span><select class="inst-select"><option>Market Order</option><option>Limit Order</option><option>Stop Order</option><option>Stop‑Limit Order</option></select></div>
-    <div class="flex justify-between items-end gap-3 mb-4">
-        <div class="flex-1"><span class="inst-label">Trade Size</span><input type="text" value="1.00" class="inst-input" oninput="calcFX()"></div>
-        <div class="text-[9px] font-black text-gray-500 uppercase pb-3">Margin: <span class="text-white fx-margin">$1,000.00</span></div>
+    <!-- REPLACING LINES 361-364 -->
+<div class="grid grid-cols-2 gap-3 mb-4">
+    <div>
+        <span class="inst-label">Trade Size</span>
+        <input type="text" value="1.00" class="inst-input">
     </div>
+    <div>
+        <span class="inst-label">Margin Required ($)</span>
+        <input type="text" value="1,000.00" class="inst-input fx-margin">
+    </div>
+</div>
     <div class="grid grid-cols-2 gap-3">
         <div><span class="inst-label">Stop Loss</span><input type="text" value="1.11000" class="inst-input"></div>
         <div><span class="inst-label">Take Profit</span><input type="text" value="1.12000" class="inst-input"></div>
