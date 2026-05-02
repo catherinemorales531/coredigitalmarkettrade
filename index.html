@@ -119,9 +119,39 @@
                 border: 1px solid rgba(255, 255, 255, 0.1);
             }
         }
+/* --- Institutional Form & Modal Styles --- */
+.bold-field { font-weight: 800 !important; background: #e2e8f0 !important; color: #1e293b !important; border-radius: 8px; padding: 10px; }
+#order-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100000; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+.modal-box { background: white; color: #333; padding: 40px; border-radius: 24px; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+
+/* --- Striped Moving Loading Bar (Match Screenshot) --- */
+.striped-loader-container { width: 100%; background: rgba(255,255,255,0.1); border-radius: 50px; height: 26px; padding: 3px; display: none; }
+.striped-bar-fill {
+    height: 100%; width: 0%; border-radius: 50px;
+    background-image: linear-gradient(45deg, rgba(255,255,255,.2) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.2) 50%, rgba(255,255,255,.2) 75%, transparent 75%, transparent);
+    background-size: 30px 30px; background-color: #84cc16;
+    animation: stripe-shimmer 2s linear infinite; transition: width 0.5s linear;
+}
+@keyframes stripe-shimmer { from { background-position: 0 0; } to { background-position: 30px 0; } }
+
+/* --- Table Styles --- */
+.ledger-header { background: #000; color: #94a3b8; font-size: 10px; padding: 8px 15px; font-weight: 800; border-bottom: 1px solid #22c55e; }
+.ledger-table th { color: #64748b; text-transform: uppercase; font-size: 10px; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }vv
+        
     </style>
 </head>
 <body>
+
+    <div id="order-modal">
+    <div class="modal-box">
+        <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-emerald-50">
+            <svg class="w-12 h-12 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+        <h2 id="modal-title" class="text-3xl font-black mb-4">Buy Order Traded</h2>
+        <p id="modal-msg" class="text-gray-500 text-lg leading-tight mb-8"></p>
+        <button onclick="closeOrderModal()" class="w-full py-3 border-2 border-blue-400 text-blue-500 rounded-xl font-black uppercase tracking-widest hover:bg-blue-50 transition">OK</button>
+    </div>
+</div>
 
     <!-- 1. INSTITUTIONAL SIDEBAR OVERLAY -->
     <div id="side-nav">
@@ -291,87 +321,148 @@
             </div>
 
             <!-- 9. RECENT ACTIVITY RECORD -->
-            <div class="glass overflow-hidden">
-                <h3 class="p-5 text-xs font-black text-emerald-400 border-b border-white/5 uppercase bg-white/5 tracking-widest">Recent Activity Record</h3>
+         
+            <div class="glass overflow-hidden mt-6">
+                <!-- Timeframe Bar (MATCH SCREENSHOT) -->
+                <div class="bg-black/60 p-3 flex justify-between items-center text-[10px] font-black text-gray-500 uppercase tracking-widest border-b border-white/5">
+                    <div class="flex gap-4">
+                        <span class="hover:text-white cursor-pointer">1D</span>
+                        <span class="hover:text-white cursor-pointer">5D</span>
+                        <span class="hover:text-white cursor-pointer">1M</span>
+                        <span class="hover:text-white cursor-pointer">3M</span>
+                        <span class="hover:text-white cursor-pointer">6M</span>
+                        <span class="text-white border-b border-white pb-1">YTD</span>
+                        <span class="hover:text-white cursor-pointer">1Y</span>
+                        <span class="hover:text-white cursor-pointer">5Y</span>
+                        <span class="hover:text-white cursor-pointer">All</span>
+                    </div>
+                    <!-- LIVE UTC CLOCK -->
+                    <div id="utc-clock-ledger" class="silver-text">00:00:00 UTC</div>
+                </div>
+
+                <h3 class="p-5 text-xs font-black text-emerald-400 uppercase tracking-widest bg-white/5">
+                    Recent Trading Activities
+                </h3>
+
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead><tr><th>ID</th><th>Time</th><th>Symbol</th><th>Amount</th><th>Strike</th><th>End Time</th><th>Status</th></tr></thead>
-                        <tbody><tr class="border-t border-white/5"><td class="silver-text font-bold">34906LM</td><td class="text-gray-400">2025.04.23 13:39:56</td><td class="font-black">BCH/BTC</td><td class="text-red-500 font-bold">$19.00</td><td class="text-red-400">↓8.19004</td><td class="text-emerald-400">↑8,303.20</td><td class="text-gray-400 italic">Loss Manual</td></tr></tbody>
+                    <table class="w-full text-left ledger-table" id="activity-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Trade Time</th>
+                                <th>Symbol</th>
+                                <th>Amount</th>
+                                <th>Strike Rate</th>
+                                <th>End Price</th>
+                                <th>End Time</th>
+                                <th>Status</th>
+                                <th>Trading Type</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-xs">
+                            <!-- New trades will be injected here by the engine -->
+                            <tr class="border-t border-white/5 opacity-40">
+                                <td colspan="9" class="p-10 text-center italic text-gray-500 uppercase tracking-widest">
+                                    No active records. Place a trade to synchronize...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div><!-- 8. INSTITUTIONAL LEDGER (9-COLUMN LAYOUT) -->
+            <div class="glass overflow-hidden mt-6">
+                <!-- Timeframe Bar (MATCH SCREENSHOT) -->
+                <div class="bg-black/60 p-3 flex justify-between items-center text-[10px] font-black text-gray-500 uppercase tracking-widest border-b border-white/5">
+                    <div class="flex gap-4">
+                        <span class="hover:text-white cursor-pointer">1D</span>
+                        <span class="hover:text-white cursor-pointer">5D</span>
+                        <span class="hover:text-white cursor-pointer">1M</span>
+                        <span class="hover:text-white cursor-pointer">3M</span>
+                        <span class="hover:text-white cursor-pointer">6M</span>
+                        <span class="text-white border-b border-white pb-1">YTD</span>
+                        <span class="hover:text-white cursor-pointer">1Y</span>
+                        <span class="hover:text-white cursor-pointer">5Y</span>
+                        <span class="hover:text-white cursor-pointer">All</span>
+                    </div>
+                    <!-- LIVE UTC CLOCK -->
+                    <div id="utc-clock-ledger" class="silver-text">00:00:00 UTC</div>
+                </div>
+
+                <h3 class="p-5 text-xs font-black text-emerald-400 uppercase tracking-widest bg-white/5">
+                    Recent Trading Activities
+                </h3>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left ledger-table" id="activity-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Trade Time</th>
+                                <th>Symbol</th>
+                                <th>Amount</th>
+                                <th>Strike Rate</th>
+                                <th>End Price</th>
+                                <th>End Time</th>
+                                <th>Status</th>
+                                <th>Trading Type</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-xs">
+                            <!-- New trades will be injected here by the engine -->
+                            <tr class="border-t border-white/5 opacity-40">
+                                <td colspan="9" class="p-10 text-center italic text-gray-500 uppercase tracking-widest">
+                                    No active records. Place a trade to synchronize...
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
-        </div>
 
         <!-- RIGHT SIDEBAR (MARKET SIDE) -->
-        <div class="lg:col-span-1 space-y-5">
-            <div class="glass p-6 bg-[#002b2b] flex flex-col h-full min-h-[1450px]">
-                <h2 class="text-2xl font-black mb-8 silver-text tracking-tighter uppercase">Live Trading</h2>
-                
-                <div class="bg-[#121326] p-6 rounded-2xl mb-6 relative border border-white/5 overflow-hidden">
-                    <div class="flex justify-between items-start mb-1"><span class="text-gray-400 text-[10px] font-black uppercase">USD BALANCE</span><span class="badge-red absolute top-0 right-0">USD</span></div>
-                    <div class="text-sm font-mono silver-text mb-4">999,499,999,948,599.98</div>
-                    <div id="red-chart-sidebar" class="h-32"></div>
-                </div>
-
-                <div class="space-y-4">
-                    <select class="select-field"><option>Cryptocurrency</option></select>
-                    <select class="select-field"><option>BCH/BTC</option></select>
-                    <select class="select-field"><option>53% & 22%</option></select>
-                    <div class="text-[13px] text-green-400 font-bold">↑ 0.9628% GROWTH</div>
-
-                    <div class="flex items-center bg-[#1e1b2e] rounded-lg border border-white/10 overflow-hidden">
-                        <button class="w-12 h-14 flex items-center justify-center font-bold text-2xl text-teal-400 bg-white/5">-</button>
-                        <input type="text" value="100.00" class="flex-1 bg-transparent text-center font-black text-xl border-none">
-                        <button class="w-12 h-14 flex items-center justify-center font-bold text-2xl text-teal-400 bg-white/5">+</button>
-                    </div>
-                    <div class="amount-tag-box uppercase">Amount</div>
-
-                    <select class="select-field text-center"><option>1 min</option></select>
-
-
-                    <!-- ACTION SECTION (VIBRANT COLORS) -->
-                    <div class="mt-6">
-                        <!-- Label for Buy -->
-                        <div class="text-sm font-black mb-1" style="color: #10b981;">$53.00</div>
-                        <button class="buy-btn-vibrant w-full py-4 rounded-lg font-black uppercase text-xl shadow-2xl tracking-widest">
-                            BUY
-                        </button>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <!-- Label for Sell -->
-                        <div class="text-sm font-black mb-1" style="color: #ef4444;">$22.00</div>
-                        <button class="sell-btn-vibrant w-full py-4 rounded-lg font-black uppercase text-xl shadow-2xl tracking-widest">
-                            SELL
-                        </button>
-                    </div>
-
-                    <div class="pt-6 space-y-4">
-                        <div class="glass p-3 flex justify-between items-center bg-blue-900/10"><span class="text-[10px] text-gray-500 font-black">App Status</span><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-blue-500"></div><span class="text-sm font-black">$37.00</span></div></div>
-                        <div class="glass p-4 bg-emerald-950/20 flex items-center gap-4"><span class="text-3xl">📈</span><div><p class="text-[10px] font-black uppercase">LIKE SB 331K</p><p class="text-[8px] text-emerald-400 mono">● LIVE: 101083:85</p></div></div>
-                    </div>
-
-                    <div class="glass p-5 mt-6 bg-indigo-950/20">
-                        <p class="text-[10px] font-black text-gray-500 mb-4 uppercase text-center tracking-[0.2em]">Institutional Gauge</p>
-                        <div class="gauge-container"><div class="gauge-arc"><div class="gauge-needle" id="gaugeNeedle"></div></div><div class="absolute bottom-0 flex justify-between w-full px-4 text-[8px] font-bold text-gray-500"><span>Sell</span><span class="text-emerald-400">Strong Buy</span></div></div>
-                    </div>
-
-                    <div class="mt-8 border-t border-white/5 pt-6">
-                        <p class="text-[10px] font-black text-gray-600 mb-4 text-center uppercase tracking-[0.2em]">Core Digital Winning Trades Live</p>
-                        <div id="master-live-win-feed" class="space-y-4 max-h-[350px] overflow-hidden"></div>
-                    </div>
-
-                    <div class="space-y-4 mt-8">
-                        <button class="demo-btn w-full py-4 rounded text-sm font-black uppercase shadow-lg text-white">Demo Request</button>
-                        <div class="bg-gradient-to-r from-orange-500 to-red-600 p-5 rounded-2xl text-center shadow-2xl">
-                            <p class="text-[10px] font-black text-white/90 mb-1 uppercase tracking-widest">Account <span class="bg-white/30 px-2 rounded">I E C</span></p>
-                            <p class="text-xl font-black tracking-tighter silver-text">▶ EXECUTIVE</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+       <div class="space-y-4">
+    <!-- 1. Market Toggle -->
+    <div class="flex bg-black/40 p-1 rounded-xl border border-white/10 mb-4">
+        <button id="fx-tab" onclick="setMode('fx')" class="flex-1 py-2 text-[10px] font-black rounded-lg bg-blue-600">FX MARKET PAIRS</button>
+        <button id="crypto-tab" onclick="setMode('crypto')" class="flex-1 py-2 text-[10px] font-black rounded-lg text-gray-500">CRYPTOCURRENCY</button>
     </div>
+
+    <!-- 2. Pair Selector -->
+    <select id="pair-selector" class="select-field bold-field"></select>
+
+    <!-- 3. Price Action Boxes -->
+    <div class="grid grid-cols-2 gap-2">
+        <div class="bg-red-500 p-3 rounded-lg text-center"><span class="text-[9px] font-black uppercase">Sell</span><p id="p-sell" class="text-lg font-bold mono">1.11568</p></div>
+        <div class="bg-blue-600 p-3 rounded-lg text-center"><span class="text-[9px] font-black uppercase">Buy</span><p id="p-buy" class="text-lg font-bold mono">1.11574</p></div>
+    </div>
+
+    <!-- 4. Order Details -->
+    <div class="space-y-3">
+        <div class="flex justify-between items-center"><label class="text-[10px] font-bold text-gray-400">ORDER TYPE</label><select id="order-type" class="bold-field w-40 text-xs"></select></div>
+        
+        <div id="fx-inputs">
+            <div class="flex justify-between items-center bg-[#e2e8f0] p-2 rounded-lg"><label class="text-[10px] font-black text-gray-600">TRADE SIZE</label><div class="flex items-center gap-1"><input id="lots" type="number" value="1.00" class="w-12 bg-transparent text-right font-black text-[#1e293b] border-none focus:ring-0"> <span class="text-[10px] text-gray-400 font-bold">Lots</span></div></div>
+            <div class="flex justify-between text-[10px] mt-1 font-bold silver-text"><span>Margin Required</span><span>$1,000.00</span></div>
+        </div>
+
+        <div id="crypto-inputs" class="hidden">
+            <div class="flex justify-between items-center bg-[#e2e8f0] p-2 rounded-lg"><label class="text-[10px] font-black text-gray-600">AMOUNT (BTC)</label><input id="amount" type="number" value="0.50" class="w-20 bg-transparent text-right font-black text-[#1e293b] border-none focus:ring-0"></div>
+            <div class="flex justify-between text-[10px] mt-1 font-bold silver-text"><span>Total</span><span>31,250.00 USDT</span></div>
+        </div>
+
+        <div class="flex justify-between items-center"><label class="text-[10px] font-bold text-gray-400 uppercase">Interval</label><select id="interval" class="bold-field w-40 text-xs">
+            <option value="60">1 min</option><option value="180">3 min</option><option value="300">5 min</option><option value="900">15 mins</option><option value="86400">1 day</option>
+        </select></div>
+
+        <div class="flex justify-between items-center"><label id="dur-label" class="text-[10px] font-bold text-gray-400 uppercase">Duration</label><select id="duration" class="bold-field w-40 text-xs"></select></div>
+    </div>
+
+    <!-- 5. EXECUTION -->
+    <div class="grid grid-cols-2 gap-3 pt-4">
+        <button onclick="processTrade('Buy')" class="bg-[#10b981] py-4 rounded-xl font-black uppercase shadow-xl tracking-widest">BUY</button>
+        <button onclick="processTrade('Sell')" class="bg-[#ef4444] py-4 rounded-xl font-black uppercase shadow-xl tracking-widest">SELL</button>
+    </div>
+</div>
 
     <!-- Live Support Widget -->
     <div class="fixed bottom-8 right-8 flex items-center gap-5 z-50">
@@ -382,36 +473,52 @@
     </div>
 
     <script>
-        new ApexCharts(document.querySelector("#red-chart-sidebar"), {
-            series: [{ data: [45, 52, 38, 45, 19, 23, 41, 10, 15, 8] }],
-            chart: { type: 'area', height: 110, sparkline: { enabled: true } },
-            stroke: { curve: 'smooth', width: 2, colors: ['#ff4d4d'] },
-            fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0 } },
-            tooltip: { enabled: false }
-        }).render();
+      const fxP = ["AUD/CAD", "AUD/CHF", "AUD/JPY", "AUD/NZD", "AUD/SGD", "AUD/USD", "CAD/CHF", "CAD/JPY", "CAD/SGD", "CHF/JPY", "CHF/SGD", "EUR/AUD", "EUR/CAD", "EUR/CHF", "EUR/DKK", "EUR/GBP", "EUR/HUF", "EUR/JPY", "EUR/NOK", "EUR/NZD", "EUR/PLN", "EUR/SEK", "EUR/TRY", "EUR/USD", "GBP/AUD", "GBP/CAD", "GBP/CHF", "GBP/JPY", "GBP/NOK", "GBP/NZD", "GBP/SEK", "GBP/TRY", "GBP/USD", "JPY/TRY", "JPY/ZAR", "NZD/CAD", "NZD/CHF", "NZD/JPY", "NZD/SGD", "NZD/USD", "SGD/CHF", "USD/CAD", "USD/CHF", "USD/CNY", "USD/DKK", "USD/HKD", "USD/IDR", "USD/INR", "USD/JPY", "USD/MXN", "USD/NOK", "USD/PLN", "USD/SEK", "USD/SGD", "USD/THB", "USD/TRY", "USD/ZAR"];
+const crP = ["PCP-BTC", "REP/BTC", "XLM/USD", "XRP/USD", "ETH/USD", "BCH/BTC", "BTC/USD", "BTC/USDC", "EOS/USD", "ETC/GBP"];
+let pending = null;
 
-        const traders = ["Global_Elite", "Satoshi_H", "Elena_FX", "Whale_Alex", "Market_King", "Alpha_Delta", "Tokyo_Pro"];
-        const feed = document.getElementById('master-live-win-feed');
-        const sessionMemory = new Set();
+function setMode(mode) {
+    const isFX = mode === 'fx';
+    document.getElementById('fx-in').classList.toggle('hidden', !isFX);
+    document.getElementById('cry-in').classList.toggle('hidden', isFX);
+    document.getElementById('fx-tab').className = isFX ? 'flex-1 py-2 text-[10px] font-black rounded-lg bg-blue-600' : 'flex-1 py-2 text-[10px] font-black rounded-lg text-gray-500';
+    document.getElementById('crypto-tab').className = !isFX ? 'flex-1 py-2 text-[10px] font-black rounded-lg bg-blue-600' : 'flex-1 py-2 text-[10px] font-black rounded-lg text-gray-500';
+    document.getElementById('pair-selector').innerHTML = (isFX ? fxP : crP).map(p => `<option>${p}</option>`).join('');
+    document.getElementById('order-type').innerHTML = (isFX ? ["Market Order", "Limit Order", "Stop Order"] : ["Limit Order", "Stop Order", "Market Order"]).map(o => `<option>${o}</option>`).join('');
+    document.getElementById('duration').innerHTML = (isFX ? ["Day", "Good 'Til Cancelled", "FOK"] : ["Good 'Til Cancelled (GTC)", "IOC", "FOK"]).map(d => `<option>${d}</option>`).join('');
+    document.getElementById('dur-label').innerText = isFX ? 'Duration' : 'Time in Force';
+}
 
-        function addWin() {
-            let user = traders[Math.floor(Math.random() * traders.length)];
-            if (sessionMemory.has(user)) { user += Math.floor(Math.random() * 999); }
-            sessionMemory.add(user);
-            const profit = (Math.random() * 8000 + 100).toFixed(2);
-            const card = document.createElement('div');
-            card.className = "win-card glass p-4 border-l-4 border-emerald-500 bg-emerald-950/10";
-            card.innerHTML = `<div class="flex justify-between text-[10px] font-black mb-1"><span>${user}</span><span class="text-emerald-400">WIN</span></div><div class="flex justify-between text-xs font-bold"><span>EUR/USD</span><span class="text-emerald-400 font-black">+$${profit}</span></div>`;
-            if (feed.children.length >= 3) feed.removeChild(feed.lastChild);
-            feed.prepend(card);
-            document.getElementById('gaugeNeedle').style.transform = `rotate(${Math.floor(Math.random() * 120) - 60}deg)`;
-            setTimeout(addWin, Math.floor(Math.random() * 5000) + 4000);
-        }
+function processTrade(type) {
+    const pair = document.getElementById('pair-selector').value;
+    const price = document.getElementById('p-buy').innerText;
+    const sec = document.getElementById('interval').value;
+    document.getElementById('modal-title').innerText = `${type} Order Traded`;
+    document.getElementById('modal-msg').innerText = `You have successfully placed a ${type === 'Buy' ? 'rise' : 'fall'} Trade of ${pair} at $${price} for ${sec} seconds`;
+    document.getElementById('order-modal').style.display = 'flex';
+    pending = { type, pair, price, sec, id: Math.floor(Math.random()*90000)+10000 + "LM" };
+}
 
-        function toggleSideMenu() { document.getElementById('side-nav').classList.toggle('active'); }
-        function updateBar(val) { document.getElementById('adminMovingBar').style.width = val + '%'; document.getElementById('progress-val').innerText = val; }
+function closeOrderModal() {
+    document.getElementById('order-modal').style.display = 'none';
+    document.getElementById('loader-wrap').style.display = 'block';
+    let p = 0; const step = 100 / (pending.sec * 10);
+    const intv = setInterval(() => {
+        p += step; document.getElementById('striped-progress').style.width = p + '%';
+        if(p >= 100) { clearInterval(intv); finalizeTrade(); }
+    }, 100);
+}
 
-        window.onload = () => { addWin(); setTimeout(() => updateBar(85), 3000); };
+function finalizeTrade() {
+    const now = new Date();
+    const timeStr = `${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+    const row = `<tr><td>${pending.id}</td><td>${timeStr}</td><td>${pending.pair}</td><td class="${pending.type==='Buy'?'text-emerald-400':'text-red-500'} font-bold">$100.00</td><td>${pending.price}</td><td>↑1.1720</td><td>${new Date(Date.now() + pending.sec*1000).toLocaleTimeString()}</td><td class="text-emerald-400 font-bold">Win</td><td>Manual</td></tr>`;
+    document.querySelector("#activity-table tbody").insertAdjacentHTML('afterbegin', row);
+    document.getElementById('loader-wrap').style.display = 'none';
+    pending = null;
+}
+
+window.onload = () => { setMode('fx'); setInterval(() => { document.getElementById('utc-time').innerText = new Date().toUTCString().split(' ')[4] + ' UTC'; }, 1000); };
     </script>
 </body>
 </html>
