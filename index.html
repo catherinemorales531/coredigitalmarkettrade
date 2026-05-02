@@ -9,6 +9,32 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <style>
+        
+/* NEW TRADING ENGINE STYLES */
+.trading-toggle { display: flex; background: rgba(0,0,0,0.4); border-radius: 8px; padding: 4px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+.toggle-btn { flex: 1; padding: 10px; border-radius: 6px; font-size: 11px; font-weight: 900; color: #94a3b8; transition: 0.3s; cursor: pointer; text-align: center; text-transform: uppercase; }
+.toggle-btn.active { background: rgba(255,255,255,0.1); color: #fff; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
+
+.inst-input-group { margin-bottom: 15px; }
+.inst-label { display: block; font-size: 10px; font-weight: 900; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }
+.inst-select, .inst-input { 
+    width: 100%; background: #cbd5e1 !important; color: #0f172a !important; 
+    border: none; padding: 12px; border-radius: 6px; font-weight: 800; font-size: 14px; outline: none;
+}
+.inst-select option { font-weight: 800; }
+
+.price-btn-container { display: grid; grid-template-cols: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.p-btn { padding: 15px 5px; border-radius: 4px; text-align: center; cursor: pointer; transition: 0.2s; border: 1px solid rgba(255,255,255,0.1); }
+.p-btn-blue { background: #2563eb; }
+.p-btn-red { background: #dc2626; }
+.p-btn .label { display: block; font-size: 10px; font-weight: 900; color: rgba(255,255,255,0.8); margin-bottom: 2px; }
+.p-btn .price { font-family: 'JetBrains Mono'; font-weight: 800; font-size: 16px; }
+
+.exec-btn { width: 100%; padding: 16px; border-radius: 8px; font-weight: 900; font-size: 18px; text-transform: uppercase; cursor: pointer; transition: 0.3s; margin-top: 10px; border: 1px solid rgba(255,255,255,0.2); }
+.buy-exec { background: #10b981; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3); }
+.sell-exec { background: #ef4444; box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3); }vv
+
+        
         :root {
             /* SHIVA COSMIC THEME */
             --shiva-gradient: radial-gradient(circle at 20% 35%, #1b1035 0%, #0a061a 100%);
@@ -313,39 +339,66 @@
                     <div id="red-chart-sidebar" class="h-32"></div>
                 </div>
 
-                <div class="space-y-4">
-                    <select class="select-field"><option>Cryptocurrency</option></select>
-                    <select class="select-field"><option>BCH/BTC</option></select>
-                    <select class="select-field"><option>53% & 22%</option></select>
-                    <div class="text-[13px] text-green-400 font-bold">↑ 0.9628% GROWTH</div>
+             <!-- DUAL MODE TRADING ENGINE -->
+                
+<div class="trading-toggle">
+    <div id="fx-toggle" class="toggle-btn active" onclick="switchMode('fx')">FX Market Pairs</div>
+    <div id="crypto-toggle" class="toggle-btn" onclick="switchMode('crypto')">Cryptocurrency</div>
+</div>
 
-                    <div class="flex items-center bg-[#1e1b2e] rounded-lg border border-white/10 overflow-hidden">
-                        <button class="w-12 h-14 flex items-center justify-center font-bold text-2xl text-teal-400 bg-white/5">-</button>
-                        <input type="text" value="100.00" class="flex-1 bg-transparent text-center font-black text-xl border-none">
-                        <button class="w-12 h-14 flex items-center justify-center font-bold text-2xl text-teal-400 bg-white/5">+</button>
-                    </div>
-                    <div class="amount-tag-box uppercase">Amount</div>
+<!-- FOREX FORM -->
+<div id="fx-form" class="space-y-4">
+    <select id="fx-asset" class="inst-select font-bold">
+        <option>EUR/USD</option><option>AUD/CAD</option><option>AUD/CHF</option><option>AUD/JPY</option><option>AUD/NZD</option><option>AUD/SGD</option><option>AUD/USD</option><option>CAD/CHF</option><option>CAD/JPY</option><option>CAD/SGD</option><option>CHF/JPY</option><option>CHF/SGD</option><option>EUR/AUD</option><option>EUR/CAD</option><option>EUR/CHF</option><option>EUR/DKK</option><option>EUR/GBP</option><option>EUR/HUF</option><option>EUR/JPY</option><option>EUR/NOK</option><option>EUR/NZD</option><option>EUR/PLN</option><option>EUR/SEK</option><option>EUR/TRY</option><option>GBP/AUD</option><option>GBP/CAD</option><option>GBP/CHF</option><option>GBP/JPY</option><option>GBP/NOK</option><option>GBP/NZD</option><option>GBP/SEK</option><option>GBP/TRY</option><option>GBP/USD</option><option>JPY/TRY</option><option>JPY/ZAR</option><option>NZD/CAD</option><option>NZD/CHF</option><option>NZD/JPY</option><option>NZD/SGD</option><option>NZD/USD</option><option>SGD/CHF</option><option>USD/CAD</option><option>USD/CHF</option><option>USD/CNY</option><option>USD/DKK</option><option>USD/HKD</option><option>USD/IDR</option><option>USD/INR</option><option>USD/JPY</option><option>USD/MXN</option><option>USD/NOK</option><option>USD/PLN</option><option>USD/SEK</option><option>USD/SGD</option><option>USD/THB</option><option>USD/TRY</option><option>USD/ZAR</option>
+    </select>
 
-                    <select class="select-field text-center"><option>1 min</option></select>
+    <div class="price-btn-container">
+        <div class="p-btn p-btn-red"><span class="label">SELL</span><span class="price fx-sell-price">1.11568</span></div>
+        <div class="p-btn p-btn-blue"><span class="label">BUY</span><span class="price fx-buy-price">1.11574</span></div>
+    </div>
 
+    <div class="inst-input-group"><span class="inst-label">Order Type</span><select class="inst-select"><option>Market Order</option><option>Limit Order</option><option>Stop Order</option><option>Stop‑Limit Order</option></select></div>
+    <div class="flex justify-between items-end gap-3 mb-4">
+        <div class="flex-1"><span class="inst-label">Trade Size</span><input type="text" value="1.00" class="inst-input" oninput="calcFX()"></div>
+        <div class="text-[9px] font-black text-gray-500 uppercase pb-3">Margin: <span class="text-white fx-margin">$1,000.00</span></div>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+        <div><span class="inst-label">Stop Loss</span><input type="text" value="1.11000" class="inst-input"></div>
+        <div><span class="inst-label">Take Profit</span><input type="text" value="1.12000" class="inst-input"></div>
+    </div>
+    <div class="inst-input-group"><span class="inst-label">Duration</span><select class="inst-select"><option>Good ’Til Cancelled</option><option>Day</option><option>Immediate or Cancel</option><option>Fill or Kill (FOK)</option><option>Good ’Til Date (GTD)</option></select></div>
+    <div class="inst-input-group"><span class="inst-label">Time Interval</span><select class="inst-select"><option>1 min</option><option>3 min</option><option>5 min</option><option>15 mins</option><option>30 mins</option><option>1 hr</option><option>2 hr</option><option>1 day</option></select></div>
+    
+    <button class="exec-btn buy-exec" onclick="executeTrade('BUY', 'fx')">Buy</button>
+    <button class="exec-btn sell-exec" onclick="executeTrade('SELL', 'fx')">Sell</button>
+</div>
 
-                    <!-- ACTION SECTION (VIBRANT COLORS) -->
-                    <div class="mt-6">
-                        <!-- Label for Buy -->
-                        <div class="text-sm font-black mb-1" style="color: #10b981;">$53.00</div>
-                        <button class="buy-btn-vibrant w-full py-4 rounded-lg font-black uppercase text-xl shadow-2xl tracking-widest">
-                            BUY
-                        </button>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <!-- Label for Sell -->
-                        <div class="text-sm font-black mb-1" style="color: #ef4444;">$22.00</div>
-                        <button class="sell-btn-vibrant w-full py-4 rounded-lg font-black uppercase text-xl shadow-2xl tracking-widest">
-                            SELL
-                        </button>
-                    </div>
+<!-- CRYPTO FORM (HIDDEN BY DEFAULT) -->
+<div id="crypto-form" class="space-y-4 hidden">
+    <select id="crypto-asset" class="inst-select font-bold">
+        <option>BTC/USDT</option><option>PCP‑BTC</option><option>REP/BTC</option><option>REP/USD</option><option>TXR/GBP</option><option>XLM/BTC</option><option>XLM/EUR</option><option>XLM/USD</option><option>XRP/BTC</option><option>XRP/EUR</option><option>XRP/USD</option><option>ZEC/BTC</option><option>ZRX/BTC</option><option>ZRX/EUR</option><option>ZRX/USD</option><option>ETC/USD</option><option>ETH/BTC</option><option>ETH/EUR</option><option>ETH/GBP</option><option>ETH/USD</option><option>LTC/BTC</option><option>LTC/EUR</option><option>LTC/GBP</option><option>LTC/USD</option><option>MKR/BTC</option><option>BCH/BTC</option><option>BCH/EUR</option><option>BCH/GBP</option><option>BTC/EOS</option><option>BTC/EUR</option><option>BTC/GBP</option><option>BTC/USD</option><option>BTC/USDC</option><option>EOS/BTC</option><option>EOS/EUR</option><option>EOS/USD</option><option>ETC/BTC</option><option>ETC/EUR</option><option>ETC/GBP</option>
+    </select>
 
+    <div class="price-btn-container">
+        <div class="p-btn p-btn-blue"><span class="label">BUY</span><span class="price cry-buy-price">62,378.50</span></div>
+        <div class="p-btn p-btn-red"><span class="label">SELL</span><span class="price cry-sell-price">62,369.80</span></div>
+    </div>
+
+    <div class="inst-input-group"><span class="inst-label">Order Type</span><select class="inst-select"><option>Limit Order</option><option>Stop Order</option><option>Stop‑Limit Order</option><option>Market Order</option></select></div>
+    <div class="inst-input-group"><span class="inst-label">Price (USDT)</span><input type="text" id="cry-price" value="62,500.00" class="inst-input"></div>
+    <div class="flex justify-between items-end gap-3 mb-4">
+        <div class="flex-1"><span class="inst-label">Amount (BTC)</span><input type="text" id="cry-amt" value="0.50" class="inst-input" oninput="calcCrypto()"></div>
+        <div class="text-[9px] font-black text-gray-500 uppercase pb-3">Total: <span class="text-white cry-total">31,250.00 USDT</span></div>
+    </div>
+    <div class="inst-input-group"><span class="inst-label">Time in Force</span><select class="inst-select"><option>Good ’Til Cancelled (GTC)</option><option>Immediate or Cancel (IOC)</option><option>Fill or Kill (FOK)</option><option>Good ’Til Date (GTD)</option></select></div>
+    <div class="inst-input-group"><span class="inst-label">Time Interval</span><select class="inst-select"><option>1 min</option><option>3 min</option><option>5 min</option><option>15 mins</option><option>30 mins</option><option>1 hr</option><option>2 hr</option><option>1 day</option></select></div>
+
+    <button class="exec-btn buy-exec" onclick="executeTrade('BUY', 'crypto')">Buy BTC</button>
+    <button class="exec-btn sell-exec" onclick="executeTrade('SELL', 'crypto')">Sell BTC</button>
+</div>
+
+              
+            
                     <div class="pt-6 space-y-4">
                         <div class="glass p-3 flex justify-between items-center bg-blue-900/10"><span class="text-[10px] text-gray-500 font-black">App Status</span><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-blue-500"></div><span class="text-sm font-black">$37.00</span></div></div>
                         <div class="glass p-4 bg-emerald-950/20 flex items-center gap-4"><span class="text-3xl">📈</span><div><p class="text-[10px] font-black uppercase">LIKE SB 331K</p><p class="text-[8px] text-emerald-400 mono">● LIVE: 101083:85</p></div></div>
@@ -412,6 +465,153 @@
         function updateBar(val) { document.getElementById('adminMovingBar').style.width = val + '%'; document.getElementById('progress-val').innerText = val; }
 
         window.onload = () => { addWin(); setTimeout(() => updateBar(85), 3000); };
+
+        // MODE SWITCHING
+function switchMode(mode) {
+    const fxForm = document.getElementById('fx-form');
+    const cryptoForm = document.getElementById('crypto-form');
+    const fxBtn = document.getElementById('fx-toggle');
+    const cryBtn = document.getElementById('crypto-toggle');
+
+    if(mode === 'fx') {
+        fxForm.classList.remove('hidden'); cryptoForm.classList.add('hidden');
+        fxBtn.classList.add('active'); cryBtn.classList.remove('active');
+    } else {
+        fxForm.classList.add('hidden'); cryptoForm.classList.remove('hidden');
+        fxBtn.classList.remove('active'); cryBtn.classList.add('active');
+    }
+}
+
+// LIVE PRICE SIMULATION
+function simulatePrices() {
+    document.querySelectorAll('.fx-sell-price').forEach(el => el.innerText = (1.11500 + Math.random() * 0.001).toFixed(5));
+    document.querySelectorAll('.fx-buy-price').forEach(el => el.innerText = (1.11570 + Math.random() * 0.001).toFixed(5));
+    document.querySelectorAll('.cry-buy-price').forEach(el => el.innerText = (62300 + Math.random() * 100).toLocaleString());
+    document.querySelectorAll('.cry-sell-price').forEach(el => el.innerText = (62250 + Math.random() * 100).toLocaleString());
+}
+setInterval(simulatePrices, 2000);
+
+// CALCULATION ENGINE
+function calcFX() {
+    const lots = document.querySelector('#fx-form input[value="1.00"]').value;
+    document.querySelector('.fx-margin').innerText = '$' + (lots * 1000).toLocaleString() + '.00';
+}
+function calcCrypto() {
+    const price = 62500;
+    const amt = document.getElementById('cry-amt').value;
+    document.querySelector('.cry-total').innerText = (price * amt).toLocaleString() + ' USDT';
+}
+
+// EXECUTION & ACTIVITY LOG INJECTION
+function executeTrade(side, mode) {
+    const tradeId = Math.floor(10000 + Math.random() * 89999) + "XP";
+    const symbol = mode === 'fx' ? document.getElementById('fx-asset').value : document.getElementById('crypto-asset').value;
+    const now = new Date();
+    const timeStr = `${now.getFullYear()}.${(now.getMonth()+1).toString().padStart(2,'0')}.${now.getDate().padStart(2,'0')} ${now.getHours().padStart(2,'0')}:${now.getMinutes().padStart(2,'0')}:${now.getSeconds().padStart(2,'0')}`;
+    
+    // Select the table body
+    const tableBody = document.querySelector('table tbody');
+    
+    // Create the New Row
+    const newRow = document.createElement('tr');
+    newRow.className = "border-t border-white/5 win-card";
+    newRow.innerHTML = `
+        <td class="silver-text font-bold">${tradeId}</td>
+        <td class="text-gray-400">${timeStr}</td>
+        <td class="font-black">${symbol}</td>
+        <td class="${side === 'BUY' ? 'text-emerald-400' : 'text-red-500'} font-bold">${side}</td>
+        <td class="text-white opacity-80">${Math.random() > 0.5 ? '↑' : '↓'} Live</td>
+        <td class="text-emerald-400 font-bold">In Progress</td>
+        <td class="text-gray-400 italic">Live Trade</td>
+    `;
+    
+    // Prepend (put at top)
+    tableBody.prepend(newRow);
+    
+    // Visual feedback
+    alert(`Institutional Order Placed: ${side} ${symbol} (ID: ${tradeId})`);
+}
+
+// INITIALIZE
+window.onload = () => { 
+    addWin(); 
+    switchMode('fx');
+    // Change the Table header to "Time" as requested
+    document.querySelectorAll('th')[1].innerText = "Time";
+};// MODE SWITCHING
+function switchMode(mode) {
+    const fxForm = document.getElementById('fx-form');
+    const cryptoForm = document.getElementById('crypto-form');
+    const fxBtn = document.getElementById('fx-toggle');
+    const cryBtn = document.getElementById('crypto-toggle');
+
+    if(mode === 'fx') {
+        fxForm.classList.remove('hidden'); cryptoForm.classList.add('hidden');
+        fxBtn.classList.add('active'); cryBtn.classList.remove('active');
+    } else {
+        fxForm.classList.add('hidden'); cryptoForm.classList.remove('hidden');
+        fxBtn.classList.remove('active'); cryBtn.classList.add('active');
+    }
+}
+
+// LIVE PRICE SIMULATION
+function simulatePrices() {
+    document.querySelectorAll('.fx-sell-price').forEach(el => el.innerText = (1.11500 + Math.random() * 0.001).toFixed(5));
+    document.querySelectorAll('.fx-buy-price').forEach(el => el.innerText = (1.11570 + Math.random() * 0.001).toFixed(5));
+    document.querySelectorAll('.cry-buy-price').forEach(el => el.innerText = (62300 + Math.random() * 100).toLocaleString());
+    document.querySelectorAll('.cry-sell-price').forEach(el => el.innerText = (62250 + Math.random() * 100).toLocaleString());
+}
+setInterval(simulatePrices, 2000);
+
+// CALCULATION ENGINE
+function calcFX() {
+    const lots = document.querySelector('#fx-form input[value="1.00"]').value;
+    document.querySelector('.fx-margin').innerText = '$' + (lots * 1000).toLocaleString() + '.00';
+}
+function calcCrypto() {
+    const price = 62500;
+    const amt = document.getElementById('cry-amt').value;
+    document.querySelector('.cry-total').innerText = (price * amt).toLocaleString() + ' USDT';
+}
+
+// EXECUTION & ACTIVITY LOG INJECTION
+function executeTrade(side, mode) {
+    const tradeId = Math.floor(10000 + Math.random() * 89999) + "XP";
+    const symbol = mode === 'fx' ? document.getElementById('fx-asset').value : document.getElementById('crypto-asset').value;
+    const now = new Date();
+    const timeStr = `${now.getFullYear()}.${(now.getMonth()+1).toString().padStart(2,'0')}.${now.getDate().padStart(2,'0')} ${now.getHours().padStart(2,'0')}:${now.getMinutes().padStart(2,'0')}:${now.getSeconds().padStart(2,'0')}`;
+    
+    // Select the table body
+    const tableBody = document.querySelector('table tbody');
+    
+    // Create the New Row
+    const newRow = document.createElement('tr');
+    newRow.className = "border-t border-white/5 win-card";
+    newRow.innerHTML = `
+        <td class="silver-text font-bold">${tradeId}</td>
+        <td class="text-gray-400">${timeStr}</td>
+        <td class="font-black">${symbol}</td>
+        <td class="${side === 'BUY' ? 'text-emerald-400' : 'text-red-500'} font-bold">${side}</td>
+        <td class="text-white opacity-80">${Math.random() > 0.5 ? '↑' : '↓'} Live</td>
+        <td class="text-emerald-400 font-bold">In Progress</td>
+        <td class="text-gray-400 italic">Live Trade</td>
+    `;
+    
+    // Prepend (put at top)
+    tableBody.prepend(newRow);
+    
+    // Visual feedback
+    alert(`Institutional Order Placed: ${side} ${symbol} (ID: ${tradeId})`);
+}
+
+// INITIALIZE
+window.onload = () => { 
+    addWin(); 
+    switchMode('fx');
+    // Change the Table header to "Time" as requested
+    document.querySelectorAll('th')[1].innerText = "Time";
+};vv
+        
     </script>
 </body>
 </html>
