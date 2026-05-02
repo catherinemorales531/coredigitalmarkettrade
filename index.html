@@ -32,7 +32,7 @@
 
 .exec-btn { width: 100%; padding: 16px; border-radius: 8px; font-weight: 900; font-size: 18px; text-transform: uppercase; cursor: pointer; transition: 0.3s; margin-top: 10px; border: 1px solid rgba(255,255,255,0.2); }
 .buy-exec { background: #10b981; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3); }
-.sell-exec { background: #ef4444; box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3); }vv
+.sell-exec { background: #ef4444; box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3); }
 
         
         :root {
@@ -576,15 +576,21 @@ function calcCrypto() {
 
 // EXECUTION & ACTIVITY LOG INJECTION
 function executeTrade(side, mode) {
-    const tradeId = Math.floor(10000 + Math.random() * 89999) + "XP";
+    const tradeId = Math.floor(100000 + Math.random() * 899999) + "XP";
     const symbol = mode === 'fx' ? document.getElementById('fx-asset').value : document.getElementById('crypto-asset').value;
+    
+    // Exact moment of trade placement
     const now = new Date();
-    const timeStr = `${now.getFullYear()}.${(now.getMonth()+1).toString().padStart(2,'0')}.${now.getDate().padStart(2,'0')} ${now.getHours().padStart(2,'0')}:${now.getMinutes().padStart(2,'0')}:${now.getSeconds().padStart(2,'0')}`;
+    const timeStr = `${now.getFullYear()}.${(now.getMonth()+1).toString().padStart(2,'0')}.${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
     
-    // Select the table body
+    // Get the selected interval and calculate End Time
+    const intervalSelect = mode === 'fx' ? document.querySelector('#fx-form select:last-of-type') : document.querySelector('#crypto-form select:last-of-type');
+    const intervalValue = intervalSelect.value;
+    
+    // Get Current Price as Strike Price
+    const strikePrice = mode === 'fx' ? document.querySelector('.fx-buy-price').innerText : document.querySelector('.cry-buy-price').innerText;
+
     const tableBody = document.querySelector('table tbody');
-    
-    // Create the New Row
     const newRow = document.createElement('tr');
     newRow.className = "border-t border-white/5 win-card";
     newRow.innerHTML = `
@@ -592,25 +598,14 @@ function executeTrade(side, mode) {
         <td class="text-gray-400">${timeStr}</td>
         <td class="font-black">${symbol}</td>
         <td class="${side === 'BUY' ? 'text-emerald-400' : 'text-red-500'} font-bold">${side}</td>
-        <td class="text-white opacity-80">${Math.random() > 0.5 ? '↑' : '↓'} Live</td>
-        <td class="text-emerald-400 font-bold">In Progress</td>
-        <td class="text-gray-400 italic">Live Trade</td>
+        <td class="silver-text">@${strikePrice}</td>
+        <td class="text-emerald-400 font-bold">${intervalValue} Exp.</td>
+        <td class="text-white font-bold opacity-80 uppercase tracking-tighter">In Progress</td>
     `;
     
-    // Prepend (put at top)
     tableBody.prepend(newRow);
-    
-    // Visual feedback
-    alert(`Institutional Order Placed: ${side} ${symbol} (ID: ${tradeId})`);
+    alert(`Order Executed: ${side} ${symbol} | ID: ${tradeId}`);
 }
-
-// INITIALIZE
-window.onload = () => { 
-    addWin(); 
-    switchMode('fx');
-    // Change the Table header to "Time" as requested
-    document.querySelectorAll('th')[1].innerText = "Time";
-};vv
         
     </script>
 </body>
