@@ -55,19 +55,26 @@
 
         .exec-btn { width: 100%; padding: 18px; border-radius: 8px; font-weight: 900; font-size: 20px; text-transform: uppercase; transition: 0.2s; border: 1px solid rgba(255,255,255,0.2); }
         .buy-main { background: var(--buy-green); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3); }
-        .sell-main { background: var(--sell-red); box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3); }
+    /* --- TERMINAL GRID & MOBILE LOGIC --- */
+.terminal-grid { 
+    display: grid; 
+    grid-template-columns: 280px 1fr 360px; 
+    height: calc(100vh - 70px); 
+    gap: 1px; 
+    background: rgba(255,255,255,0.05); 
+}
+.panel { background: #070412; overflow-y: auto; display: flex; flex-direction: column; }
 
-        /* --- 3. GRID SYSTEM --- */
-        .terminal-grid { display: grid; grid-template-columns: 280px 1fr 360px; height: calc(100vh - 70px); gap: 1px; background: rgba(255,255,255,0.05); }
-        .panel { background: #070412; overflow-y: auto; display: flex; flex-direction: column; }
-
-        @media (max-width: 1024px) {
-            .terminal-grid { display: block; height: calc(100vh - 120px); overflow-y: auto; }
-            .panel { display: none; width: 100%; }
-            .panel.m-active { display: flex !important; min-height: calc(100vh - 120px); }
-            #tv_area { height: 400px !important; }
-            .mobile-hud { display: flex; }
-        }
+@media (max-width: 1024px) {
+    .terminal-grid { display: block; height: auto; }
+    .panel { display: none; width: 100%; }
+    /* This makes the active tab visible */
+    .panel.m-active { display: flex !important; min-height: 400px; }
+    /* This forces the TradingView chart to show */
+    #tv_area { height: 450px !important; min-height: 450px; }
+    .mobile-hud { display: flex; }
+    .side-hide { display: none; }
+}
 
         /* --- UI COMPONENTS --- */
         .mobile-hud { display: none; background: #000; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 60; }
