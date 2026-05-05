@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Institutional Execution Terminal - Core Digital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --shiva-bg: radial-gradient(circle at 20% 35%, #1b1035 0%, #0a061a 100%);
+            --engine-teal: #002b2b; /* Dashboard Match */
+            --spark-silver: #cbd5e1;
+            --buy-green: #10b981;
+            --sell-red: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--shiva-bg);
+            background-image: url('https://www.transparenttextures.com/patterns/stardust.png'), var(--shiva-bg);
+            background-attachment: fixed;
+            color: white; height: 100vh; overflow: hidden; margin: 0;
+        }
+
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .silver-text { color: var(--spark-silver); text-shadow: 0 0 10px rgba(203, 213, 225, 0.3); }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* ENGINE DNA */
+        .engine-container { background: var(--engine-teal); border-radius: 14px; padding: 24px; border: 1px solid rgba(255,255,255,0.05); }
+        .trading-toggle { display: flex; background: rgba(0,0,0,0.4); border-radius: 8px; padding: 4px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .toggle-btn { flex: 1; padding: 10px; border-radius: 6px; font-size: 11px; font-weight: 900; color: #94a3b8; cursor: pointer; text-align: center; text-transform: uppercase; transition: 0.3s; }
+        .toggle-btn.active { background: rgba(255,255,255,0.1); color: #fff; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
+
+        .inst-label { font-size: 10px; font-weight: 900; color: #64748b; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        .inst-field { 
+            width: 100%; background: #cbd5e1 !important; color: #0f172a !important; 
+            border: none; padding: 12px; border-radius: 6px; font-weight: 900; font-size: 14px; outline: none;
+        }
+
+        /* PRICE BUTTONS */
+        .p-btn { padding: 15px 5px; border-radius: 4px; text-align: center; cursor: pointer; transition: 0.2s; border: 1px solid rgba(255,255,255,0.1); }
+        .p-btn-blue { background: #2563eb; } .p-btn-red { background: #dc2626; }
+        .p-btn .price { font-family: 'JetBrains Mono'; font-weight: 900; font-size: 18px; }
+
+        .exec-btn { width: 100%; padding: 18px; border-radius: 8px; font-weight: 900; font-size: 20px; text-transform: uppercase; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); transition: 0.2s; }
+        .buy-main { background: var(--buy-green); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3); }
+        .sell-main { background: var(--sell-red); box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3); }
+
+        /* GRID SYSTEM */
+        .terminal-grid { display: grid; grid-template-columns: 280px 1fr 360px; height: calc(100vh - 70px); gap: 1px; background: rgba(255,255,255,0.05); }
+        .panel { background: #070412; overflow-y: auto; display: flex; flex-direction: column; }
+        .hidden { display: none !important; }
+
+        /* LEDGER TABS */
+        .tab-btn { padding: 12px 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; color: #475569; border-bottom: 2px solid transparent; }
+        .tab-btn.active { color: #3b82f6; border-bottom: 2px solid #3b82f6; background: rgba(59, 130, 246, 0.05); }
+
+        /* EMPTY STATE STYLE */
+        .empty-msg { height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 40px; color: #475569; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; line-height: 1.6; }
+
+        /* TESTIMONY NOTIFICATION (DASHBOARD STYLE) */
+        .win-notif { animation: fadeInUp 0.6s ease-out; border-left: 4px solid var(--buy-green); background: rgba(16, 185, 129, 0.05); margin-bottom: 10px; padding: 12px; border-radius: 4px; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .market-row { border-bottom: 1px solid rgba(255,255,255,0.03); padding: 12px 15px; cursor: pointer; transition: 0.2s; }
+        .market-row:hover { background: rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body>
+
+    <!-- TOP HEADER -->
+    <header class="h-[70px] glass flex justify-between items-center px-6 z-50 border-b border-white/5">
+        <div class="flex items-center gap-6">
+            <span class="silver-text font-black tracking-tighter text-xl">CORE DIGITAL <span class="text-blue-500">TERMINAL</span></span>
+            <div class="h-6 w-[1px] bg-white/10"></div>
+            <div id="inst-clock" class="mono text-xs font-bold text-emerald-400 uppercase tracking-widest"></div>
+        </div>
+        <div class="flex items-center gap-5">
+            <div class="text-right">
+                <p class="text-[9px] font-bold text-gray-500 uppercase">Equity Balance</p>
+                <p class="silver-text font-black mono text-sm">$ 5,000,000,000.00</p>
+            </div>
+            <div class="w-10 h-10 rounded-full border-2 border-blue-500 p-0.5">
+                <div class="w-full h-full rounded-full bg-slate-900 flex items-center justify-center font-black">JD</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="terminal-grid">
+        
+        <!-- LEFT: MARKET WATCH -->
+        <aside class="panel border-r border-white/5">
+            <div class="p-4 border-b border-white/10 bg-white/5 font-black text-[10px] uppercase text-gray-400 tracking-widest">Market Watch</div>
+            <div id="watchlist-feed" class="flex-1"></div>
+        </aside>
+
+        <!-- CENTER: CHART & LEDGER -->
+        <section class="panel">
+            <div class="p-3 border-b border-white/5 bg-black/20 flex justify-between items-center">
+                <span id="active-asset-label" class="text-lg font-black silver-text uppercase">EUR / USD</span>
+                <span class="text-[9px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded uppercase">Institutional Feed Active</span>
+            </div>
+
+            <div class="flex-1 relative bg-black/40">
+                <div id="tv_area" style="height: 100%;"></div>
+            </div>
+
+            <!-- LEDGER TRAY (WITH EMPTY STATE LOGIC) -->
+            <div class="h-80 border-t border-white/10 bg-black/95 flex flex-col">
+                <div class="flex bg-white/5 border-b border-white/5">
+                    <div id="tab-o" class="tab-btn active" onclick="setTab('o')">Open Positions</div>
+                    <div id="tab-c" class="tab-btn" onclick="setTab('c')">Closed Trades (Realized P/L)</div>
+                </div>
+                <div class="flex-1 overflow-y-auto relative">
+                    <div id="empty-state" class="empty-msg hidden"></div>
+                    <table id="ledger-table" class="w-full text-left">
+                        <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-0 bg-black">
+                            <tr id="l-head"></tr>
+                        </thead>
+                        <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT: COMPLETE TRADING ENGINE -->
+        <aside class="panel p-5 border-l border-white/5 bg-[#0a061a]">
+            <div class="trading-toggle">
+                <div id="fx-t" class="toggle-btn active" onclick="setMkt('fx')">Forex Market</div>
+                <div id="cry-t" class="toggle-btn" onclick="setMkt('crypto')">Cryptocurrency</div>
+            </div>
+
+            <div class="engine-container space-y-6">
+                <!-- PRICES -->
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="p-btn p-btn-red"><span class="inst-label opacity-60">SELL</span><span class="price" id="p-s">--.----</span></div>
+                    <div class="p-btn p-btn-blue"><span class="inst-label opacity-60">BUY</span><span class="price" id="p-b">--.----</span></div>
+                </div>
+
+                <div>
+                    <span class="inst-label">Institutional Asset</span>
+                    <select id="asset-picker" class="inst-field font-black" onchange="applyAsset()">
+                    </select>
+                </div>
+
+                <!-- PLACEHOLDER FIELDS -->
+                <div id="fx-only" class="grid grid-cols-2 gap-3">
+                    <div><span class="inst-label">Trade Size</span><input type="text" placeholder="0.00" class="inst-field"></div>
+                    <div><span class="inst-label">Margin Req.</span><input type="text" placeholder="$0.00" class="inst-field" readonly></div>
+                </div>
+
+                <div id="cry-only" class="grid grid-cols-2 gap-3 hidden">
+                    <div><span class="inst-label">Amount (Units)</span><input type="text" placeholder="0.00" class="inst-field"></div>
+                    <div><span class="inst-label">Total USDT</span><input type="text" placeholder="0.00" class="inst-field" readonly></div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div><span class="inst-label">Stop Loss</span><input type="text" placeholder="Auto" class="inst-field"></div>
+                    <div><span class="inst-label">Take Profit</span><input type="text" placeholder="Auto" class="inst-field"></div>
+                </div>
+
+                <div>
+                    <span class="inst-label">Time Interval</span>
+                    <select class="inst-field font-black">
+                        <option>1 min</option><option>3 min</option><option>5 min</option><option>15 min</option><option>30 min</option><option>1 hr</option><option>1 day</option>
+                    </select>
+                </div>
+
+                <div class="pt-4 space-y-3">
+                    <button class="exec-btn buy-main" onclick="order('BUY')">Execute Buy Order</button>
+                    <button class="exec-btn sell-main" onclick="order('SELL')">Execute Sell Order</button>
+                </div>
+            </div>
+
+            <!-- CORE DIGITAL WINNING TRADES (IDENTICAL TO DASHBOARD) -->
+            <div class="mt-8 border-t border-white/5 pt-6">
+                <p class="text-[10px] font-black text-gray-600 mb-4 text-center uppercase tracking-widest">Core Digital Winning Trades Live</p>
+                <div id="testimony-feed" class="space-y-2"></div>
+            </div>
+        </aside>
+    </main>
+
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        let curMkt = 'fx'; let curAsset = 'EUR/USD'; let curView = 'o';
+        let oArr = []; let cArr = [];
+        const memory = new Set();
+
+        const fxL = ["EUR/USD","AUD/CAD","AUD/CHF","AUD/JPY","AUD/NZD","AUD/SGD","AUD/USD","CAD/CHF","CAD/JPY","CAD/SGD","CHF/JPY","CHF/SGD","EUR/AUD","EUR/CAD","EUR/CHF","EUR/DKK","EUR/GBP","EUR/HUF","EUR/JPY","EUR/NOK","EUR/NZD","EUR/PLN","EUR/SEK","EUR/TRY","GBP/AUD","GBP/CAD","GBP/CHF","GBP/JPY","GBP/NOK","GBP/NZD","GBP/SEK","GBP/TRY","GBP/USD","JPY/TRY","JPY/ZAR","NZD/CAD","NZD/CHF","NZD/JPY","NZD/SGD","NZD/USD","SGD/CHF","USD/CAD","USD/CHF","USD/CNY","USD/DKK","USD/HKD","USD/IDR","USD/INR","USD/JPY","USD/MXN","USD/NOK","USD/PLN","USD/SEK","USD/SGD","USD/THB","USD/TRY","USD/ZAR"];
+        const cryL = ["BTC/USDT","PCP-BTC","REP/BTC","REP/USD","TXR/GBP","XLM/BTC","XLM/EUR","XLM/USD","XRP/BTC","XRP/EUR","XRP/USD","ZEC/BTC","ZRX/BTC","ZRX/EUR","ZRX/USD","ETC/USD","ETH/BTC","ETH/EUR","ETH/GBP","ETH/USD","LTC/BTC","LTC/EUR","LTC/GBP","LTC/USD","MKR/BTC","BCH/BTC","BCH/EUR","BCH/GBP","BTC/EOS","BTC/EUR","BTC/GBP","BTC/USD","BTC/USDC","EOS/BTC","EOS/EUR","EOS/USD","ETC/BTC","ETC/EUR","ETC/GBP"];
+
+        function clock() {
+            const n = new Date();
+            document.getElementById('inst-clock').innerText = n.getFullYear()+"."+(n.getMonth()+1).toString().padStart(2,'0')+"."+n.getDate().toString().padStart(2,'0')+" "+n.getHours().toString().padStart(2,'0')+":"+n.getMinutes().toString().padStart(2,'0')+":"+n.getSeconds().toString().padStart(2,'0');
+        }
+        setInterval(clock, 1000);
+
+        function initW() {
+            const b = document.getElementById('watchlist-feed');
+            [{s:"EUR/USD", p:"1.0842"}, {s:"BTC/USDT", p:"62,391"}, {s:"XAU/USD", p:"2,345"}, {s:"ETH/USDT", p:"3,102"}, {s:"GBP/JPY", p:"191.05"}].forEach(d => {
+                b.innerHTML += `<div class="market-row flex justify-between items-center" onclick="curAsset='${d.s}';document.getElementById('asset-picker').value='${d.s}';applyAsset()"><div><p class="text-xs font-black silver-text">${d.s}</p><p class="text-[8px] text-gray-600 font-bold uppercase mt-1">Institutional Node</p></div><div class="text-right"><p class="text-xs mono font-bold text-emerald-400">${d.p}</p></div></div>`;
+            });
+        }
+
+        function setMkt(m) {
+            curMkt = m;
+            document.getElementById('fx-t').classList.toggle('active', m==='fx');
+            document.getElementById('cry-t').classList.toggle('active', m==='crypto');
+            document.getElementById('fx-only').classList.toggle('hidden', m!=='fx');
+            document.getElementById('cry-only').classList.toggle('hidden', m==='fx');
+            const s = document.getElementById('asset-picker');
+            s.innerHTML = (m==='fx' ? fxL : cryL).map(a => `<option value="${a}">${a}</option>`).join('');
+            applyAsset();
+        }
+
+        function applyAsset() {
+            curAsset = document.getElementById('asset-picker').value;
+            document.getElementById('active-asset-label').innerText = curAsset;
+            new TradingView.widget({"autosize": true, "symbol": (curMkt==='fx'?'FX:':'BINANCE:')+curAsset.replace('/',''), "interval": "15", "theme": "dark", "style": "1", "container_id": "tv_area"});
+        }
+
+        function prices() {
+            let base = curAsset.includes('BTC')?62300:curAsset.includes('EUR')?1.0842:191;
+            const s = (base + Math.random()*0.002).toFixed(curAsset.includes('USD')?5:2);
+            document.getElementById('p-s').innerText = s;
+            document.getElementById('p-b').innerText = (parseFloat(s)+0.0001).toFixed(curAsset.includes('USD')?5:2);
+            oArr.forEach(t => { t.pl = (Math.random()*100-40).toFixed(2); t.cur = (parseFloat(t.str)+Math.random()*0.001).toFixed(5); });
+            render();
+        }
+        setInterval(prices, 1500);
+
+        function order(side) {
+            const id = Math.floor(100000+Math.random()*899999)+"XP";
+            const strike = side==='BUY'?document.getElementById('p-b').innerText:document.getElementById('p-s').innerText;
+            oArr.unshift({id, asset:curAsset, side, str:strike, cur:strike, pl:"0.00"});
+            render();
+        }
+
+        function settle(id) {
+            const i = oArr.findIndex(t => t.id === id);
+            const t = oArr.splice(i, 1)[0];
+            t.res = parseFloat(t.pl)>0?"WIN":"LOSS"; 
+            const now = new Date();
+            t.time = now.getFullYear()+"."+(now.getMonth()+1).toString().padStart(2,'0')+"."+now.getDate().toString().padStart(2,'0')+" "+now.toLocaleTimeString();
+            cArr.unshift(t); render();
+        }
+
+        function render() {
+            const b = document.getElementById('l-body'); const h = document.getElementById('l-head'); 
+            const empty = document.getElementById('empty-state'); const table = document.getElementById('ledger-table');
+            b.innerHTML = '';
+            
+            if(curView==='o') {
+                h.innerHTML = '<th class="p-3">ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>Current</th><th>Profit/Loss</th><th>Action</th>';
+                if(oArr.length === 0) { empty.innerText = "No active market positions detected. Execution data will populate here upon order placement."; empty.classList.remove('hidden'); table.classList.add('hidden'); }
+                else { empty.classList.add('hidden'); table.classList.remove('hidden'); oArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5"><td class="p-3 opacity-40">${t.id}</td><td>${t.asset}</td><td class="${t.side==='BUY'?'text-emerald-400':'text-red-400'}">${t.side}</td><td>${t.str}</td><td>${t.cur}</td><td class="${parseFloat(t.pl)>0?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td><button onclick="settle('${t.id}')" class="text-gray-500 hover:text-white">SETTLE</button></td></tr>`); }
+            } else {
+                h.innerHTML = '<th class="p-3">ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>Result P/L</th><th>Time</th><th>Status</th>';
+                if(cArr.length === 0) { empty.innerText = "Realized P/L history is currently empty. Settled transactions will be archived here for your records."; empty.classList.remove('hidden'); table.classList.add('hidden'); }
+                else { empty.classList.add('hidden'); table.classList.remove('hidden'); cArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5 opacity-70"><td class="p-3 opacity-40">${t.id}</td><td>${t.asset}</td><td>${t.side}</td><td>${t.str}</td><td class="${t.res==='WIN'?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td class="text-[9px]">${t.time}</td><td class="font-black ${t.res==='WIN'?'text-emerald-400':'text-red-400'}">${t.res}</td></tr>`); }
+            }
+        }
+
+        function setTab(t) { curView = t; document.getElementById('tab-o').classList.toggle('active', t==='o'); document.getElementById('tab-c').classList.toggle('active', t==='c'); render(); }
+
+        const names = ["Global_Elite", "Satoshi_H", "Elena_FX", "Alpha_Delta", "Market_King", "Tokyo_Trader", "Dubai_Whale"];
+        function addWin() {
+            let u = names[Math.floor(Math.random()*names.length)];
+            if(memory.has(u)) u += Math.floor(Math.random()*99); memory.add(u);
+            const feed = document.getElementById('testimony-feed');
+            const card = document.createElement('div');
+            card.className = "win-notif text-[10px] font-bold";
+            card.innerHTML = `<div class="flex justify-between"><span>${u}</span><span class="text-emerald-400">WIN</span></div><div class="flex justify-between mt-1"><span class="opacity-60">XAU/USD</span><span class="text-emerald-400">+$${(Math.random()*4000+200).toFixed(2)}</span></div>`;
+            if(feed.children.length > 3) feed.removeChild(feed.lastChild); feed.prepend(card);
+            setTimeout(addWin, Math.floor(Math.random()*3000)+5000);
+        }
+
+        window.onload = () => { clock(); initW(); setMkt('fx'); addWin(); render(); };
+    </script>
+</body>
+</html>
