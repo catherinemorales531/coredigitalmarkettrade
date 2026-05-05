@@ -230,37 +230,58 @@
         function clock() { document.getElementById('inst-clock').innerText = new Date().toLocaleString(); }
         setInterval(clock, 1000);
 
-        function switchMobile(tab) {
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('m-active'));
-            document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
-            if (tab === 'analysis') { document.getElementById('panel-analysis').classList.add('m-active'); document.getElementById('panel-chart').classList.add('m-active'); applyAsset(); }
-            else { document.getElementById('panel-' + tab).classList.add('m-active'); }
-            event.currentTarget.classList.add('active');
-        }
+     /* --- MOBILE TAB ENGINE (FIXED) --- */
+function switchMobile(tab) {
+    // 1. Hide all panels
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('m-active'));
+    // 2. Deactivate all buttons
+    document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
+    
+    // 3. Map buttons to correct panels
+    if (tab === 'analysis') {
+        // Analysis tab turns on BOTH the Watchlist and the Chart
+        document.getElementById('panel-analysis').classList.add('m-active');
+        document.getElementById('panel-chart').classList.add('m-active');
+        applyAsset(); // Force TradingView to wake up
+    } else {
+        // Trade tab shows the Engine, Portfolio tab shows the Ledger
+        document.getElementById('panel-' + tab).classList.add('m-active');
+    }
+    
+    // 4. Set the clicked button to blue
+    event.currentTarget.classList.add('active');
+    if(tab === 'portfolio') render(); // Force empty state messages to show
+}
 
-        function initWatch() {
-            const b = document.getElementById('watchlist-feed');
-            fxPool.slice(0,10).forEach(s => {
-                b.innerHTML += `<div class="market-row flex justify-between items-center" onclick="curAsset='${s}';document.getElementById('asset-picker').value='${s}';applyAsset()"><div><p class="text-xs font-black silver-text">${s}</p></div><p class="text-xs mono font-bold text-emerald-400">1.08${Math.floor(Math.random()*900)}</p></div>`;
-            });
-        }
-
-        function setMode(m) {
-            curMkt = m;
-            document.getElementById('fx-t').classList.toggle('active', m==='fx');
-            document.getElementById('cry-t').classList.toggle('active', m==='crypto');
-            document.getElementById('fx-only').classList.toggle('hidden', m!=='fx');
-            document.getElementById('cry-only').classList.toggle('hidden', m==='fx');
-            const s = document.getElementById('asset-picker');
-            s.innerHTML = (m==='fx' ? fxPool : cryPool).map(a => `<option value="${a}">${a}</option>`).join('');
+/* --- FULL MARKET WATCH ENGINE --- */
+function initWatch() {
+    const box = document.getElementById('watchlist-feed');
+    box.innerHTML = ''; // Clear old items
+    
+    // This loops through ALL your assets (Forex and Crypto)
+    const combinedList = [...fxPool.slice(0, 15), ...cryPool.slice(0, 10)];
+    
+    combinedList.forEach(assetSym => {
+        const row = document.createElement('div');
+        row.className = "market-row flex justify-between items-center";
+        // Clicking an item updates the Chart and the Trading Engine instantly
+        row.onclick = () => {
+            curAsset = assetSym;
+            document.getElementById('asset-picker').value = assetSym;
             applyAsset();
-        }
-
-        function applyAsset() {
-            curAsset = document.getElementById('asset-picker').value;
-            document.getElementById('active-asset-label').innerText = curAsset;
-            new TradingView.widget({"autosize": true, "symbol": (curMkt==='fx'?'FX:':'BINANCE:')+curAsset.replace('/',''), "interval": "15", "theme": "dark", "style": "1", "container_id": "tv_area"});
-        }
+        };
+        row.innerHTML = `
+            <div>
+                <p class="text-xs font-black silver-text">${assetSym}</p>
+                <p class="text-[7px] text-gray-600 uppercase tracking-widest">Institutional Node</p>
+            </div>
+            <div class="text-right">
+                <p class="text-xs mono font-bold text-emerald-400">1.${Math.floor(Math.random()*9000)}</p>
+            </div>
+        `;
+        box.appendChild(row);
+    });
+}
 
         function calc() {
             if(curMkt==='fx') document.getElementById('margin-out').value = '$' + (document.getElementById('lots-in').value * 1000).toLocaleString();
