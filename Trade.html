@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Institutional Terminal - Core Digital</title>
+    <title>Institutional Terminal - Core Digital Market Trade</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
     
@@ -21,17 +21,14 @@
             background: var(--shiva-bg);
             background-image: url('https://www.transparenttextures.com/patterns/stardust.png'), var(--shiva-bg);
             background-attachment: fixed;
-            color: white; margin: 0; min-height: 100vh;
+            color: white; margin: 0; height: 100vh; overflow: hidden;
         }
-
-        /* Responsive height logic */
-        @media (min-width: 1025px) { body { height: 100vh; overflow: hidden; } }
 
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .silver-text { color: var(--spark-silver); text-shadow: 0 0 10px rgba(203, 213, 225, 0.3); }
         .mono { font-family: 'JetBrains Mono', monospace; }
 
-        /* ENGINE DNA */
+        /* THE TRADING ENGINE (DASHBOARD DNA) */
         .engine-container { background: var(--engine-teal); border-radius: 14px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
         .trading-toggle { display: flex; background: rgba(0,0,0,0.4); border-radius: 8px; padding: 4px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
         .toggle-btn { flex: 1; padding: 10px; border-radius: 6px; font-size: 11px; font-weight: 900; color: #94a3b8; cursor: pointer; text-align: center; text-transform: uppercase; transition: 0.3s; }
@@ -40,108 +37,87 @@
         .inst-label { font-size: 10px; font-weight: 900; color: #64748b; text-transform: uppercase; margin-bottom: 5px; display: block; }
         .inst-field { width: 100%; background: #cbd5e1 !important; color: #0f172a !important; border: none; padding: 12px; border-radius: 6px; font-weight: 900; font-size: 14px; outline: none; }
 
-        /* PRICES */
-        .p-btn { padding: 15px 5px; border-radius: 4px; text-align: center; transition: 0.2s; border: 1px solid rgba(255,255,255,0.1); }
+        .p-btn { padding: 15px 5px; border-radius: 4px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
         .p-btn-blue { background: #2563eb; } .p-btn-red { background: #dc2626; }
         .p-btn .price { font-family: 'JetBrains Mono'; font-weight: 900; font-size: 18px; }
 
-        .exec-btn { width: 100%; padding: 18px; border-radius: 8px; font-weight: 900; font-size: 18px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.2); }
+        .exec-btn { width: 100%; padding: 18px; border-radius: 8px; font-weight: 900; font-size: 18px; text-transform: uppercase; transition: 0.2s; border: 1px solid rgba(255,255,255,0.2); }
         .buy-main { background: var(--buy-green); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3); }
         .sell-main { background: var(--sell-red); box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3); }
 
-        /* TERMINAL GRID - RESPONSIVE */
-        .terminal-grid { 
-            display: grid; 
-            grid-template-columns: 1fr; 
-            height: auto; 
-            gap: 1px; 
-            background: rgba(255,255,255,0.05); 
-        }
-
-        /* Desktop specific grid */
-        @media (min-width: 1025px) {
-            .terminal-grid { grid-template-columns: 280px 1fr 360px; height: calc(100vh - 70px); }
-        }
-
+        /* GRID SYSTEM (DESKTOP) */
+        .terminal-grid { display: grid; grid-template-columns: 280px 1fr 360px; height: calc(100vh - 70px); gap: 1px; background: rgba(255,255,255,0.05); }
         .panel { background: #070412; overflow-y: auto; display: flex; flex-direction: column; }
-        .hidden { display: none !important; }
 
-        .tab-btn { padding: 12px 15px; font-size: 9px; font-weight: 900; text-transform: uppercase; cursor: pointer; color: #475569; border-bottom: 2px solid transparent; white-space: nowrap; }
+        /* MOBILE TABBED SYSTEM */
+        .mobile-tabs { display: none; background: #000; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .m-tab-btn { flex: 1; padding: 15px; font-size: 10px; font-weight: 900; text-transform: uppercase; text-align: center; color: #64748b; }
+        .m-tab-btn.active { color: #3b82f6; border-bottom: 2px solid #3b82f6; }
+
+        @media (max-width: 1024px) {
+            .terminal-grid { display: block; height: calc(100vh - 120px); overflow-y: auto; }
+            .mobile-tabs { display: flex; }
+            .panel { display: none; width: 100%; height: 100%; }
+            .panel.m-active { display: flex; }
+            .side-hide { display: none; }
+        }
+
+        /* LEDGER */
+        .tab-btn { padding: 12px 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; color: #475569; border-bottom: 2px solid transparent; }
         .tab-btn.active { color: #3b82f6; border-bottom: 2px solid #3b82f6; }
+        .empty-msg { height: 200px; display: flex; align-items: center; justify-content: center; text-align: center; color: #475569; font-weight: 800; font-size: 10px; text-transform: uppercase; padding: 20px; }
 
-        .empty-msg { padding: 40px; text-align: center; color: #475569; font-weight: 800; text-transform: uppercase; font-size: 10px; letter-spacing: 1px; }
-
-        /* TESTIMONY (DASHBOARD STYLE) */
+        /* NOTIFICATIONS */
         .win-notif { animation: fadeInUp 0.6s ease-out; border-left: 4px solid var(--buy-green); background: rgba(16, 185, 129, 0.05); margin-bottom: 10px; padding: 12px; border-radius: 4px; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-        .market-row { border-bottom: 1px solid rgba(255,255,255,0.03); padding: 12px 15px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <!-- TOP HEADER -->
-    <header class="h-[70px] glass flex justify-between items-center px-4 lg:px-6 z-50 border-b border-white/5 sticky top-0">
-        <div class="flex items-center gap-3 lg:gap-6">
-            <span class="silver-text font-black tracking-tighter text-sm lg:text-xl">CORE DIGITAL <span class="text-blue-500 hidden lg:inline">TERMINAL</span></span>
-            <div class="h-6 w-[1px] bg-white/10 hidden lg:block"></div>
-            <div id="inst-clock" class="mono text-[9px] lg:text-xs font-bold text-emerald-400"></div>
+    <header class="h-[70px] glass flex justify-between items-center px-6 z-50 border-b border-white/5">
+        <div class="flex items-center gap-4 lg:gap-6">
+            <span class="silver-text font-black tracking-tighter text-sm lg:text-xl">CORE DIGITAL <span class="text-blue-500">TERMINAL</span></span>
+            <div class="h-6 w-[1px] bg-white/10 side-hide"></div>
+            <div id="inst-clock" class="mono text-[10px] lg:text-xs font-bold text-emerald-400"></div>
         </div>
-        <div class="flex items-center gap-3">
-            <div class="text-right hidden sm:block">
-                <p class="text-[8px] font-bold text-gray-500 uppercase">Equity Balance</p>
-                <p class="silver-text font-black mono text-xs">$ 5,000,000,000.00</p>
+        <div class="flex items-center gap-4">
+            <div class="text-right side-hide">
+                <p class="text-[9px] font-bold text-gray-500 uppercase">Equity Balance</p>
+                <p class="silver-text font-black mono text-sm">$ 5,000,000,000.00</p>
             </div>
-            <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full border-2 border-blue-500 flex items-center justify-center font-black bg-slate-900 text-xs">JD</div>
+            <div class="w-10 h-10 rounded-full border-2 border-blue-500 flex items-center justify-center font-black bg-slate-900">JD</div>
         </div>
     </header>
 
+    <!-- MOBILE TABS NAVIGATION -->
+    <nav class="mobile-tabs">
+        <div class="m-tab-btn active" onclick="switchMobile('analysis')">Analysis</div>
+        <div class="m-tab-btn" onclick="switchMobile('trade')">Trade</div>
+        <div class="m-tab-btn" onclick="switchMobile('portfolio')">Portfolio</div>
+    </nav>
+
     <main class="terminal-grid">
         
-        <!-- ASSET WATCH (Order 3 on Mobile) -->
-        <aside class="panel border-r border-white/5 order-3 lg:order-1">
-            <div class="p-4 border-b border-white/10 bg-white/5 font-black text-[10px] uppercase text-gray-400">Market Watch</div>
+        <!-- LEFT: MARKET WATCH (Included in Analysis on Mobile) -->
+        <aside id="panel-analysis" class="panel m-active border-r border-white/5">
+            <div class="p-3 border-b border-white/10 bg-white/5 font-black text-[10px] uppercase text-gray-400">Market Screener</div>
             <div id="watchlist-feed"></div>
-        </aside>
-
-        <!-- CHART & LEDGER (Order 1 on Mobile) -->
-        <section class="panel order-1 lg:order-2">
-            <div class="p-3 border-b border-white/5 bg-black/20 flex justify-between items-center">
-                <span id="active-asset-label" class="text-sm lg:text-lg font-black silver-text uppercase">EUR / USD</span>
-                <span class="text-[8px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded">LIVE</span>
-            </div>
-
-            <!-- Chart needs height on mobile -->
-            <div class="h-[300px] lg:flex-1 relative bg-black/40">
+            
+            <!-- CENTRAL CHART (Appears in Analysis Tab on Mobile) -->
+            <div class="flex-1 min-h-[300px] border-t border-white/5 bg-black/40">
                 <div id="tv_area" style="height: 100%;"></div>
             </div>
+        </aside>
 
-            <!-- LEDGER TRAY -->
-            <div class="min-h-[250px] lg:h-80 border-t border-white/10 bg-black/95 flex flex-col">
-                <div class="flex bg-white/5 border-b border-white/5 overflow-x-auto">
-                    <div id="tab-o" class="tab-btn active" onclick="setTab('o')">Open Positions</div>
-                    <div id="tab-c" class="tab-btn" onclick="setTab('c')">Closed Trades</div>
-                </div>
-                <div class="flex-1 overflow-auto relative">
-                    <div id="empty-state" class="empty-msg hidden"></div>
-                    <table id="ledger-table" class="w-full text-left min-w-[600px]">
-                        <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-0 bg-black">
-                            <tr id="l-head"></tr>
-                        </thead>
-                        <tbody id="l-body" class="mono text-[10px] lg:text-[11px] font-bold silver-text"></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- EXECUTION ENGINE (Order 2 on Mobile) -->
-        <aside class="panel p-4 lg:p-5 border-l border-white/5 bg-[#0a061a] order-2 lg:order-3">
+        <!-- RIGHT: EXECUTION ENGINE (Trade Tab on Mobile) -->
+        <aside id="panel-trade" class="panel p-5 border-l border-white/5 bg-[#0a061a]">
             <div class="trading-toggle">
-                <div id="fx-t" class="toggle-btn active" onclick="setMkt('fx')">Forex</div>
-                <div id="cry-t" class="toggle-btn" onclick="setMkt('crypto')">Crypto</div>
+                <div id="fx-t" class="toggle-btn active" onclick="setMkt('fx')">Forex Market</div>
+                <div id="cry-t" class="toggle-btn" onclick="setMkt('crypto')">Cryptocurrency</div>
             </div>
 
-            <div class="engine-container space-y-4 lg:space-y-6">
+            <div class="engine-container space-y-6">
                 <div class="grid grid-cols-2 gap-2">
                     <div class="p-btn p-btn-red"><span class="inst-label opacity-60">SELL</span><span class="price" id="p-s">--.----</span></div>
                     <div class="p-btn p-btn-blue"><span class="inst-label opacity-60">BUY</span><span class="price" id="p-b">--.----</span></div>
@@ -167,33 +143,46 @@
                     <div><span class="inst-label">Take Profit</span><input type="text" placeholder="Auto" class="inst-field"></div>
                 </div>
 
-                <div>
-                    <span class="inst-label">Time Interval</span>
-                    <select class="inst-field font-black">
-                        <option>1 min</option><option>3 min</option><option>5 min</option><option>15 min</option>
-                    </select>
-                </div>
+                <div><span class="inst-label">Time Interval</span><select class="inst-field font-black"><option>1 min</option><option>5 min</option></select></div>
 
-                <div class="pt-2 space-y-3">
-                    <button class="exec-btn buy-main" onclick="order('BUY')">Execute Buy</button>
-                    <button class="exec-btn sell-main" onclick="order('SELL')">Execute Sell</button>
+                <div class="pt-4 space-y-3">
+                    <button class="exec-btn buy-main" onclick="order('BUY')">Execute Buy Order</button>
+                    <button class="exec-btn sell-main" onclick="order('SELL')">Execute Sell Order</button>
                 </div>
             </div>
 
-            <!-- CORE DIGITAL NOTIFICATIONS -->
+            <!-- CORE DIGITAL WINNING TRADES -->
             <div class="mt-8 border-t border-white/5 pt-6">
-                <p class="text-[9px] font-black text-gray-600 mb-4 text-center uppercase tracking-widest">Winning Trades Live</p>
+                <p class="text-[10px] font-black text-gray-600 mb-4 text-center uppercase tracking-widest">Winning Trades Live</p>
                 <div id="testimony-feed" class="space-y-2"></div>
             </div>
         </aside>
+
+        <!-- BOTTOM: LEDGER (Portfolio Tab on Mobile) -->
+        <section id="panel-portfolio" class="panel border-t border-white/10 bg-black/95">
+            <div class="flex bg-white/5 border-b border-white/5">
+                <div id="tab-o" class="tab-btn active" onclick="setTab('o')">Open Positions</div>
+                <div id="tab-c" class="tab-btn" onclick="setTab('c')">Closed Trades</div>
+            </div>
+            <div class="flex-1 overflow-auto relative">
+                <div id="empty-state" class="empty-msg hidden"></div>
+                <table id="ledger-table" class="w-full text-left min-w-[700px]">
+                    <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-0 bg-black">
+                        <tr id="l-head"></tr>
+                    </thead>
+                    <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
+                </table>
+            </div>
+        </section>
+
     </main>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let curMkt = 'fx'; let curAsset = 'EUR/USD'; let curView = 'o';
-        let oArr = []; let cArr = []; const memory = new Set();
-        const fxL = ["EUR/USD","AUD/CAD","AUD/JPY","GBP/USD","USD/JPY"];
-        const cryL = ["BTC/USDT","ETH/USDT","SOL/USDT"];
+        let oArr = []; let cArr = [];
+        const fxL = ["EUR/USD","AUD/CAD","AUD/CHF","GBP/USD","USD/JPY","USD/ZAR"];
+        const cryL = ["BTC/USDT","ETH/USDT","SOL/USDT","BCH/BTC"];
 
         function clock() {
             const n = new Date();
@@ -201,10 +190,18 @@
         }
         setInterval(clock, 1000);
 
+        function switchMobile(tab) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('m-active'));
+            document.querySelectorAll('.m-tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('panel-' + tab).classList.add('m-active');
+            event.target.classList.add('active');
+            if(tab === 'analysis') applyAsset();
+        }
+
         function initW() {
             const b = document.getElementById('watchlist-feed');
             [{s:"EUR/USD", p:"1.0842"}, {s:"BTC/USDT", p:"62,391"}, {s:"XAU/USD", p:"2,345"}].forEach(d => {
-                b.innerHTML += `<div class="market-row flex justify-between items-center" onclick="curAsset='${d.s}';document.getElementById('asset-picker').value='${d.s}';applyAsset()"><div><p class="text-xs font-black silver-text">${d.s}</p><p class="text-[7px] text-gray-600 uppercase mt-1">Node Active</p></div><div class="text-right"><p class="text-xs mono font-bold text-emerald-400">${d.p}</p></div></div>`;
+                b.innerHTML += `<div class="p-3 border-b border-white/5 flex justify-between items-center" onclick="curAsset='${d.s}';applyAsset()"><div><p class="text-xs font-black silver-text">${d.s}</p></div><p class="text-xs mono font-bold text-emerald-400">${d.p}</p></div>`;
             });
         }
 
@@ -221,7 +218,6 @@
 
         function applyAsset() {
             curAsset = document.getElementById('asset-picker').value;
-            document.getElementById('active-asset-label').innerText = curAsset;
             new TradingView.widget({"autosize": true, "symbol": (curMkt==='fx'?'FX:':'BINANCE:')+curAsset.replace('/',''), "interval": "15", "theme": "dark", "style": "1", "container_id": "tv_area"});
         }
 
@@ -230,16 +226,16 @@
             const s = (bse + Math.random()*0.002).toFixed(curAsset.includes('USD')?5:2);
             document.getElementById('p-s').innerText = s;
             document.getElementById('p-b').innerText = (parseFloat(s)+0.0001).toFixed(curAsset.includes('USD')?5:2);
-            oArr.forEach(t => { t.pl = (Math.random()*100-40).toFixed(2); t.cur = (parseFloat(t.str)+Math.random()*0.001).toFixed(5); });
+            oArr.forEach(t => { t.pl = (Math.random()*120-40).toFixed(2); t.cur = (parseFloat(t.str)+Math.random()*0.001).toFixed(5); });
             render();
         }
-        setInterval(prices, 1500);
+        setInterval(prices, 1800);
 
         function order(side) {
             const id = Math.floor(100000+Math.random()*899999)+"XP";
             const strike = side==='BUY'?document.getElementById('p-b').innerText:document.getElementById('p-s').innerText;
             oArr.unshift({id, asset:curAsset, side, str:strike, cur:strike, pl:"0.00"});
-            render();
+            render(); alert("Order Executed Successfully");
         }
 
         function settle(id) {
@@ -254,7 +250,7 @@
             const e = document.getElementById('empty-state'); const tbl = document.getElementById('ledger-table');
             b.innerHTML = '';
             if(curView==='o') {
-                h.innerHTML = '<th class="p-3">ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>Market</th><th>P/L</th><th>Action</th>';
+                h.innerHTML = '<th class="p-3">ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>Market</th><th>Live P/L</th><th>Action</th>';
                 if(oArr.length === 0) { e.innerText = "No active market positions detected. Execution data will populate here."; e.classList.remove('hidden'); tbl.classList.add('hidden'); }
                 else { e.classList.add('hidden'); tbl.classList.remove('hidden'); oArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5"><td class="p-3 opacity-40">${t.id}</td><td>${t.asset}</td><td class="${t.side==='BUY'?'text-emerald-400':'text-red-400'}">${t.side}</td><td>${t.str}</td><td>${t.cur}</td><td class="${parseFloat(t.pl)>0?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td><button onclick="settle('${t.id}')" class="text-gray-500">SETTLE</button></td></tr>`); }
             } else {
@@ -266,13 +262,13 @@
 
         function setTab(t) { curView = t; document.getElementById('tab-o').classList.toggle('active', t==='o'); document.getElementById('tab-c').classList.toggle('active', t==='c'); render(); }
 
-        const names = ["Global_Elite", "Satoshi_H", "Elena_FX", "Market_King"];
         function addWin() {
+            const names = ["Global_Elite", "Satoshi_H", "Elena_FX", "Market_King"];
             let u = names[Math.floor(Math.random()*names.length)];
             const feed = document.getElementById('testimony-feed');
             const card = document.createElement('div');
             card.className = "win-notif text-[9px] font-bold";
-            card.innerHTML = `<div class="flex justify-between"><span>${u}</span><span class="text-emerald-400">WIN</span></div><div class="flex justify-between mt-1"><span class="opacity-60">XAU/USD</span><span class="text-emerald-400">+$${(Math.random()*3000+100).toFixed(2)}</span></div>`;
+            card.innerHTML = `<div class="flex justify-between"><span>${u}</span><span class="text-emerald-400">WIN</span></div><div class="flex justify-between mt-1"><span class="opacity-60">BTC/USDT</span><span class="text-emerald-400">+$${(Math.random()*3000+100).toFixed(2)}</span></div>`;
             if(feed.children.length > 2) feed.removeChild(feed.lastChild); feed.prepend(card);
             setTimeout(addWin, 6000);
         }
