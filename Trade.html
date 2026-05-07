@@ -241,11 +241,13 @@
         function clock() { document.getElementById('inst-clock').innerText = new Date().toLocaleString(); }
         setInterval(clock, 1000);
 
-      function switchMobile(tab) {
+     function switchMobile(tab) {
+    // 1. Hide all panels first
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('m-active'));
+    // 2. Deactivate all mobile nav buttons
     document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
     
-    // Map buttons to panels
+    // 3. Map buttons to panels
     if (tab === 'analysis') {
         document.getElementById('panel-analysis').classList.add('m-active');
         document.getElementById('panel-chart').classList.add('m-active');
@@ -254,26 +256,28 @@
         document.getElementById('panel-' + tab).classList.add('m-active');
     }
     
+    // 4. Set the clicked button to blue
     event.currentTarget.classList.add('active');
 
-    // --- GLOBAL NEWS TOGGLE LOGIC ---
-    const ledger = document.getElementById('ledger-container');
-    const tabs = document.getElementById('portfolio-tabs');
+    // --- GLOBAL REAL-TIME NEWS LOGIC ---
     const newsWire = document.getElementById('mobile-news-wire');
+    const ledger = document.getElementById('ledger-container');
+    const portfolioTabs = document.getElementById('portfolio-tabs');
 
     if(tab === 'portfolio' && window.innerWidth <= 1024) {
-        // If on mobile and clicking "News", show the News Wire and hide the Table
-        if(ledger) ledger.classList.add('hidden');
-        if(tabs) tabs.classList.add('hidden');
+        // If on mobile and in the "News" tab, show the News Wire and hide the Table
         if(newsWire) newsWire.classList.remove('hidden');
-        updateNews(); // Trigger real-time fetch
+        if(ledger) ledger.classList.add('hidden');
+        if(portfolioTabs) portfolioTabs.classList.add('hidden');
+        updateNews(); // This triggers the real-time news fetch
     } else {
-        // Otherwise show the standard Portfolio ledger
-        if(ledger) ledger.classList.remove('hidden');
-        if(tabs) tabs.classList.remove('hidden');
+        // If on laptop or in a different tab, ensure news is hidden
         if(newsWire) newsWire.classList.add('hidden');
-        if(tab === 'portfolio') render();
+        if(ledger) ledger.classList.remove('hidden');
+        if(portfolioTabs) portfolioTabs.classList.remove('hidden');
+        if(tab === 'portfolio') render(); // Refresh trades if on laptop
     }
+}
 }
 async function updateNews() {
     const feed = document.getElementById('news-feed-content');
