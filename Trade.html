@@ -128,7 +128,6 @@
     <nav class="mobile-hud">
         <div class="m-hud-btn active" onclick="switchMobile('analysis')">Analysis</div>
         <div class="m-hud-btn" onclick="switchMobile('trade')">Trade</div>
-        <div class="m-hud-btn" onclick="switchMobile('portfolio')">Portfolio</div>
     </nav>
 
     <main class="terminal-grid">
@@ -220,18 +219,7 @@
         function clock() { document.getElementById('inst-clock').innerText = new Date().toLocaleString(); }
         setInterval(clock, 1000);
 
-        function switchMobile(tab) {
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('m-active'));
-            document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
-            if (tab === 'analysis') { 
-                document.getElementById('panel-analysis').classList.add('m-active'); 
-                document.getElementById('panel-chart').classList.add('m-active'); 
-                applyAsset(); 
-            } else { 
-                document.getElementById('panel-' + tab).classList.add('m-active'); 
-            }
-            event.currentTarget.classList.add('active');
-        }
+       
 
         function initWatch() {
             const b = document.getElementById('watchlist-feed'); b.innerHTML = '';
