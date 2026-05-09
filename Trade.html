@@ -171,14 +171,14 @@
     </div>
     <div class="flex-1 overflow-auto relative" id="trade-display-area">
         <div id="empty-state" class="empty-msg"></div>
-        <table id="ledger-table" class="w-full text-left min-w-[750px] hidden">
+     <table id="ledger-table" class="w-full text-left min-w-[950px] hidden">
             <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-0 bg-black"><tr id="l-head"></tr></thead>
             <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
         </table>
     </div>
  </div>
 
-    <div id="panel-intel" class="panel hidden flex-col min-h-[450px] lg:h-80 border-t border-white/10">
+   <div id="panel-intel" class="panel hidden flex-col min-h-[500px] lg:h-80 border-t border-white/10">
     <div class="intel-header-glow p-3 flex justify-between items-center">
         <span class="text-[10px] font-black silver-text uppercase tracking-[0.3em]">Institutional Intel Wire</span>
         <span class="text-[8px] font-bold text-blue-400/50 uppercase mono">World News • FX • Crypto</span>
@@ -263,46 +263,35 @@
         setInterval(clock, 1000);
         
 
-  function switchMobile(tab, element) {
-    // 1. Hide all panels to avoid malfunctioning
-    document.querySelectorAll('.panel').forEach(p => {
-        p.classList.remove('m-active');
-        p.classList.add('hidden');
-        p.style.display = 'none'; 
-    });
+function setTab(t) {
+    curView = t;
+    
+    // 1. Highlight Laptop Buttons
+    if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o');
+    if(document.getElementById('tab-c')) document.getElementById('tab-c').classList.toggle('active', t === 'c');
+    if(document.getElementById('tab-i-laptop')) document.getElementById('tab-i-laptop').classList.toggle('active', t === 'i');
 
-    // 2. Un-highlight all buttons
-    document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
+    const tradeArea = document.getElementById('trade-display-area');
+    const intelArea = document.getElementById('panel-intel');
 
-    if (tab === 'analysis') {
-        // Show Chart + Trade Ledger
-        document.getElementById('panel-analysis').style.display = 'flex';
-        document.getElementById('panel-analysis').classList.remove('hidden');
-        document.getElementById('panel-chart').style.display = 'flex';
-        document.getElementById('panel-chart').classList.remove('hidden');
-        document.getElementById('panel-portfolio').style.display = 'flex';
-        document.getElementById('panel-portfolio').classList.remove('hidden');
-        setTab('o');
-    } else if (tab === 'intel') {
-        // Show ONLY the Independent News Feed
-        const intel = document.getElementById('panel-intel');
-        intel.style.display = 'flex';
-        intel.classList.remove('hidden');
-        intel.classList.add('m-active');
+    if (t === 'i') {
+        // Laptop: Hide trade table, show Intel Panel under the chart
+        if(tradeArea) tradeArea.classList.add('hidden');
+        if(intelArea) {
+            intelArea.classList.remove('hidden');
+            intelArea.style.display = 'flex';
+            intelArea.style.height = "350px"; 
+        }
     } else {
-        // Show Trade sidebar
-        const trade = document.getElementById('panel-trade');
-        trade.style.display = 'flex';
-        trade.classList.remove('hidden');
-        trade.classList.add('m-active');
+        // Laptop: Show trade table, hide Intel Panel
+        if(tradeArea) tradeArea.classList.remove('hidden');
+        if(intelArea) {
+            intelArea.classList.add('hidden');
+            intelArea.style.display = 'none';
+        }
+        render(); 
     }
-
-    // 4. Highlight the button you just clicked
-    if (element) element.classList.add('active');
 }
-
-        
-
 
         function initWatch() {
             const b = document.getElementById('watchlist-feed'); b.innerHTML = '';
@@ -378,37 +367,35 @@ function render() {
     }
 }
 
-
-  function setTab(t) {
+function setTab(t) {
     curView = t;
     
-    // 1. Highlight the correct tab button (Blue underline/background)
+    // 1. Highlight Laptop Buttons
     if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o');
     if(document.getElementById('tab-c')) document.getElementById('tab-c').classList.toggle('active', t === 'c');
     if(document.getElementById('tab-i-laptop')) document.getElementById('tab-i-laptop').classList.toggle('active', t === 'i');
 
-    // 2. Identify the sections to hide or show
-    const ledgerTable = document.getElementById('ledger-table');
-    const emptyMsg = document.getElementById('empty-state');
-    const intelPanel = document.getElementById('panel-intel');
+    const tradeArea = document.getElementById('trade-display-area');
+    const intelArea = document.getElementById('panel-intel');
 
     if (t === 'i') {
-        // HIDE Trade Table and show News
-        if(ledgerTable) ledgerTable.classList.add('hidden');
-        if(emptyMsg) emptyMsg.classList.add('hidden');
-        if(intelPanel) {
-            intelPanel.classList.remove('hidden');
-            intelPanel.style.display = 'flex';
+        // Laptop: Hide trade table, show Intel Panel under the chart
+        if(tradeArea) tradeArea.classList.add('hidden');
+        if(intelArea) {
+            intelArea.classList.remove('hidden');
+            intelArea.style.display = 'flex';
+            intelArea.style.height = "350px"; 
         }
     } else {
-        // SHOW Trade Table and hide News
-        if(intelPanel) {
-            intelPanel.classList.add('hidden');
-            intelPanel.style.display = 'none';
+        // Laptop: Show trade table, hide Intel Panel
+        if(tradeArea) tradeArea.classList.remove('hidden');
+        if(intelArea) {
+            intelArea.classList.add('hidden');
+            intelArea.style.display = 'none';
         }
-        render(); // This redraws the trade list (Open or Closed)
+        render(); 
     }
-}      
+}
         
 
 // This starts all systems when the page loads
