@@ -27,212 +27,216 @@
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .silver-text { color: var(--spark-silver); text-shadow: 0 0 10px rgba(203, 213, 225, 0.3); }
         .mono { font-family: 'JetBrains Mono', monospace; }
-        .text-green-live { color: #10b981; text-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR & PULSE --- */
         #side-nav { position: fixed; top: 0; left: -100%; width: 100%; height: 100vh; background: var(--shiva-bg); background-image: url('https://www.transparenttextures.com/patterns/stardust.png'), var(--shiva-bg); z-index: 99999; transition: 0.5s ease; overflow-y: auto; padding: 20px; }
         #side-nav.active { left: 0; }
         .nav-blog { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; border-bottom: 0.5px solid rgba(203, 213, 225, 0.15); cursor: pointer; color: var(--spark-silver); font-weight: 700; }
         .nav-content { display: flex; align-items: center; gap: 15px; }
         .nav-icon { width: 22px; height: 22px; stroke: var(--spark-silver); fill: none; stroke-width: 1.5; }
-        .sub-menu { display: none; padding-left: 35px; background: rgba(0,0,0,0.2); }
-        .sub-menu.active { display: block; }
-        .sub-item { padding: 10px 0; font-size: 13px; opacity: 0.7; color: var(--spark-silver); }
-
-        /* --- PULSE --- */
         .ammunition-pulse { width: 12px; height: 12px; background: #fff; border-radius: 50%; position: relative; box-shadow: 0 0 10px #3b82f6; }
         .ammunition-pulse::before { content: ''; position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px; border: 2px solid #3b82f6; border-radius: 50%; animation: pulse-ring 2s infinite ease-out; }
         @keyframes pulse-ring { 0% { transform: scale(0.5); opacity: 0; } 50% { opacity: 0.6; } 100% { transform: scale(3); opacity: 0; } }
+        .id-verify-card { background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(30,58,138,0.3)); border: 1px solid rgba(59,130,246,0.4); border-radius: 12px; padding: 18px; display: flex; align-items: center; gap: 15px; margin: 30px 0; }
+        .sub-menu { display: none; padding-left: 35px; background: rgba(0,0,0,0.2); }
+        .sub-menu.active { display: block; }
+        .sub-item { padding: 10px 0; font-size: 13px; opacity: 0.7; color: var(--spark-silver); border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        /* --- GRID --- */
-        .terminal-grid { display: grid; grid-template-columns: 280px 1fr 350px; height: calc(100vh - 70px); gap: 1px; background: rgba(255,255,255,0.05); }
-        .panel { background: #070412; overflow: hidden; display: flex; flex-direction: column; }
-        .watchlist-zone { height: 45%; overflow-y: auto; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .news-zone { height: 55%; overflow-y: auto; background: rgba(0,0,0,0.1); }
+        /* --- ENGINE DNA --- */
+        .engine-container { background: var(--engine-teal); border-radius: 14px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .trading-toggle { display: flex; background: rgba(0,0,0,0.4); border-radius: 8px; padding: 4px; margin-bottom: 20px; }
+        .toggle-btn { flex: 1; padding: 10px; border-radius: 6px; font-size: 11px; font-weight: 900; color: #94a3b8; cursor: pointer; text-align: center; text-transform: uppercase; transition: 0.3s; }
+        .toggle-btn.active { background: rgba(255,255,255,0.1); color: #fff; }
+        .inst-label { font-size: 10px; font-weight: 900; color: #64748b; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        .inst-field { width: 100%; background: #cbd5e1 !important; color: #0f172a !important; border: none; padding: 12px; border-radius: 6px; font-weight: 900; font-size: 13px; outline: none; }
+        .p-btn { padding: 15px 5px; border-radius: 4px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .p-btn .price { font-family: 'JetBrains Mono'; font-weight: 900; font-size: 18px; }
+        .exec-btn { width: 100%; padding: 18px; border-radius: 8px; font-weight: 900; font-size: 20px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.2); transition: 0.2s; }
+
+        /* --- GRID & MOBILE HUD --- */
+        .terminal-grid { display: grid; grid-template-columns: 280px 1fr 360px; height: calc(100vh - 70px); gap: 1px; background: rgba(255,255,255,0.05); }
+        .panel { background: #070412; overflow-y: auto; display: flex; flex-direction: column; }
+        .mobile-hud { display: none; background: #000; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 60; }
+        .m-hud-btn { flex: 1; padding: 15px; font-size: 10px; font-weight: 900; text-transform: uppercase; text-align: center; color: #475569; cursor: pointer; }
+        .m-hud-btn.active { color: #3b82f6; border-bottom: 2px solid #3b82f6; }
 
         @media (max-width: 1024px) {
             .terminal-grid { display: block; height: calc(100vh - 120px); overflow-y: auto; }
-            .panel { display: none; width: 100%; min-height: calc(100vh - 120px); }
-            .panel.m-active { display: flex !important; }
+            .panel { display: none; width: 100%; }
+            .panel.m-active { display: flex !important; min-height: calc(100vh - 120px); }
             #tv_area { height: 450px !important; min-height: 450px; }
             .mobile-hud { display: flex; }
             .side-hide { display: none; }
         }
 
-        /* --- ENGINE --- */
-        .engine-container { background: var(--engine-teal); border-radius: 14px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .inst-label { font-size: 10px; font-weight: 900; color: #64748b; text-transform: uppercase; margin-bottom: 5px; display: block; }
-        .inst-field { width: 100%; background: #cbd5e1 !important; color: #0f172a !important; border: none; padding: 12px; border-radius: 6px; font-weight: 900; font-size: 13px; outline: none; }
-        .p-btn { flex: 1; padding: 15px 5px; border-radius: 4px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
-        .exec-btn { width: 100%; padding: 18px; border-radius: 8px; font-weight: 900; font-size: 18px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.2); transition: 0.2s; }
-        
-        .mobile-hud { display: none; background: #000; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 60; }
-        .m-hud-btn { flex: 1; padding: 15px; font-size: 10px; font-weight: 900; text-transform: uppercase; text-align: center; color: #475569; }
-        .m-hud-btn.active { color: #3b82f6; border-bottom: 2px solid #3b82f6; }
         .tab-btn { padding: 12px 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; color: #475569; border-bottom: 2px solid transparent; }
         .tab-btn.active { color: #3b82f6; border-bottom: 2px solid #3b82f6; background: rgba(59, 130, 246, 0.05); }
         .win-notif { animation: fadeInUp 0.6s ease-out; border-left: 4px solid var(--buy-green); background: rgba(16, 185, 129, 0.05); margin-bottom: 10px; padding: 12px; border-radius: 4px; }
+        .market-row { border-bottom: 1px solid rgba(255,255,255,0.03); padding: 12px 15px; cursor: pointer; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <!-- SIDEBAR -->
+    <!-- 1. FULL SIDEBAR OVERLAY -->
     <div id="side-nav">
         <div onclick="toggleSideMenu()" class="text-3xl text-white opacity-40 mb-6 cursor-pointer w-fit">✕</div>
         <div class="flex items-center gap-5 mb-10">
             <div class="w-14 h-14 rounded-full border-2 border-white/10 p-1 flex items-center justify-center bg-white/5 font-black text-xl">JD</div>
             <div>
-                <h2 class="text-xl font-black silver-text uppercase">JOHN</h2>
-                <div class="flex items-center gap-2 mt-1"><div class="ammunition-pulse"></div><span class="text-[10px] font-bold text-blue-400 uppercase">Live Account</span></div>
+                <h2 class="text-xl font-black silver-text uppercase tracking-tight">JOHN</h2>
+                <div class="flex items-center gap-2 mt-1"><div class="ammunition-pulse"></div><span class="text-[10px] font-bold text-blue-400 tracking-widest uppercase">Live Account</span></div>
             </div>
         </div>
-        <div class="flex flex-col">
-            <div class="nav-blog" onclick="location.href='index.html'"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Dashboard</span></div></div>
-            <div class="nav-blog" onclick="toggleSideMenu()"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M3 8h6M15 13h6"/></svg><span>Trade</span></div></div>
-            <div class="nav-blog" onclick="toggleSub('sub-trans')"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg><span>Transactions ▼</span></div></div>
+
+        <div class="flex flex-col mt-4">
+            <div class="nav-blog" onclick="location.href='index.html'"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg><span>Dashboard</span></div></div>
+            <div class="nav-blog" onclick="toggleSideMenu()"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M3 8h6M15 13h6M3 15h6M15 6h6"></path></svg><span>Trade</span></div></div>
+            <div class="nav-blog" onclick="toggleSub('sub-trans')"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg><span>Transactions</span></div><svg class="nav-icon w-3 h-3" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div>
             <div id="sub-trans" class="sub-menu"><div class="sub-item">Trade History</div><div class="sub-item">Earnings</div></div>
-            <div class="nav-blog" onclick="toggleSub('sub-depo')"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 0 1-2-2"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/></svg><span>Deposit ▼</span></div></div>
+            <div class="nav-blog" onclick="toggleSub('sub-depo')"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"></path><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"></path></svg><span>Deposit</span></div><svg class="nav-icon w-3 h-3" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div>
             <div id="sub-depo" class="sub-menu"><div class="sub-item">Deposit Funds</div><div class="sub-item">Deposit History</div></div>
-            <div class="nav-blog" onclick="toggleSub('sub-with')"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Withdraw ▼</span></div></div>
+            <div class="nav-blog" onclick="toggleSub('sub-with')"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg><span>Withdraw</span></div><svg class="nav-icon w-3 h-3" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div>
             <div id="sub-with" class="sub-menu"><div class="sub-item">Withdrawal Funds</div><div class="sub-item">Withdrawal History</div></div>
-            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><span>Investment Plans</span></div></div>
-            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Copy Experts</span></div></div>
-            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><circle cx="12" cy="12" r="3"/></svg><span>Signals</span></div></div>
-            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="16" y1="11" x2="22" y2="11"/></svg><span>Invite Friends</span></div></div>
-            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 21h18M3 7v14M3 7l9-4 9 4"/></svg><span>Stocks</span></div></div>
-            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg><span>Security & 2FA</span></div></div>
+            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg><span>Investment Plans</span></div></div>
+            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg><span>Copy Experts</span></div></div>
+            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path><circle cx="12" cy="12" r="3"></circle></svg><span>Signals</span></div></div>
+            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="16" y1="11" x2="22" y2="11"></line></svg><span>Invite Friends</span></div></div>
+            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 21h18M3 7v14M21 7v14M3 7l9-4 9 4M10 21V11M14 21V11"></path></svg><span>Stocks</span></div></div>
+            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg><span>Security & 2FA</span></div></div>
         </div>
-        <div class="id-verify-card"><div class="flex items-center gap-3"><svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944"/></svg><div><p class="font-black silver-text text-sm uppercase">Identity Verified</p><p class="text-[10px] font-bold text-blue-300 opacity-70">Lv.1 Active</p></div></div></div>
-        <button class="w-full py-4 border border-white/20 rounded text-center font-bold text-white uppercase text-xs">Log Out</button>
+
+        <div class="id-verify-card">
+            <div class="w-14 h-14 bg-blue-600/20 rounded-xl flex items-center justify-center border border-blue-400/30">
+                <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </div>
+            <div><p class="font-black silver-text text-sm uppercase tracking-wider">Identity Verification</p><p class="text-[10px] font-bold text-blue-300 opacity-70">Lv.1 Verified</p></div>
+        </div>
+        <button class="w-full py-4 border border-white/20 rounded text-center font-bold text-white tracking-widest mt-6 uppercase">Log Out</button>
     </div>
 
-    <!-- HEADER -->
+    <!-- TOP HEADER -->
     <header class="h-[70px] glass flex justify-between items-center px-6 z-50 border-b border-white/5 sticky top-0">
         <div class="flex items-center gap-6">
             <div onclick="toggleSideMenu()" class="flex flex-col gap-1.5 cursor-pointer opacity-60 hover:opacity-100 transition"><div class="w-6 h-0.5 bg-white"></div><div class="w-6 h-0.5 bg-white"></div><div class="w-6 h-0.5 bg-white"></div></div>
             <span class="silver-text font-black tracking-tighter text-sm lg:text-xl uppercase">CORE DIGITAL <span class="text-blue-500">TERMINAL</span></span>
         </div>
-        <div class="flex items-center gap-5">
-            <div id="node-loc" class="text-green-live text-[9px] uppercase side-hide">Detecting Node...</div>
-            <div id="inst-clock" class="text-green-live mono text-[10px] hidden lg:block uppercase tracking-widest"></div>
-            <div class="w-10 h-10 rounded-full border-2 border-blue-500 flex items-center justify-center font-black bg-slate-900 text-xs">JD</div>
-        </div>
+        <div id="inst-clock" class="mono text-[10px] text-emerald-400 hidden lg:block uppercase tracking-widest"></div>
+        <div class="w-10 h-10 rounded-full border-2 border-blue-500 flex items-center justify-center font-black bg-slate-900 text-xs">JD</div>
     </header>
 
     <nav class="mobile-hud">
         <div class="m-hud-btn active" onclick="switchMobile('analysis')">Analysis</div>
         <div class="m-hud-btn" onclick="switchMobile('trade')">Trade</div>
-        <div class="m-hud-btn" onclick="switchMobile('news')">News</div>
+        <div class="m-hud-btn" onclick="switchMobile('portfolio')">Portfolio</div>
     </nav>
 
     <main class="terminal-grid">
-        <!-- LEFT: MARKET WATCH & NEWS -->
+        
+        <!-- LEFT: MARKET WATCH (Analysis Tab Mobile) -->
         <aside id="panel-analysis" class="panel m-active border-r border-white/5">
-            <div class="watchlist-zone">
-                <div class="p-4 border-b border-white/10 bg-white/5 font-black text-[10px] uppercase text-gray-400">Market Watch</div>
-                <div id="watchlist-feed"></div>
-            </div>
-            <div class="news-zone side-hide">
-                <div class="p-4 border-b border-white/10 bg-white/5 font-black text-[10px] uppercase text-gray-400">Intelligence News</div>
-                <div id="laptop-news-feed" class="p-2"></div>
-            </div>
+            <div class="p-4 border-b border-white/10 bg-white/5 font-black text-[10px] uppercase text-gray-400 tracking-widest">Market Watch</div>
+            <div id="watchlist-feed" class="flex-1 overflow-y-auto"></div>
         </aside>
 
-        <!-- CENTER: CHART & LEDGER -->
+        <!-- CENTER: CHART & LEDGER (Analysis/Portfolio Tab Mobile) -->
         <section id="panel-chart" class="panel m-active border-r border-white/5">
             <div class="p-3 border-b border-white/5 bg-black/20 flex justify-between items-center">
-                <span id="active-asset-label" class="text-lg font-black silver-text">EUR / USD</span>
-                <span class="text-[8px] font-bold text-emerald-400 uppercase">Live Node Active</span>
+                <span id="active-asset-label" class="text-sm lg:text-lg font-black silver-text uppercase">EUR / USD</span>
+                <span class="text-[8px] font-bold text-emerald-400 uppercase">Institutional Feed Active</span>
             </div>
             <div class="flex-1 min-h-[400px] relative bg-black/40"><div id="tv_area" style="height: 100%;"></div></div>
+
+            <!-- LEDGER - NOW PLACED UNDER CHART -->
             <div id="panel-portfolio" class="h-80 border-t border-white/10 bg-black/95 flex flex-col">
-                <div class="flex bg-white/5 border-b border-white/5">
+                <div class="flex bg-white/5 border-b border-white/5 overflow-x-auto">
                     <div id="tab-o" class="tab-btn active" onclick="setTab('o')">Open Positions</div>
                     <div id="tab-c" class="tab-btn" onclick="setTab('c')">Closed Trades</div>
                 </div>
                 <div class="flex-1 overflow-auto relative">
                     <div id="empty-state" class="empty-msg hidden"></div>
-                    <div id="ledger-container">
-                        <table id="ledger-table" class="w-full text-left min-w-[750px]"><thead class="text-[9px] text-gray-600 font-black sticky top-0 bg-black"><tr id="l-head"></tr></thead><tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody></table>
-                    </div>
+                    <table id="ledger-table" class="w-full text-left min-w-[750px]">
+                        <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-0 bg-black"><tr id="l-head"></tr></thead>
+                        <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
+                    </table>
                 </div>
             </div>
         </section>
 
-        <!-- RIGHT: ENGINE -->
+        <!-- RIGHT: ENGINE (Trade Tab Mobile) -->
         <aside id="panel-trade" class="panel p-5 bg-[#0a061a]">
             <div class="trading-toggle">
-                <div id="fx-t" class="toggle-btn active" onclick="setMode('fx')">Forex</div>
-                <div id="cry-t" class="toggle-btn" onclick="setMode('crypto')">Crypto</div>
+                <div id="fx-t" class="toggle-btn active" onclick="setMode('fx')">Forex Pairs</div>
+                <div id="cry-t" class="toggle-btn" onclick="setMode('crypto')">Cryptocurrency</div>
             </div>
             <div class="engine-container space-y-6">
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="p-btn p-btn-red" style="background:#dc2626"><span class="inst-label opacity-60">SELL</span><span class="price" id="p-s">--.----</span></div>
-                    <div class="p-btn p-btn-blue" style="background:#2563eb"><span class="inst-label opacity-60">BUY</span><span class="price" id="p-b">--.----</span></div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="p-btn" style="background:#dc2626"><span class="inst-label opacity-60">SELL</span><span class="price" id="p-s">--.----</span></div>
+                    <div class="p-btn" style="background:#2563eb"><span class="inst-label opacity-60">BUY</span><span class="price" id="p-b">--.----</span></div>
                 </div>
-                <div><span class="inst-label">Asset</span><select id="asset-picker" class="inst-field font-black" onchange="applyAsset()"></select></div>
+                <div><span class="inst-label">Institutional Asset</span><select id="asset-picker" class="inst-field font-black" onchange="applyAsset()"></select></div>
                 
                 <div id="fx-only" class="space-y-4">
-                    <div><span class="inst-label">Order Type</span><select class="inst-field font-black"><option>Market Order</option><option>Limit Order</option><option>Stop Order</option></select></div>
+                    <div><span class="inst-label">Order Type</span><select class="inst-field font-black"><option>Market Order</option><option>Limit Order</option><option>Stop Order</option><option>Stop-Limit Order</option></select></div>
                     <div class="grid grid-cols-2 gap-3">
-                        <div><span class="inst-label">Size</span><input type="text" placeholder="0.00" class="inst-field" id="lots-in" oninput="calc()"></div>
-                        <div><span class="inst-label">Margin</span><input type="text" id="margin-out" placeholder="$0.00" class="inst-field" readonly></div>
+                        <div><span class="inst-label">Trade Size</span><input type="text" placeholder="0.00" class="inst-field" id="lots-in" oninput="calc()"></div>
+                        <div><span class="inst-label">Margin Req.</span><input type="text" placeholder="$0.00" class="inst-field" id="margin-out" readonly></div>
                     </div>
-                    <div><span class="inst-label">Duration</span><select class="inst-field font-black"><option>Good ’Til Cancelled</option><option>Day</option><option>Fill or Kill</option></select></div>
+                    <div><span class="inst-label">Duration</span><select class="inst-field font-black"><option>Good ’Til Cancelled</option><option>Day</option><option>Immediate or Cancel</option><option>Fill or Kill (FOK)</option><option>Good ’Til Date (GTD)</option></select></div>
                 </div>
 
                 <div id="cry-only" class="space-y-4 hidden">
-                    <div><span class="inst-label">Order Type</span><select class="inst-field font-black"><option>Limit Order</option><option>Market Order</option></select></div>
+                    <div><span class="inst-label">Order Type</span><select class="inst-field font-black"><option>Limit Order</option><option>Stop Order</option><option>Stop-Limit Order</option><option>Market Order</option></select></div>
                     <div class="grid grid-cols-2 gap-3">
                         <div><span class="inst-label">Amount</span><input type="text" placeholder="0.00" class="inst-field" id="amt-in" oninput="calc()"></div>
-                        <div><span class="inst-label">Total</span><input type="text" id="total-out" placeholder="0.00" class="inst-field" readonly></div>
+                        <div><span class="inst-label">Total USDT</span><input type="text" placeholder="0.00" class="inst-field" id="total-out" readonly></div>
                     </div>
+                    <div><span class="inst-label">Time in Force</span><select class="inst-field font-black"><option>Good ’Til Cancelled (GTC)</option><option>Immediate or Cancel (IOC)</option><option>Fill or Kill (FOK)</option><option>Good ’Til Date (GTD)</option></select></div>
                 </div>
-                <div><span class="inst-label">Interval</span><select class="inst-field font-black"><option>1 min</option><option>5 min</option><option>1 hr</option></select></div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div><span class="inst-label">Stop Loss</span><input type="text" placeholder="Auto" class="inst-field"></div>
+                    <div><span class="inst-label">Take Profit</span><input type="text" placeholder="Auto" class="inst-field"></div>
+                </div>
+
+                <div><span class="inst-label">Interval</span><select class="inst-field font-black"><option>1 min</option><option>3 min</option><option>5 min</option><option>15 min</option><option>30 min</option><option>1 hr</option><option>2 hr</option><option>1 day</option></select></div>
                 <button class="exec-btn buy-main" onclick="order('BUY')">Execute Buy Order</button>
                 <button class="exec-btn sell-main" onclick="order('SELL')">Execute Sell Order</button>
             </div>
             <div id="testimony-feed" class="mt-8 border-t border-white/5 pt-6 space-y-2"></div>
         </aside>
-
-        <!-- HIDDEN NEWS FOR MOBILE TABS -->
-        <aside id="panel-news" class="panel"><div id="news-feed-content" class="p-2 overflow-y-auto"></div></aside>
     </main>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let curMkt = 'fx'; let curAsset = 'EUR/USD'; let curView = 'o';
         let oArr = []; let cArr = []; const memory = new Set();
-        const fxPool = ["EUR/USD","AUD/CAD","AUD/CHF","AUD/JPY","AUD/NZD","GBP/USD","USD/JPY","USD/ZAR","USD/CAD","CAD/CHF","EUR/GBP"];
-        const cryPool = ["BTC/USDT","PCP-BTC","REP/USD","XRP/BTC","ETH/USD","LTC/BTC"];
+
+        const fxPool = ["EUR/USD","AUD/CAD","AUD/CHF","AUD/JPY","AUD/NZD","AUD/SGD","AUD/USD","CAD/CHF","CAD/JPY","CAD/SGD","CHF/JPY","CHF/SGD","EUR/AUD","EUR/CAD","EUR/CHF","EUR/DKK","EUR/GBP","EUR/HUF","EUR/JPY","EUR/NOK","EUR/NZD","EUR/PLN","EUR/SEK","EUR/TRY","GBP/AUD","GBP/CAD","GBP/CHF","GBP/JPY","GBP/NOK","GBP/NZD","GBP/SEK","GBP/TRY","GBP/USD","JPY/TRY","JPY/ZAR","NZD/CAD","NZD/CHF","NZD/JPY","NZD/SGD","NZD/USD","SGD/CHF","USD/CAD","USD/CHF","USD/CNY","USD/DKK","USD/HKD","USD/IDR","USD/INR","USD/JPY","USD/MXN","USD/NOK","USD/PLN","USD/SEK","USD/SGD","USD/THB","USD/TRY","USD/ZAR"];
+        const cryPool = ["BTC/USDT","PCP-BTC","REP/BTC","REP/USD","TXR/GBP","XLM/BTC","XLM/EUR","XLM/USD","XRP/BTC","XRP/EUR","XRP/USD","ZEC/BTC","ZRX/BTC","ZRX/EUR","ZRX/USD","ETC/USD","ETH/BTC","ETH/EUR","ETH/GBP","ETH/USD","LTC/BTC","LTC/EUR","LTC/GBP","LTC/USD","MKR/BTC","BCH/BTC","BCH/EUR","BCH/GBP","BTC/EOS","BTC/EUR","BTC/GBP","BTC/USD","BTC/USDC","EOS/BTC","EOS/EUR","EOS/USD","ETC/BTC","ETC/EUR","ETC/GBP"];
 
         function toggleSideMenu() { document.getElementById('side-nav').classList.toggle('active'); }
         function toggleSub(id) { document.getElementById(id).classList.toggle('active'); }
         function clock() { document.getElementById('inst-clock').innerText = new Date().toLocaleString(); }
         setInterval(clock, 1000);
 
-        async function detectNode() {
-            try {
-                const res = await fetch('https://ipapi.co/json/');
-                const d = await res.json();
-                document.getElementById('node-loc').innerText = `NODE: ${d.country_name} (${d.ip})`;
-            } catch (e) { document.getElementById('node-loc').innerText = "NODE: SECURE GATEWAY"; }
-        }
-
         function switchMobile(tab) {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('m-active'));
             document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
-            const id = 'panel-' + tab;
-            document.getElementById(id).classList.add('m-active');
-            if (tab === 'analysis') { document.getElementById('panel-chart').classList.add('m-active'); applyAsset(); }
-            if (tab === 'news') updateNews('news-feed-content');
+            if (tab === 'analysis') { 
+                document.getElementById('panel-analysis').classList.add('m-active'); 
+                document.getElementById('panel-chart').classList.add('m-active'); 
+                applyAsset(); 
+            } else { 
+                document.getElementById('panel-' + tab).classList.add('m-active'); 
+            }
             event.currentTarget.classList.add('active');
         }
 
         function initWatch() {
             const b = document.getElementById('watchlist-feed'); b.innerHTML = '';
-            [...fxPool, ...cryPool].forEach(s => {
+            const list = [...fxPool.slice(0,30), ...cryPool.slice(0,10)];
+            list.forEach(s => {
                 b.innerHTML += `<div class="market-row flex justify-between items-center" onclick="curAsset='${s}';document.getElementById('asset-picker').value='${s}';applyAsset()"><div><p class="text-xs font-black silver-text">${s}</p></div><p class="text-xs mono font-bold text-emerald-400">1.${Math.floor(Math.random()*9000)}</p></div>`;
             });
         }
@@ -243,7 +247,8 @@
             document.getElementById('cry-t').classList.toggle('active', m==='crypto');
             document.getElementById('fx-only').classList.toggle('hidden', m!=='fx');
             document.getElementById('cry-only').classList.toggle('hidden', m==='fx');
-            document.getElementById('asset-picker').innerHTML = (m==='fx' ? fxPool : cryPool).map(a => `<option value="${a}">${a}</option>`).join('');
+            const s = document.getElementById('asset-picker');
+            s.innerHTML = (m==='fx' ? fxPool : cryPool).map(a => `<option value="${a}">${a}</option>`).join('');
             applyAsset();
         }
 
@@ -268,21 +273,9 @@
         }
         setInterval(updatePrices, 1500);
 
-        async function updateNews(targetId) {
-            const feed = document.getElementById(targetId); if(!feed) return;
-            try {
-                const response = await fetch('https://min-api.cryptocompare.com/data/v2/news/?lang=EN');
-                const data = await response.json(); feed.innerHTML = ''; 
-                data.Data.slice(0, 15).forEach((item, index) => {
-                    let day = index < 3 ? "Today" : index < 6 ? "1 day ago" : "2 days ago";
-                    feed.innerHTML += `<div class="market-row p-4 border-b border-white/5"><span class="text-[8px] font-black text-blue-500 uppercase bg-blue-500/10 px-1.5 rounded">${item.source}</span><span class="text-[8px] text-gray-500">${day}</span><p class="text-xs font-bold silver-text mt-1 leading-snug">${item.title}</p></div>`;
-                });
-            } catch (e) { feed.innerHTML = '<p class="empty-msg">Intelligence Syncing...</p>'; }
-        }
-
         function order(side) {
             oArr.unshift({id: Math.floor(100000+Math.random()*899999)+"XP", asset:curAsset, side, str:document.getElementById('p-b').innerText, cur:document.getElementById('p-b').innerText, pl:"0.00"});
-            render(); alert("Order Successful");
+            render(); alert("Execution Succesful");
         }
 
         function settle(id) {
@@ -297,18 +290,29 @@
             b.innerHTML = '';
             if(curView==='o') {
                 h.innerHTML = '<th class="p-3">ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>Market</th><th>Live P/L</th><th>Action</th>';
-                if(oArr.length === 0) { e.innerText = "No active market positions detected. Execution data will populate here."; e.classList.remove('hidden'); tbl.classList.add('hidden'); }
-                else { e.classList.add('hidden'); tbl.classList.remove('hidden'); oArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5"><td class="p-3 opacity-40">${t.id}</td><td>${t.asset}</td><td class="${t.side==='BUY'?'text-emerald-400':'text-red-400'}">${t.side}</td><td>${t.str}</td><td>${t.cur}</td><td>$${t.pl}</td><td><button onclick="settle('${t.id}')" class="text-gray-500">SETTLE</button></td></tr>`); }
-            } else if (curView === 'c') {
+                if(oArr.length === 0) { e.innerText = "No active market positions detected. Execution data will populate here upon order placement."; e.classList.remove('hidden'); tbl.classList.add('hidden'); }
+                else { e.classList.add('hidden'); tbl.classList.remove('hidden'); oArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5"><td class="p-3 opacity-40">${t.id}</td><td>${t.asset}</td><td class="${t.side==='BUY'?'text-emerald-400':'text-red-400'}">${t.side}</td><td>${t.str}</td><td>${t.cur}</td><td class="${parseFloat(t.pl)>0?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td><button onclick="settle('${t.id}')" class="text-gray-500">SETTLE</button></td></tr>`); }
+            } else {
                 h.innerHTML = '<th class="p-3">ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>Result P/L</th><th>Time</th><th>Status</th>';
-                if(cArr.length === 0) { e.innerText = "Realized P/L history is currently empty."; e.classList.remove('hidden'); tbl.classList.add('hidden'); }
-                else { e.classList.add('hidden'); tbl.classList.remove('hidden'); cArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5 opacity-70"><td class="p-3 opacity-40">${t.id}</td><td>${t.asset}</td><td>${t.side}</td><td>${t.str}</td><td>$${t.pl}</td><td class="text-[9px]">${t.time}</td><td class="font-black ${t.res==='WIN'?'text-emerald-400':'text-red-400'}">${t.res}</td></tr>`); }
+                if(cArr.length === 0) { e.innerText = "Realized P/L history is currently empty. Settled transactions will be archived here for your records."; e.classList.remove('hidden'); tbl.classList.add('hidden'); }
+                else { e.classList.add('hidden'); tbl.classList.remove('hidden'); cArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5 opacity-70"><td class="p-3 opacity-40">${t.id}</td><td>${t.asset}</td><td>${t.side}</td><td>${t.str}</td><td class="${t.res==='WIN'?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td class="text-[9px]">${t.time}</td><td class="font-black ${t.res==='WIN'?'text-emerald-400':'text-red-400'}">${t.res}</td></tr>`); }
             }
         }
 
         function setTab(t) { curView = t; document.getElementById('tab-o').classList.toggle('active', t==='o'); document.getElementById('tab-c').classList.toggle('active', t==='c'); render(); }
 
-        window.onload = () => { clock(); initWatch(); setMode('fx'); render(); detectNode(); updateNews('laptop-news-feed'); };
+        const names = ["Global_Elite", "Satoshi_H", "Elena_FX", "Alpha_Delta", "Market_King"];
+        function addWin() {
+            let u = names[Math.floor(Math.random()*names.length)];
+            const feed = document.getElementById('testimony-feed');
+            const card = document.createElement('div');
+            card.className = "win-notif text-[10px] font-bold";
+            card.innerHTML = `<div class="flex justify-between"><span>${u}</span><span class="text-emerald-400">WIN</span></div><div class="flex justify-between mt-1"><span class="opacity-60">Asset Trade</span><span class="text-emerald-400">+$${(Math.random()*3000+100).toFixed(2)}</span></div>`;
+            if(feed.children.length > 2) feed.removeChild(feed.lastChild); feed.prepend(card);
+            setTimeout(addWin, 6000);
+        }
+
+        window.onload = () => { clock(); initWatch(); setMode('fx'); addWin(); render(); };
     </script>
 </body>
 </html>
