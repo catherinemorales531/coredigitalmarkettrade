@@ -143,7 +143,7 @@
     <nav class="mobile-hud">
         <div class="m-hud-btn active" onclick="switchMobile('analysis')">Analysis</div>
         <div class="m-hud-btn" onclick="switchMobile('trade')">Trade</div>
-       <div class="m-hud-btn" onclick="switchMobile('portfolio')">MARKET INTEL</div>
+       <div class="m-hud-btn" onclick="switchMobile('intel')">MARKET INTEL</div>
     </nav>
 
     <main class="terminal-grid">
@@ -264,36 +264,43 @@
         setInterval(clock, 1000);
         
 
-       function switchMobile(tab) {
+  function switchMobile(tab, element) {
     // 1. Hide all panels to avoid malfunctioning
     document.querySelectorAll('.panel').forEach(p => {
         p.classList.remove('m-active');
         p.classList.add('hidden');
+        p.style.display = 'none'; 
     });
+
+    // 2. Un-highlight all buttons
     document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
 
     if (tab === 'analysis') {
         // Show Chart + Trade Ledger
+        document.getElementById('panel-analysis').style.display = 'flex';
         document.getElementById('panel-analysis').classList.remove('hidden');
-        document.getElementById('panel-analysis').classList.add('m-active');
+        document.getElementById('panel-chart').style.display = 'flex';
         document.getElementById('panel-chart').classList.remove('hidden');
-        document.getElementById('panel-chart').classList.add('m-active');
+        document.getElementById('panel-portfolio').style.display = 'flex';
         document.getElementById('panel-portfolio').classList.remove('hidden');
-        document.getElementById('panel-portfolio').classList.add('m-active');
-        setTab('o'); 
+        setTab('o');
     } else if (tab === 'intel') {
         // Show ONLY the Independent News Feed
         const intel = document.getElementById('panel-intel');
+        intel.style.display = 'flex';
         intel.classList.remove('hidden');
         intel.classList.add('m-active');
-        intel.style.display = 'flex';
     } else {
         // Show Trade sidebar
-        document.getElementById('panel-trade').classList.remove('hidden');
-        document.getElementById('panel-trade').classList.add('m-active');
+        const trade = document.getElementById('panel-trade');
+        trade.style.display = 'flex';
+        trade.classList.remove('hidden');
+        trade.classList.add('m-active');
     }
-    if (event && event.currentTarget) event.currentTarget.classList.add('active');
-} 
+
+    // 4. Highlight the button you just clicked
+    if (element) element.classList.add('active');
+}
 
         
 
