@@ -74,6 +74,11 @@
         .win-notif { animation: fadeInUp 0.6s ease-out; border-left: 4px solid var(--buy-green); background: rgba(16, 185, 129, 0.05); margin-bottom: 10px; padding: 12px; border-radius: 4px; }
         .market-row { border-bottom: 1px solid rgba(255,255,255,0.03); padding: 12px 15px; cursor: pointer; }
         .hidden { display: none !important; }
+
+#news-wire-container { position: relative; height: 100%; width: 100%; overflow: hidden; }
+.news-shield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 99; cursor: default; }
+#news-wire-container iframe { pointer-events: none !important; }
+        
     </style>
 </head>
 <body>
@@ -128,7 +133,7 @@
     <nav class="mobile-hud">
         <div class="m-hud-btn active" onclick="switchMobile('analysis')">Analysis</div>
         <div class="m-hud-btn" onclick="switchMobile('trade')">Trade</div>
-        <div class="m-hud-btn" onclick="switchMobile('portfolio')">Portfolio</div>
+       <div class="m-hud-btn" onclick="switchMobile('portfolio')">MARKET INTEL</div>
     </nav>
 
     <main class="terminal-grid">
@@ -150,15 +155,38 @@
             <!-- LEDGER - NOW PLACED UNDER CHART -->
             <div id="panel-portfolio" class="h-80 border-t border-white/10 bg-black/95 flex flex-col">
                 <div class="flex bg-white/5 border-b border-white/5 overflow-x-auto">
-                    <div id="tab-o" class="tab-btn active" onclick="setTab('o')">Open Positions</div>
-                    <div id="tab-c" class="tab-btn" onclick="setTab('c')">Closed Trades</div>
+          <div id="tab-o" class="tab-btn active" onclick="setTab('o')">Open Positions</div>
+<div id="tab-c" class="tab-btn" onclick="setTab('c')">Closed Trades</div>
+<div id="tab-i" class="tab-btn" onclick="setTab('i')">MARKET INTEL</div>
                 </div>
-                <div class="flex-1 overflow-auto relative">
-                    <div id="empty-state" class="empty-msg hidden"></div>
-                    <table id="ledger-table" class="w-full text-left min-w-[750px]">
-                        <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-0 bg-black"><tr id="l-head"></tr></thead>
-                        <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
-                    </table>
+                
+              <!-- TRADES AREA -->
+    <div id="trade-display-area">
+        <div id="empty-state" class="empty-msg hidden"></div>
+        <table id="ledger-table" class="w-full text-left min-w-[750px]">
+            <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-0 bg-black"><tr id="l-head"></tr></thead>
+            <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
+        </table>
+    </div>
+
+    <!-- MARKET INTEL AREA (Hidden by default) -->
+    <div id="intel-display-area" class="hidden h-full w-full">
+        <div class="news-shield" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; cursor: default;"></div>
+        <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+            {
+                "feedMode": "all_symbols",
+                "isTransparent": true,
+                "displayMode": "regular",
+                "width": "100%",
+                "height": "100%",
+                "colorTheme": "dark",
+                "locale": "en"
+            }
+            </script>
+        </div>
+    </div>
                 </div>
             </div>
         </section>
@@ -219,19 +247,29 @@
         function toggleSub(id) { document.getElementById(id).classList.toggle('active'); }
         function clock() { document.getElementById('inst-clock').innerText = new Date().toLocaleString(); }
         setInterval(clock, 1000);
-
-        function switchMobile(tab) {
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('m-active'));
-            document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
-            if (tab === 'analysis') { 
-                document.getElementById('panel-analysis').classList.add('m-active'); 
-                document.getElementById('panel-chart').classList.add('m-active'); 
-                applyAsset(); 
-            } else { 
-                document.getElementById('panel-' + tab).classList.add('m-active'); 
-            }
-            event.currentTarget.classList.add('active');
+        
+function switchMobile(tab) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('m-active'));
+    document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
+    
+    if (tab === 'analysis') { 
+        document.getElementById('panel-analysis').classList.add('m-active'); 
+        document.getElementById('panel-chart').classList.add('m-active'); 
+        applyAsset(); 
+    } else { 
+        document.getElementById('panel-' + tab).classList.add('m-active'); 
+        
+        // SPECIAL FIX: If the mobile user clicks Market Intel (portfolio), 
+        // make sure it specifically shows the News Feed.
+        if (tab === 'portfolio') {
+            setTab('i'); 
         }
+    }
+    
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
+}
 
         function initWatch() {
             const b = document.getElementById('watchlist-feed'); b.innerHTML = '';
@@ -299,7 +337,28 @@
             }
         }
 
-        function setTab(t) { curView = t; document.getElementById('tab-o').classList.toggle('active', t==='o'); document.getElementById('tab-c').classList.toggle('active', t==='c'); render(); }
+    function setTab(t) { 
+    curView = t; 
+    
+    // Update button highlighting
+    if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o'); 
+    if(document.getElementById('tab-c')) document.getElementById('tab-c').classList.toggle('active', t === 'c');
+    if(document.getElementById('tab-i')) document.getElementById('tab-i').classList.toggle('active', t === 'i');
+
+    const tradeArea = document.getElementById('trade-display-area');
+    const intelArea = document.getElementById('intel-display-area');
+
+    if (t === 'i') {
+        // Show the News Feed, hide the Trade Table
+        if(tradeArea) tradeArea.classList.add('hidden');
+        if(intelArea) intelArea.classList.remove('hidden');
+    } else {
+        // Show the Trade Table, hide the News Feed
+        if(tradeArea) tradeArea.classList.remove('hidden');
+        if(intelArea) intelArea.classList.add('hidden');
+        render(); 
+    }
+}
 
         const names = ["Global_Elite", "Satoshi_H", "Elena_FX", "Alpha_Delta", "Market_King"];
         function addWin() {
