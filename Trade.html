@@ -78,6 +78,16 @@
 #news-wire-container { position: relative; height: 100%; width: 100%; overflow: hidden; }
 .news-shield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 99; cursor: default; }
 #news-wire-container iframe { pointer-events: none !important; }
+
+    /* MARKET INTEL INDEPENDENT DESIGN */
+#panel-intel { background: transparent !important; backdrop-filter: blur(10px); }
+.intel-header-glow { background: rgba(59, 130, 246, 0.05); border-left: 4px solid #3b82f6; margin-bottom: 2px; }
+.news-click-shield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; background: transparent; } 
+
+        .empty-msg { 
+    color: #94a3b8; font-size: 11px; font-weight: 800; text-align: center; 
+    padding: 60px 20px; text-transform: uppercase; letter-spacing: 0.1em; line-height: 1.6;
+}
         
     </style>
 </head>
@@ -152,26 +162,30 @@
             </div>
             <div class="flex-1 min-h-[400px] relative bg-black/40"><div id="tv_area" style="height: 100%;"></div></div>
 
-            <!-- LEDGER - NOW PLACED UNDER CHART -->
-            <div id="panel-portfolio" class="h-80 border-t border-white/10 bg-black/95 flex flex-col">
-                <div class="flex bg-white/5 border-b border-white/5 overflow-x-auto">
-          <div id="tab-o" class="tab-btn active" onclick="setTab('o')">Open Positions</div>
-<div id="tab-c" class="tab-btn" onclick="setTab('c')">Closed Trades</div>
-<div id="tab-i" class="tab-btn" onclick="setTab('i')">MARKET INTEL</div>
-                </div>
-                
-              <!-- TRADES AREA -->
-    <div id="trade-display-area">
-        <div id="empty-state" class="empty-msg hidden"></div>
-        <table id="ledger-table" class="w-full text-left min-w-[750px]">
+<!-- ENGINE 1: TRADING LEDGER (Open/Closed Trades) -->
+<div id="panel-portfolio" class="panel m-active h-80 border-t border-white/10 bg-black/40 flex flex-col">
+    <div class="flex bg-white/5 border-b border-white/5 overflow-x-auto">
+        <div id="tab-o" class="tab-btn active" onclick="setTab('o')">Open Positions</div>
+        <div id="tab-c" class="tab-btn" onclick="setTab('c')">Closed Trades</div>
+        <div id="tab-i-laptop" class="tab-btn lg:block hidden" onclick="setTab('i')">Market Intel</div>
+    </div>
+    <div class="flex-1 overflow-auto relative" id="trade-display-area">
+        <div id="empty-state" class="empty-msg"></div>
+        <table id="ledger-table" class="w-full text-left min-w-[750px] hidden">
             <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-0 bg-black"><tr id="l-head"></tr></thead>
             <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
         </table>
     </div>
+</div>
 
-    <!-- MARKET INTEL AREA (Hidden by default) -->
-    <div id="intel-display-area" class="hidden h-full w-full">
-        <div class="news-shield" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; cursor: default;"></div>
+<!-- ENGINE 2: INDEPENDENT MARKET INTEL (News Feed) -->
+<div id="panel-intel" class="panel hidden flex-col h-full lg:h-80 border-t border-white/10">
+    <div class="intel-header-glow p-3 flex justify-between items-center">
+        <span class="text-[10px] font-black silver-text uppercase tracking-[0.3em]">Institutional Intel Wire</span>
+        <span class="text-[8px] font-bold text-blue-400/50 uppercase mono">World News • FX • Crypto</span>
+    </div>
+    <div id="intel-engine-core" class="flex-1 relative overflow-y-auto">
+        <div class="news-click-shield"></div> <!-- BLOCKS CLICKS -->
         <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
             <div class="tradingview-widget-container__widget"></div>
             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
@@ -187,8 +201,9 @@
             </script>
         </div>
     </div>
-                </div>
-            </div>
+</div>
+            
+          
         </section>
 
         <!-- RIGHT: ENGINE (Trade Tab Mobile) -->
@@ -248,27 +263,39 @@
         function clock() { document.getElementById('inst-clock').innerText = new Date().toLocaleString(); }
         setInterval(clock, 1000);
         
-function switchMobile(tab) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('m-active'));
+
+       function switchMobile(tab) {
+    // 1. Hide all panels to avoid malfunctioning
+    document.querySelectorAll('.panel').forEach(p => {
+        p.classList.remove('m-active');
+        p.classList.add('hidden');
+    });
     document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
-    
-    if (tab === 'analysis') { 
-        document.getElementById('panel-analysis').classList.add('m-active'); 
-        document.getElementById('panel-chart').classList.add('m-active'); 
-        applyAsset(); 
-    } else { 
-        document.getElementById('panel-' + tab).classList.add('m-active'); 
+
+    if (tab === 'analysis') {
+        // Show Chart + Trade Ledger
+        document.getElementById('panel-analysis').classList.remove('hidden');
+        document.getElementById('panel-analysis').classList.add('m-active');
+        document.getElementById('panel-chart').classList.remove('hidden');
+        document.getElementById('panel-chart').classList.add('m-active');
+        document.getElementById('panel-portfolio').classList.remove('hidden');
+        document.getElementById('panel-portfolio').classList.add('m-active');
+        setTab('o'); 
+    } else if (tab === 'intel') {
+        // Show ONLY the Independent News Feed
+        const intel = document.getElementById('panel-intel');
+        intel.classList.remove('hidden');
+        intel.classList.add('m-active');
+        intel.style.display = 'flex';
+    } else {
+        // Show Trade sidebar
+        document.getElementById('panel-trade').classList.remove('hidden');
+        document.getElementById('panel-trade').classList.add('m-active');
+    }
+    if (event && event.currentTarget) event.currentTarget.classList.add('active');
+} 
+
         
-        // SPECIAL FIX: If the mobile user clicks Market Intel (portfolio), 
-        // make sure it specifically shows the News Feed.
-        if (tab === 'portfolio') {
-            setTab('i'); 
-        }
-    }
-    
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
-    }
 }
 
         function initWatch() {
@@ -321,57 +348,68 @@ function switchMobile(tab) {
             t.res = parseFloat(t.pl)>0?"WIN":"LOSS"; t.time = new Date().toLocaleString();
             cArr.unshift(t); render();
         }
+        
+function render() {
+    const b = document.getElementById('l-body'); 
+    const h = document.getElementById('l-head'); 
+    const e = document.getElementById('empty-state'); 
+    const tbl = document.getElementById('ledger-table');
+    if (!b || !e) return;
+    b.innerHTML = '';
 
-        function render() {
-            const b = document.getElementById('l-body'); const h = document.getElementById('l-head'); 
-            const e = document.getElementById('empty-state'); const tbl = document.getElementById('ledger-table');
-            b.innerHTML = '';
-            if(curView==='o') {
-                h.innerHTML = '<th class="p-3">ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>Market</th><th>Live P/L</th><th>Action</th>';
-                if(oArr.length === 0) { e.innerText = "No active market positions detected. Execution data will populate here upon order placement."; e.classList.remove('hidden'); tbl.classList.add('hidden'); }
-                else { e.classList.add('hidden'); tbl.classList.remove('hidden'); oArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5"><td class="p-3 opacity-40">${t.id}</td><td>${t.asset}</td><td class="${t.side==='BUY'?'text-emerald-400':'text-red-400'}">${t.side}</td><td>${t.str}</td><td>${t.cur}</td><td class="${parseFloat(t.pl)>0?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td><button onclick="settle('${t.id}')" class="text-gray-500">SETTLE</button></td></tr>`); }
-            } else {
-                h.innerHTML = '<th class="p-3">ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>Result P/L</th><th>Time</th><th>Status</th>';
-                if(cArr.length === 0) { e.innerText = "Realized P/L history is currently empty. Settled transactions will be archived here for your records."; e.classList.remove('hidden'); tbl.classList.add('hidden'); }
-                else { e.classList.add('hidden'); tbl.classList.remove('hidden'); cArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5 opacity-70"><td class="p-3 opacity-40">${t.id}</td><td>${t.asset}</td><td>${t.side}</td><td>${t.str}</td><td class="${t.res==='WIN'?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td class="text-[9px]">${t.time}</td><td class="font-black ${t.res==='WIN'?'text-emerald-400':'text-red-400'}">${t.res}</td></tr>`); }
-            }
-        }
+    if(curView === 'o') {
+        h.innerHTML = '<th class="p-3">ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>Market</th><th>Live P/L</th><th>Action</th>';
+        if(oArr.length === 0) { 
+            e.innerText = "No active market positions detected. Execution data will populate here upon order placement."; 
+            e.classList.remove('hidden'); tbl.classList.add('hidden'); 
+        } else { e.classList.add('hidden'); tbl.classList.remove('hidden'); oArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5"><td class="p-3 opacity-40">${t.id}</td><td>${t.asset}</td><td class="${t.side==='BUY'?'text-emerald-400':'text-red-400'}">${t.side}</td><td>${t.str}</td><td>${t.cur}</td><td class="${parseFloat(t.pl)>0?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td><button onclick="settle('${t.id}')" class="text-gray-500">SETTLE</button></td></tr>`); }
+    } else if(curView === 'c') {
+        h.innerHTML = '<th class="p-3">ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>Result P/L</th><th>Time</th><th>Status</th>';
+        if(cArr.length === 0) { 
+            e.innerText = "Realized P/L history is currently empty. Settled transactions will be archived here for your records."; 
+            e.classList.remove('hidden'); tbl.classList.add('hidden'); 
+        } else { e.classList.add('hidden'); tbl.classList.remove('hidden'); cArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5 opacity-70"><td class="p-3 opacity-40">${t.id}</td><td>${t.asset}</td><td>${t.side}</td><td>${t.str}</td><td class="${t.res==='WIN'?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td class="text-[9px]">${t.time}</td><td class="font-black ${t.res==='WIN'?'text-emerald-400':'text-red-400'}">${t.res}</td></tr>`); }
+    }
+}
 
-    function setTab(t) { 
-    curView = t; 
-    
-    // Update button highlighting
-    if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o'); 
+function setTab(t) {
+    curView = t;
+    // Highlight Laptop Buttons
+    if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o');
     if(document.getElementById('tab-c')) document.getElementById('tab-c').classList.toggle('active', t === 'c');
-    if(document.getElementById('tab-i')) document.getElementById('tab-i').classList.toggle('active', t === 'i');
+    if(document.getElementById('tab-i-laptop')) document.getElementById('tab-i-laptop').classList.toggle('active', t === 'i');
 
     const tradeArea = document.getElementById('trade-display-area');
-    const intelArea = document.getElementById('intel-display-area');
+    const intelArea = document.getElementById('panel-intel');
 
     if (t === 'i') {
-        // Show the News Feed, hide the Trade Table
+        // Laptop: Hide trade table, show Intel Panel under the chart
         if(tradeArea) tradeArea.classList.add('hidden');
-        if(intelArea) intelArea.classList.remove('hidden');
+        if(intelArea) {
+            intelArea.classList.remove('hidden');
+            intelArea.classList.add('flex');
+            intelArea.style.height = "320px"; 
+        }
     } else {
-        // Show the Trade Table, hide the News Feed
+        // Laptop: Show trade table, hide Intel Panel
         if(tradeArea) tradeArea.classList.remove('hidden');
-        if(intelArea) intelArea.classList.add('hidden');
+        if(intelArea) {
+            intelArea.classList.add('hidden');
+            intelArea.classList.remove('flex');
+        }
         render(); 
     }
 }
 
-        const names = ["Global_Elite", "Satoshi_H", "Elena_FX", "Alpha_Delta", "Market_King"];
-        function addWin() {
-            let u = names[Math.floor(Math.random()*names.length)];
-            const feed = document.getElementById('testimony-feed');
-            const card = document.createElement('div');
-            card.className = "win-notif text-[10px] font-bold";
-            card.innerHTML = `<div class="flex justify-between"><span>${u}</span><span class="text-emerald-400">WIN</span></div><div class="flex justify-between mt-1"><span class="opacity-60">Asset Trade</span><span class="text-emerald-400">+$${(Math.random()*3000+100).toFixed(2)}</span></div>`;
-            if(feed.children.length > 2) feed.removeChild(feed.lastChild); feed.prepend(card);
-            setTimeout(addWin, 6000);
-        }
-
-        window.onload = () => { clock(); initWatch(); setMode('fx'); addWin(); render(); };
+// This starts all systems when the page loads
+window.onload = () => { 
+    clock(); 
+    initWatch(); 
+    setMode('fx'); 
+    addWin(); 
+    render(); 
+};        
+        
     </script>
 </body>
 </html>
