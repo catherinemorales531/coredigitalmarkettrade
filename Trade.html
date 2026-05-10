@@ -353,15 +353,47 @@
     }
 
     // --- TRADING ENGINE LOGIC ---
-    const fxPool = ["EUR/USD","AUD/CAD","GBP/USD","USD/JPY","USD/CAD"];
-    const cryPool = ["BTC/USDT","ETH/USDT","XRP/USDT","LTC/USDT"];
+  const fxPool = [
+    "EUR/USD","GBP/USD","USD/JPY","USD/CHF","USD/CAD","AUD/USD","NZD/USD",
+    "EUR/GBP","EUR/JPY","GBP/JPY","AUD/CAD","AUD/JPY","AUD/NZD","CAD/JPY",
+    "EUR/AUD","EUR/CAD","EUR/CHF","EUR/NZD","GBP/AUD","GBP/CAD","GBP/CHF",
+    "GBP/NZD","NZD/CAD","NZD/JPY","USD/MXN","USD/TRY","USD/ZAR","USD/SEK",
+    "USD/NOK","USD/DKK","USD/SGD","USD/HKD"
+];
 
-    function initWatch() {
-        const b = document.getElementById('watchlist-feed'); b.innerHTML = '';
-        [...fxPool, ...cryPool].forEach(s => {
-            b.innerHTML += `<div class="market-row flex justify-between items-center" onclick="curAsset='${s}';applyAsset()"><div><p class="text-xs font-black silver-text">${s}</p></div><p class="text-xs mono font-bold text-emerald-400">1.${Math.floor(Math.random()*9000)}</p></div>`;
-        });
-    }
+const cryPool = [
+    "BTC/USDT","ETH/USDT","SOL/USDT","XRP/USDT","ADA/USDT","DOT/USDT",
+    "DOGE/USDT","MATIC/USDT","LINK/USDT","AVAX/USDT","SHIB/USDT",
+    "UNI/USDT","LTC/USDT","ATOM/USDT","ALGO/USDT","TRX/USDT"
+];
+
+function initWatch() {
+    const b = document.getElementById('watchlist-feed'); 
+    b.innerHTML = '';
+    const allAssets = [...fxPool, ...cryPool];
+    
+    // ONLY these will change the chart when clicked
+    const clickableAssets = ["EUR/USD", "GBP/USD", "USD/JPY", "BTC/USDT", "ETH/USDT", "LTC/USDT", "XRP/USDT"];
+
+    allAssets.forEach(s => {
+        const price = (Math.random() * (1.5 - 1.1) + 1.1).toFixed(4);
+        const isLive = clickableAssets.includes(s);
+        
+        b.innerHTML += `
+            <div class="market-row flex justify-between items-center ${isLive ? 'cursor-pointer hover:bg-white/5' : 'cursor-default opacity-40'}" 
+                 ${isLive ? `onclick="document.getElementById('asset-picker').value='${s}';applyAsset();"` : ''}>
+                <div>
+                    <p class="text-[11px] font-black silver-text uppercase tracking-wider">${s}</p>
+                    <p class="text-[7px] font-bold uppercase ${isLive ? 'text-blue-400' : 'text-gray-500'}">
+                        ${isLive ? 'Live Execution' : 'Market Data Only'}
+                    </p>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs mono font-bold text-emerald-400">${price}</p>
+                </div>
+            </div>`;
+    });
+}
 
     function setMode(m) {
         curMkt = m;
