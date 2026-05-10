@@ -91,10 +91,28 @@
 
 /* --- LIVING LEDGER: ELASTIC GROWTH --- */
 #panel-portfolio, #panel-intel {
-    height: auto !important; /* Overrides fixed height */
+    height: auto; 
     min-height: 250px; 
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
+
+#trade-display-area, #intel-engine-core {
+    flex: 1;
+    height: auto;
+    max-height: 550px; 
+    overflow-y: auto; 
+    scrollbar-width: thin;
+    scrollbar-color: #3b82f6 transparent;
+}
+
+#l-head {
+    position: sticky;
+    top: 0;
+    background: #070412;
+    z-index: 20;
+}        
 
 #trade-display-area, #intel-engine-core {
     height: auto;
@@ -164,9 +182,9 @@
     </header>
 
     <nav class="mobile-hud">
-        <div class="m-hud-btn active" onclick="switchMobile('analysis')">Analysis</div>
-        <div class="m-hud-btn" onclick="switchMobile('trade')">Trade</div>
-       <div class="m-hud-btn" onclick="switchMobile('intel')">MARKET INTEL</div>
+  <div class="m-hud-btn active" onclick="switchMobile('analysis', this)">Analysis</div>
+<div class="m-hud-btn" onclick="switchMobile('trade', this)">Trade</div>
+<div class="m-hud-btn" onclick="switchMobile('intel', this)">MARKET INTEL</div>
     </nav>
 
     <main class="terminal-grid">
@@ -273,161 +291,139 @@
     </main>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script>
-        let curMkt = 'fx'; let curAsset = 'EUR/USD'; let curView = 'o';
-        let oArr = []; let cArr = []; const memory = new Set();
+<script>
+    let curMkt = 'fx'; let curAsset = 'EUR/USD'; let curView = 'o';
+    let oArr = []; let cArr = [];
 
-        const fxPool = ["EUR/USD","AUD/CAD","AUD/CHF","AUD/JPY","AUD/NZD","AUD/SGD","AUD/USD","CAD/CHF","CAD/JPY","CAD/SGD","CHF/JPY","CHF/SGD","EUR/AUD","EUR/CAD","EUR/CHF","EUR/DKK","EUR/GBP","EUR/HUF","EUR/JPY","EUR/NOK","EUR/NZD","EUR/PLN","EUR/SEK","EUR/TRY","GBP/AUD","GBP/CAD","GBP/CHF","GBP/JPY","GBP/NOK","GBP/NZD","GBP/SEK","GBP/TRY","GBP/USD","JPY/TRY","JPY/ZAR","NZD/CAD","NZD/CHF","NZD/JPY","NZD/SGD","NZD/USD","SGD/CHF","USD/CAD","USD/CHF","USD/CNY","USD/DKK","USD/HKD","USD/IDR","USD/INR","USD/JPY","USD/MXN","USD/NOK","USD/PLN","USD/SEK","USD/SGD","USD/THB","USD/TRY","USD/ZAR"];
-        const cryPool = ["BTC/USDT","PCP-BTC","REP/BTC","REP/USD","TXR/GBP","XLM/BTC","XLM/EUR","XLM/USD","XRP/BTC","XRP/EUR","XRP/USD","ZEC/BTC","ZRX/BTC","ZRX/EUR","ZRX/USD","ETC/USD","ETH/BTC","ETH/EUR","ETH/GBP","ETH/USD","LTC/BTC","LTC/EUR","LTC/GBP","LTC/USD","MKR/BTC","BCH/BTC","BCH/EUR","BCH/GBP","BTC/EOS","BTC/EUR","BTC/GBP","BTC/USD","BTC/USDC","EOS/BTC","EOS/EUR","EOS/USD","ETC/BTC","ETC/EUR","ETC/GBP"];
+    function toggleSideMenu() { document.getElementById('side-nav').classList.toggle('active'); }
+    function toggleSub(id) { document.getElementById(id).classList.toggle('active'); }
+    function clock() { document.getElementById('inst-clock').innerText = new Date().toLocaleString(); }
+    setInterval(clock, 1000);
 
-        function toggleSideMenu() { document.getElementById('side-nav').classList.toggle('active'); }
-        function toggleSub(id) { document.getElementById(id).classList.toggle('active'); }
-        function clock() { document.getElementById('inst-clock').innerText = new Date().toLocaleString(); }
-        setInterval(clock, 1000);
+    // --- MOBILE NAVIGATION FIX ---
+    function switchMobile(tab, btn) {
+        document.querySelectorAll('.panel').forEach(p => {
+            p.classList.remove('m-active');
+            p.classList.add('hidden');
+            p.style.display = 'none';
+        });
+        document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
+        if(btn) btn.classList.add('active');
+
+        if (tab === 'analysis') {
+            document.getElementById('panel-analysis').classList.remove('hidden');
+            document.getElementById('panel-chart').classList.remove('hidden');
+            document.getElementById('panel-chart').style.display = 'flex';
+            setTab('o'); 
+        } else if (tab === 'intel') {
+            document.getElementById('panel-chart').classList.remove('hidden');
+            document.getElementById('panel-chart').style.display = 'flex';
+            setTab('i'); 
+        } else if (tab === 'trade') {
+            document.getElementById('panel-trade').classList.remove('hidden');
+            document.getElementById('panel-trade').style.display = 'flex';
+        }
+    }
+
+    // --- LAPTOP & INTEL TOGGLE FIX ---
+    function setTab(t) {
+        curView = t;
+        if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o');
+        if(document.getElementById('tab-c')) document.getElementById('tab-c').classList.toggle('active', t === 'c');
+        if(document.getElementById('tab-i-laptop')) document.getElementById('tab-i-laptop').classList.toggle('active', t === 'i');
+
+        const portfolio = document.getElementById('panel-portfolio');
+        const intel = document.getElementById('panel-intel');
+
+        if (t === 'i') {
+            if(portfolio) portfolio.classList.add('hidden');
+            if(intel) {
+                intel.classList.remove('hidden');
+                intel.style.display = 'flex';
+                intel.style.minHeight = '450px';
+            }
+        } else {
+            if(intel) intel.classList.add('hidden');
+            if(portfolio) {
+                portfolio.classList.remove('hidden');
+                portfolio.style.display = 'flex';
+            }
+            render(); 
+        }
+    }
+
+    // --- TRADING ENGINE LOGIC ---
+    const fxPool = ["EUR/USD","AUD/CAD","GBP/USD","USD/JPY","USD/CAD"];
+    const cryPool = ["BTC/USDT","ETH/USDT","XRP/USDT","LTC/USDT"];
+
+    function initWatch() {
+        const b = document.getElementById('watchlist-feed'); b.innerHTML = '';
+        [...fxPool, ...cryPool].forEach(s => {
+            b.innerHTML += `<div class="market-row flex justify-between items-center" onclick="curAsset='${s}';applyAsset()"><div><p class="text-xs font-black silver-text">${s}</p></div><p class="text-xs mono font-bold text-emerald-400">1.${Math.floor(Math.random()*9000)}</p></div>`;
+        });
+    }
+
+    function setMode(m) {
+        curMkt = m;
+        document.getElementById('fx-t').classList.toggle('active', m==='fx');
+        document.getElementById('cry-t').classList.toggle('active', m==='crypto');
+        document.getElementById('fx-only').classList.toggle('hidden', m!=='fx');
+        document.getElementById('cry-only').classList.toggle('hidden', m==='fx');
+        const s = document.getElementById('asset-picker');
+        s.innerHTML = (m==='fx' ? fxPool : cryPool).map(a => `<option value="${a}">${a}</option>`).join('');
+        applyAsset();
+    }
+
+    function applyAsset() {
+        curAsset = document.getElementById('asset-picker').value || curAsset;
+        document.getElementById('active-asset-label').innerText = curAsset;
+        new TradingView.widget({"autosize": true, "symbol": (curMkt==='fx'?'FX:':'BINANCE:')+curAsset.replace('/',''), "interval": "15", "theme": "dark", "style": "1", "container_id": "tv_area"});
+    }
+
+    function calc() {
+        if(curMkt==='fx') document.getElementById('margin-out').value = '$' + (document.getElementById('lots-in').value * 1000).toLocaleString();
+        else document.getElementById('total-out').value = (document.getElementById('amt-in').value * 62300).toFixed(2);
+    }
+
+    function updatePrices() {
+        let bse = curAsset.includes('BTC')?62300:1.0842;
+        const s = (bse + Math.random()*0.002).toFixed(5);
+        document.getElementById('p-s').innerText = s;
+        document.getElementById('p-b').innerText = (parseFloat(s)+0.0001).toFixed(5);
+        oArr.forEach(t => { t.pl = (Math.random()*120-40).toFixed(2); });
+        render();
+    }
+    setInterval(updatePrices, 1500);
+
+    function order(side) {
+        oArr.unshift({id: Math.floor(100000+Math.random()*899999)+"XP", asset:curAsset, side, str:document.getElementById('p-b').innerText, pl:"0.00"});
+        render(); alert("Execution Successful");
+    }
+
+    function settle(id) {
+        const t = oArr.splice(oArr.findIndex(t => t.id === id), 1)[0];
+        t.res = parseFloat(t.pl)>0?"WIN":"LOSS"; t.time = new Date().toLocaleTimeString();
+        cArr.unshift(t); render();
+    }
         
-function setTab(t) {
-    curView = t;
+    function render() {
+        const b = document.getElementById('l-body'); const h = document.getElementById('l-head'); 
+        const e = document.getElementById('empty-state'); const tbl = document.getElementById('ledger-table');
+        if (!b || !e) return;
+        b.innerHTML = '';
+        if(curView === 'o') {
+            h.innerHTML = '<th>ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>P/L</th><th>Action</th>';
+            if(oArr.length === 0) { e.innerText = "No active positions."; e.classList.remove('hidden'); tbl.classList.add('hidden'); } 
+            else { e.classList.add('hidden'); tbl.classList.remove('hidden'); oArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5"><td class="p-3">${t.id}</td><td>${t.asset}</td><td class="${t.side==='BUY'?'text-emerald-400':'text-red-400'}">${t.side}</td><td>${t.str}</td><td class="${parseFloat(t.pl)>0?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td><button onclick="settle('${t.id}')" class="text-blue-400">CLOSE</button></td></tr>`); }
+        } else if(curView === 'c') {
+            h.innerHTML = '<th>ID</th><th>Asset</th><th>Result</th><th>Time</th>';
+            if(cArr.length === 0) { e.innerText = "History empty."; e.classList.remove('hidden'); tbl.classList.add('hidden'); } 
+            else { e.classList.add('hidden'); tbl.classList.remove('hidden'); cArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5 opacity-70"><td class="p-3">${t.id}</td><td>${t.asset}</td><td class="${t.res==='WIN'?'text-emerald-400':'text-red-400'}">${t.res}</td><td>${t.time}</td></tr>`); }
+        }
+    }
+
+    window.onload = () => { clock(); initWatch(); setMode('fx'); render(); };
+</script>
     
-    // 1. Highlight Buttons
-    if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o');
-    if(document.getElementById('tab-c')) document.getElementById('tab-c').classList.toggle('active', t === 'c');
-    if(document.getElementById('tab-i-laptop')) document.getElementById('tab-i-laptop').classList.toggle('active', t === 'i');
-
-    const tradeDisplay = document.getElementById('trade-display-area');
-    const intelPanel = document.getElementById('panel-intel');
-
-    if (t === 'i') {
-        // Switch to NEWS
-        if(tradeDisplay) tradeDisplay.classList.add('hidden');
-        if(intelPanel) {
-            intelPanel.classList.remove('hidden');
-            intelPanel.style.display = 'flex';
-        }
-    } else {
-        // Switch to TRADES
-        if(intelPanel) {
-            intelPanel.classList.add('hidden');
-            intelPanel.style.display = 'none';
-        }
-        if(tradeDisplay) tradeDisplay.classList.remove('hidden');
-        render(); 
-    }
-}
-
-        
-        function initWatch() {
-            const b = document.getElementById('watchlist-feed'); b.innerHTML = '';
-            const list = [...fxPool.slice(0,30), ...cryPool.slice(0,10)];
-            list.forEach(s => {
-                b.innerHTML += `<div class="market-row flex justify-between items-center" onclick="curAsset='${s}';document.getElementById('asset-picker').value='${s}';applyAsset()"><div><p class="text-xs font-black silver-text">${s}</p></div><p class="text-xs mono font-bold text-emerald-400">1.${Math.floor(Math.random()*9000)}</p></div>`;
-            });
-        }
-
-        function setMode(m) {
-            curMkt = m;
-            document.getElementById('fx-t').classList.toggle('active', m==='fx');
-            document.getElementById('cry-t').classList.toggle('active', m==='crypto');
-            document.getElementById('fx-only').classList.toggle('hidden', m!=='fx');
-            document.getElementById('cry-only').classList.toggle('hidden', m==='fx');
-            const s = document.getElementById('asset-picker');
-            s.innerHTML = (m==='fx' ? fxPool : cryPool).map(a => `<option value="${a}">${a}</option>`).join('');
-            applyAsset();
-        }
-
-        function applyAsset() {
-            curAsset = document.getElementById('asset-picker').value;
-            document.getElementById('active-asset-label').innerText = curAsset;
-            new TradingView.widget({"autosize": true, "symbol": (curMkt==='fx'?'FX:':'BINANCE:')+curAsset.replace('/',''), "interval": "15", "theme": "dark", "style": "1", "container_id": "tv_area"});
-        }
-
-        function calc() {
-            if(curMkt==='fx') document.getElementById('margin-out').value = '$' + (document.getElementById('lots-in').value * 1000).toLocaleString();
-            else document.getElementById('total-out').value = (document.getElementById('amt-in').value * 62300).toFixed(2);
-        }
-
-        function updatePrices() {
-            let bse = curAsset.includes('BTC')?62300:curAsset.includes('EUR')?1.0842:191;
-            const s = (bse + Math.random()*0.002).toFixed(curAsset.includes('USD')?5:2);
-            document.getElementById('p-s').innerText = s;
-            document.getElementById('p-b').innerText = (parseFloat(s)+0.0001).toFixed(curAsset.includes('USD')?5:2);
-            oArr.forEach(t => { t.pl = (Math.random()*120-40).toFixed(2); t.cur = (parseFloat(t.str)+Math.random()*0.001).toFixed(5); });
-            render();
-        }
-        setInterval(updatePrices, 1500);
-
-        function order(side) {
-            oArr.unshift({id: Math.floor(100000+Math.random()*899999)+"XP", asset:curAsset, side, str:document.getElementById('p-b').innerText, cur:document.getElementById('p-b').innerText, pl:"0.00"});
-            render(); alert("Execution Succesful");
-        }
-
-        function settle(id) {
-            const t = oArr.splice(oArr.findIndex(t => t.id === id), 1)[0];
-            t.res = parseFloat(t.pl)>0?"WIN":"LOSS"; t.time = new Date().toLocaleString();
-            cArr.unshift(t); render();
-        }
-        
-function render() {
-    const b = document.getElementById('l-body'); 
-    const h = document.getElementById('l-head'); 
-    const e = document.getElementById('empty-state'); 
-    const tbl = document.getElementById('ledger-table');
-    if (!b || !e) return;
-    b.innerHTML = '';
-
-    if(curView === 'o') {
-        h.innerHTML = '<th class="p-3">ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>Market</th><th>Live P/L</th><th>Action</th>';
-        if(oArr.length === 0) { 
-            e.innerText = "No active market positions detected. Execution data will populate here upon order placement."; 
-            e.classList.remove('hidden'); tbl.classList.add('hidden'); 
-        } else { e.classList.add('hidden'); tbl.classList.remove('hidden'); oArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5"><td class="p-3 opacity-40">${t.id}</td><td>${t.asset}</td><td class="${t.side==='BUY'?'text-emerald-400':'text-red-400'}">${t.side}</td><td>${t.str}</td><td>${t.cur}</td><td class="${parseFloat(t.pl)>0?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td><button onclick="settle('${t.id}')" class="text-gray-500">SETTLE</button></td></tr>`); }
-    } else if(curView === 'c') {
-        h.innerHTML = '<th class="p-3">ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>Result P/L</th><th>Time</th><th>Status</th>';
-        if(cArr.length === 0) { 
-            e.innerText = "Realized P/L history is currently empty. Settled transactions will be archived here for your records."; 
-            e.classList.remove('hidden'); tbl.classList.add('hidden'); 
-        } else { e.classList.add('hidden'); tbl.classList.remove('hidden'); cArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5 opacity-70"><td class="p-3 opacity-40">${t.id}</td><td>${t.asset}</td><td>${t.side}</td><td>${t.str}</td><td class="${t.res==='WIN'?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td class="text-[9px]">${t.time}</td><td class="font-black ${t.res==='WIN'?'text-emerald-400':'text-red-400'}">${t.res}</td></tr>`); }
-    }
-}
-
-function setTab(t) {
-    curView = t;
-    
-    // 1. Highlight Laptop Buttons
-    if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o');
-    if(document.getElementById('tab-c')) document.getElementById('tab-c').classList.toggle('active', t === 'c');
-    if(document.getElementById('tab-i-laptop')) document.getElementById('tab-i-laptop').classList.toggle('active', t === 'i');
-
-    const tradeArea = document.getElementById('trade-display-area');
-    const intelArea = document.getElementById('panel-intel');
-
-    if (t === 'i') {
-        // Laptop: Hide trade table, show Intel Panel under the chart
-        if(tradeArea) tradeArea.classList.add('hidden');
-        if(intelArea) {
-            intelArea.classList.remove('hidden');
-            intelArea.style.display = 'flex';
-            intelArea.style.height = "350px"; 
-        }
-    } else {
-        // Laptop: Show trade table, hide Intel Panel
-        if(tradeArea) tradeArea.classList.remove('hidden');
-        if(intelArea) {
-            intelArea.classList.add('hidden');
-            intelArea.style.display = 'none';
-        }
-        render(); 
-    }
-}
-        
-
-// This starts all systems when the page loads
-window.onload = () => { 
-    clock(); 
-    initWatch(); 
-    setMode('fx'); 
-    render(); 
-};        
-        
-    </script>
 </body>
 </html>
