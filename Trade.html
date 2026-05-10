@@ -379,8 +379,9 @@ function initWatch() {
         const price = (Math.random() * (1.5 - 1.1) + 1.1).toFixed(4);
         const isLive = clickableAssets.includes(s);
         
+        // Removed "opacity-40" so everything is the same color
         b.innerHTML += `
-            <div class="market-row flex justify-between items-center ${isLive ? 'cursor-pointer hover:bg-white/5' : 'cursor-default opacity-40'}" 
+            <div class="market-row flex justify-between items-center ${isLive ? 'cursor-pointer hover:bg-white/5' : 'cursor-default'}" 
                  ${isLive ? `onclick="document.getElementById('asset-picker').value='${s}';applyAsset();"` : ''}>
                 <div>
                     <p class="text-[11px] font-black silver-text uppercase tracking-wider">${s}</p>
