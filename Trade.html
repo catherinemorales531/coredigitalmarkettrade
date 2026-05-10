@@ -54,7 +54,13 @@
         .exec-btn { width: 100%; padding: 18px; border-radius: 8px; font-weight: 900; font-size: 20px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.2); transition: 0.2s; }
 
         /* --- GRID & MOBILE HUD --- */
-        .terminal-grid { display: grid; grid-template-columns: 280px 1fr 360px; height: calc(100vh - 70px); gap: 1px; background: rgba(255,255,255,0.05); }
+       .terminal-grid { 
+    display: grid; 
+    grid-template-columns: 280px 1fr 360px; 
+    height: calc(100vh - 70px); 
+    gap: 1px; 
+    overflow-y: auto; 
+}
         .panel { background: #070412; overflow-y: auto; display: flex; flex-direction: column; }
         .mobile-hud { display: none; background: #000; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 60; }
         .m-hud-btn { flex: 1; padding: 15px; font-size: 10px; font-weight: 900; text-transform: uppercase; text-align: center; color: #475569; cursor: pointer; }
@@ -196,55 +202,53 @@
         </aside>
 
         <!-- CENTER: CHART & LEDGER (Analysis/Portfolio Tab Mobile) -->
-        <section id="panel-chart" class="panel m-active border-r border-white/5">
-            <div class="p-3 border-b border-white/5 bg-black/20 flex justify-between items-center">
-                <span id="active-asset-label" class="text-sm lg:text-lg font-black silver-text uppercase">EUR / USD</span>
-                <span class="text-[8px] font-bold text-emerald-400 uppercase">Institutional Feed Active</span>
-            </div>
-            <div class="flex-1 min-h-[400px] relative bg-black/40"><div id="tv_area" style="height: 100%;"></div></div>
+      <section id="panel-chart" class="panel m-active border-r border-white/5">
+    
+    <!-- 1. LIVE CHART (Top) -->
+    <div class="p-3 border-b border-white/5 bg-black/20 flex justify-between items-center">
+        <span id="active-asset-label" class="text-sm lg:text-lg font-black silver-text uppercase">EUR / USD</span>
+        <span class="text-[8px] font-bold text-emerald-400 uppercase tracking-widest">Institutional Feed Active</span>
+    </div>
+    <div id="tv_area" style="height: 450px; width: 100%;"></div>
 
-<!-- ENGINE 1: TRADING LEDGER (Open/Closed Trades) -->
-<div id="panel-portfolio" class="panel m-active border-t border-white/10 bg-black/40 flex flex-col">
-    <div class="flex bg-white/5 border-b border-white/5 overflow-x-auto">
-        <div id="tab-o" class="tab-btn active" onclick="setTab('o')">Open Positions</div>
-        <div id="tab-c" class="tab-btn" onclick="setTab('c')">Closed Trades</div>
-        <div id="tab-i-laptop" class="tab-btn lg:block hidden" onclick="setTab('i')">Market Intel</div>
-    </div>
-    <div class="flex-1 overflow-auto relative" id="trade-display-area">
-        <div id="empty-state" class="empty-msg"></div>
-     <table id="ledger-table" class="w-full text-left min-w-[950px] hidden">
-            <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-0 bg-black"><tr id="l-head"></tr></thead>
-            <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
-        </table>
-    </div>
- </div>
-
-   <div id="panel-intel" class="panel hidden flex-col min-h-[500px] lg:h-80 border-t border-white/10">
-    <div class="intel-header-glow p-3 flex justify-between items-center">
-        <span class="text-[10px] font-black silver-text uppercase tracking-[0.3em]">Institutional Intel Wire</span>
-        <span class="text-[8px] font-bold text-blue-400/50 uppercase mono">World News • FX • Crypto</span>
-    </div>
-    <div id="intel-engine-core" class="flex-1 relative overflow-y-auto">
-        <div class="news-click-shield"></div> <!-- BLOCKS CLICKS -->
-        <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
-            <div class="tradingview-widget-container__widget"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-            {
-                "feedMode": "all_symbols",
-                "isTransparent": true,
-                "displayMode": "regular",
-                "width": "100%",
-                "height": "100%",
-                "colorTheme": "dark",
-                "locale": "en"
-            }
-            </script>
+    <!-- 2. TRADES LEDGER (Middle) -->
+    <div id="panel-portfolio" class="panel flex flex-col border-t border-white/10">
+        <div class="flex bg-white/5 border-b border-white/5 overflow-x-auto">
+            <div id="tab-o" class="tab-btn active" onclick="setTab('o')">Open Positions</div>
+            <div id="tab-c" class="tab-btn" onclick="setTab('c')">Closed Trades</div>
+        </div>
+        <div class="flex-1 overflow-auto relative" id="trade-display-area">
+            <div id="empty-state" class="empty-msg"></div>
+            <table id="ledger-table" class="w-full text-left min-w-[950px] hidden">
+                <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-0 bg-black"><tr id="l-head"></tr></thead>
+                <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
+            </table>
         </div>
     </div>
-</div>
-            
-          
-        </section>
+
+    <!-- 3. MARKET INTEL (Bottom) -->
+    <div id="panel-intel" class="panel flex flex-col border-t border-white/10">
+        <div class="intel-header-glow p-3 flex justify-between items-center">
+            <span class="text-[10px] font-black silver-text uppercase tracking-[0.3em]">Institutional Intel Wire</span>
+        </div>
+        <div id="intel-engine-core" class="flex-1 relative overflow-y-auto">
+            <div class="tradingview-widget-container" style="height: 650px; width: 100%;">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+                {
+                    "feedMode": "all_symbols",
+                    "isTransparent": true,
+                    "displayMode": "regular",
+                    "width": "100%",
+                    "height": "100%",
+                    "colorTheme": "dark",
+                    "locale": "en"
+                }
+                </script>
+            </div>
+        </div>
+    </div>
+</section>
 
         <!-- RIGHT: ENGINE (Trade Tab Mobile) -->
         <aside id="panel-trade" class="panel p-5 bg-[#0a061a]">
@@ -301,29 +305,56 @@
     setInterval(clock, 1000);
 
     // --- MOBILE NAVIGATION FIX ---
-    function switchMobile(tab, btn) {
-        document.querySelectorAll('.panel').forEach(p => {
-            p.classList.remove('m-active');
-            p.classList.add('hidden');
-            p.style.display = 'none';
-        });
-        document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
-        if(btn) btn.classList.add('active');
+  function switchMobile(tab, element) {
+    // 1. Hide everything first
+    document.querySelectorAll('.panel').forEach(p => {
+        p.style.display = 'none';
+        p.classList.add('hidden');
+    });
+    
+    document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
+    if (element) element.classList.add('active');
 
-        if (tab === 'analysis') {
-            document.getElementById('panel-analysis').classList.remove('hidden');
-            document.getElementById('panel-chart').classList.remove('hidden');
-            document.getElementById('panel-chart').style.display = 'flex';
-            setTab('o'); 
-        } else if (tab === 'intel') {
-            document.getElementById('panel-chart').classList.remove('hidden');
-            document.getElementById('panel-chart').style.display = 'flex';
-            setTab('i'); 
-        } else if (tab === 'trade') {
-            document.getElementById('panel-trade').classList.remove('hidden');
-            document.getElementById('panel-trade').style.display = 'flex';
-        }
+    const chartSection = document.getElementById('panel-chart');
+    const tvArea = document.getElementById('tv_area');
+    const trades = document.getElementById('panel-portfolio');
+    const intel = document.getElementById('panel-intel');
+
+    if (tab === 'analysis') {
+        chartSection.style.display = 'flex';
+        chartSection.classList.remove('hidden');
+        tvArea.style.display = 'block';   
+        trades.style.display = 'flex';   
+        if(window.innerWidth > 1024) intel.style.display = 'flex'; 
+        setTab('o');
+    } else if (tab === 'intel') {
+        chartSection.style.display = 'flex';
+        chartSection.classList.remove('hidden');
+        tvArea.style.display = 'none';    // HIDE CHART ON MOBILE
+        trades.style.display = 'none';    // HIDE TRADES ON MOBILE
+        intel.style.display = 'flex';     // SHOW ONLY NEWS
+        intel.classList.remove('hidden');
+    } else if (tab === 'trade') {
+        const tradePanel = document.getElementById('panel-trade');
+        tradePanel.style.display = 'flex';
+        tradePanel.classList.remove('hidden');
     }
+}
+
+function setTab(t) {
+    curView = t;
+    if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o');
+    if(document.getElementById('tab-c')) document.getElementById('tab-c').classList.toggle('active', t === 'c');
+    
+    // Laptop Rule: Always keep Chart, Trades, and News stacked
+    if(window.innerWidth > 1024) {
+        document.getElementById('tv_area').style.display = 'block';
+        document.getElementById('panel-portfolio').style.display = 'flex';
+        document.getElementById('panel-intel').style.display = 'flex';
+        document.getElementById('panel-intel').classList.remove('hidden');
+    }
+    render();
+}
 
     // --- LAPTOP & INTEL TOGGLE FIX ---
     function setTab(t) {
