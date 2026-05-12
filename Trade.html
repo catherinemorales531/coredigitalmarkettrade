@@ -24,10 +24,27 @@
             color: white; margin: 0; height: 100vh; overflow: hidden;
         }
 
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+     
         .silver-text { color: var(--spark-silver); text-shadow: 0 0 10px rgba(203, 213, 225, 0.3); }
-        .mono { font-family: 'JetBrains Mono', monospace; }
+      .mono { font-family: 'JetBrains Mono', monospace; }
 
+        header.glass {
+    position: sticky !important;
+    top: 0;
+    z-index: 9999;
+    /* This color #0a061a is the darkest part of your Shiva gradient */
+    background-color: #0a061a !important; 
+    background-image: url('https://www.transparenttextures.com/patterns/stardust.png') !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+#panel-chart {
+    height: calc(100vh - 70px);
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+        
         /* --- SIDEBAR & PULSE --- */
         #side-nav { position: fixed; top: 0; left: -100%; width: 100%; height: 100vh; background: var(--shiva-bg); background-image: url('https://www.transparenttextures.com/patterns/stardust.png'), var(--shiva-bg); z-index: 99999; transition: 0.5s ease; overflow-y: auto; padding: 20px; }
         #side-nav.active { left: 0; }
@@ -52,16 +69,28 @@
         .p-btn { padding: 15px 5px; border-radius: 4px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
         .p-btn .price { font-family: 'JetBrains Mono'; font-weight: 900; font-size: 18px; }
         .exec-btn { width: 100%; padding: 18px; border-radius: 8px; font-weight: 900; font-size: 20px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.2); transition: 0.2s; }
-
-        /* --- GRID & MOBILE HUD --- */
-  .terminal-grid { 
+.terminal-grid { 
     display: grid; 
     grid-template-columns: 280px 1fr 360px; 
-    height: 100vh; 
+    height: calc(100vh - 70px); 
     overflow: hidden; 
 }
-#tv_area { height: 650px !important; width: 100%; }
-#trade-display-area { height: 400px; overflow-y: auto; position: relative; }
+
+#panel-chart {
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    background: #070412;
+    display: flex;
+    flex-direction: column;
+}
+
+#tv_area { 
+    height: 600px !important; 
+    width: 100%; 
+    flex-shrink: 0; 
+}
+ 
         .panel { background: #070412; overflow-y: auto; display: flex; flex-direction: column; }
         .mobile-hud { display: none; background: #000; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 60; }
         .m-hud-btn { flex: 1; padding: 15px; font-size: 10px; font-weight: 900; text-transform: uppercase; text-align: center; color: #475569; cursor: pointer; }
@@ -136,6 +165,25 @@
     background: #070412;
     z-index: 20;
 }
+
+header.glass { 
+    position: sticky; 
+    top: 0; 
+    z-index: 9999; 
+    background: #0a061a; 
+    border-bottom: 1px solid rgba(255,255,255,0.1); 
+}
+#panel-chart { 
+    height: calc(100vh - 70px); 
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    scroll-behavior: smooth; 
+    display: block; 
+}
+.no-scroll { 
+    overflow-y: hidden !important; 
+}
+
         
     </style>
 </head>
@@ -205,20 +253,39 @@
         <!-- CENTER: CHART & LEDGER (Analysis/Portfolio Tab Mobile) -->
       <section id="panel-chart" class="panel m-active border-r border-white/5">
     
-    <!-- 1. LIVE CHART (Top) -->
-    <div class="p-3 border-b border-white/5 bg-black/20 flex justify-between items-center">
-        <span id="active-asset-label" class="text-sm lg:text-lg font-black silver-text uppercase">EUR / USD</span>
-        <span class="text-[8px] font-bold text-emerald-400 uppercase tracking-widest">Institutional Feed Active</span>
-    </div>
-    <div id="tv_area" style="height: 450px; width: 100%;"></div>
+    <!-- 1. THE CHART (Top of the strip) -->
+    <div id="tv_area" style="height: 600px; width: 100%; flex-shrink: 0;"></div>
 
-    <!-- 2. TRADES LEDGER (Middle) -->
-    <div id="panel-portfolio" class="panel flex flex-col border-t border-white/10">
-        <div class="flex bg-white/5 border-b border-white/5 overflow-x-auto">
-          <div id="tab-o" class="tab-btn active" onclick="setTab('o')">Open Positions</div>
-<div id="tab-c" class="tab-btn" onclick="setTab('c')">Closed Trades</div>
-<div id="tab-i" class="tab-btn" onclick="setTab('i')">Market Intel</div> 
+    <!-- 2. THE TABS (Stay on one line) -->
+    <div class="flex bg-white/5 border-b border-white/5 sticky top-0 z-50">
+        <div id="tab-o" class="tab-btn active" onclick="setTab('o')">Open Positions</div>
+        <div id="tab-c" class="tab-btn" onclick="setTab('c')">Closed Trades</div>
+        <div id="tab-i" class="tab-btn" onclick="setTab('i')">Market Intel</div>
+    </div>
+
+    <!-- 3. THE DATA AREA (Where info swaps) -->
+    <div id="display-content" style="min-height: 500px; padding-bottom: 50px;">
+        <div id="empty-state" class="empty-msg"></div>
+        
+        <table id="ledger-table" class="w-full text-left min-w-[950px] hidden">
+            <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-[45px] bg-black">
+                <tr id="l-head"></tr>
+            </thead>
+            <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
+        </table>
+
+        <!-- MARKET INTEL (Inside the scroller) -->
+        <div id="panel-intel" class="hidden relative p-4">
+            <!-- SHIELD: Blocks clicks but allows scroll -->
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;"></div>
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+                {"feedMode": "all_symbols","isTransparent": true,"displayMode": "regular","width": "100%","height": 800,"colorTheme": "dark","locale": "en"}
+                </script>
+            </div>
         </div>
+    </div>
         <div class="flex-1 overflow-auto relative" id="trade-display-area">
             <div id="empty-state" class="empty-msg"></div>
             <table id="ledger-table" class="w-full text-left min-w-[950px] hidden">
@@ -227,25 +294,18 @@
             </table>
         </div>
     </div>
-
-    <!-- 3. MARKET INTEL (Bottom) -->
-   <div class="flex-1 relative" id="trade-display-area">
-    <div id="empty-state" class="empty-msg"></div>
+          
+<div id="panel-intel" class="hidden flex-col p-4 relative">
+    <!-- SHIELD: Blocks clicks, allows scroll -->
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5;"></div>
     
-    <table id="ledger-table" class="w-full text-left min-w-[950px] hidden">
-        <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-0 bg-black"><tr id="l-head"></tr></thead>
-        <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
-    </table>
-
-    <div id="panel-intel" class="hidden flex-col p-4">
-        <!-- News feed will show here and hide the table above -->
-        <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+    <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-        {"feedMode": "all_symbols","isTransparent": true,"displayMode": "regular","width": "100%","height": 600,"colorTheme": "dark","locale": "en"}
-        </script></div>
+        {"feedMode": "all_symbols","isTransparent": true,"displayMode": "regular","width": "100%","height": 800,"colorTheme": "dark","locale": "en"}
+        </script>
     </div>
 </div>
-    </div>
 </section>
 
         <!-- RIGHT: ENGINE (Trade Tab Mobile) -->
@@ -305,7 +365,7 @@
     // --- MOBILE NAVIGATION FIX ---
 // --- UNIFIED TERMINAL BRAIN ---
 
-function switchMobile(tab, element) {
+   function switchMobile(tab, element) {
     // 1. Reset all panels
     document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
     document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
@@ -313,16 +373,16 @@ function switchMobile(tab, element) {
 
     const chartSection = document.getElementById('panel-chart');
     const tvArea = document.getElementById('tv_area');
-    const header = document.querySelector('.p-3.border-b'); 
+    const header = document.getElementById('asset-header'); // The bar that says EUR/USD
 
     if (tab === 'analysis') {
-        chartSection.style.display = 'flex';
-        tvArea.style.display = 'block';
+        chartSection.style.display = 'block';
+        if(tvArea) tvArea.style.display = 'block';
         if(header) header.style.display = 'flex';
         setTab('o');
     } else if (tab === 'intel') {
-        chartSection.style.display = 'flex';
-        tvArea.style.display = 'none'; // KILLS CHART ON MOBILE NEWS
+        chartSection.style.display = 'block';
+        if(tvArea) tvArea.style.display = 'none'; // KILLS CHART ON MOBILE NEWS
         if(header) header.style.display = 'none'; // KILLS HEADER ON MOBILE NEWS
         setTab('i');
     } else {
@@ -332,7 +392,9 @@ function switchMobile(tab, element) {
 
 function setTab(t) {
     curView = t;
-    // 2. Highlight correct tab
+    const panel = document.getElementById('panel-chart');
+    
+    // 2. Highlight correct Tab Button
     if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o');
     if(document.getElementById('tab-c')) document.getElementById('tab-c').classList.toggle('active', t === 'c');
     if(document.getElementById('tab-i')) document.getElementById('tab-i').classList.toggle('active', t === 'i');
@@ -341,15 +403,72 @@ function setTab(t) {
     const empty = document.getElementById('empty-state');
     const intel = document.getElementById('panel-intel');
 
-    // 3. Clear the content box (Fixes "Wrong Information" bug)
+    // 3. INFORMATION LOCK: Clear the screen before showing new data
     if(table) table.classList.add('hidden');
     if(empty) empty.classList.add('hidden');
     if(intel) intel.classList.add('hidden');
 
     if (t === 'i') {
-        if(intel) intel.classList.remove('hidden'); 
+        if(intel) intel.classList.remove('hidden');
+        if(panel) panel.classList.remove('no-scroll'); // News always allows scroll
     } else {
-        render(); // Shows table or "No trades" message
+        render(); // This will decide if it needs to lock scroll for trades
+    }
+}
+
+function render() {
+    const b = document.getElementById('l-body');
+    const h = document.getElementById('l-head');
+    const e = document.getElementById('empty-state');
+    const tbl = document.getElementById('ledger-table');
+    const panel = document.getElementById('panel-chart');
+    if (!b) return;
+    
+    let html = '';
+    const hasData = (curView === 'o' && oArr.length > 0) || (curView === 'c' && cArr.length > 0);
+
+    if (curView === 'o') {
+        h.innerHTML = '<th>ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>P/L</th><th>Action</th>';
+        if (oArr.length === 0) { 
+            e.innerText = "No active positions."; e.classList.remove('hidden'); if(tbl) tbl.classList.add('hidden');
+        } else {
+            e.classList.add('hidden'); if(tbl) tbl.classList.remove('hidden');
+            oArr.forEach(t => { html += `<tr class="border-b border-white/5"><td class="p-3">${t.id}</td><td>${t.asset}</td><td class="${t.side==='BUY'?'text-emerald-400':'text-red-400'}">${t.side}</td><td>${t.str}</td><td class="${parseFloat(t.pl)>0?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td><button onclick="settle('${t.id}')" class="text-blue-400">CLOSE</button></td></tr>`; });
+        }
+    } else if (curView === 'c') {
+        h.innerHTML = '<th>ID</th><th>Asset</th><th>Result</th><th>Time</th>';
+        if (cArr.length === 0) {
+            e.innerText = "History empty."; e.classList.remove('hidden'); if(tbl) tbl.classList.add('hidden');
+        } else {
+            e.classList.add('hidden'); if(tbl) tbl.classList.remove('hidden');
+            cArr.forEach(t => { html += `<tr class="border-b border-white/5 opacity-70"><td class="p-3">${t.id}</td><td>${t.asset}</td><td class="${t.res==='WIN'?'text-emerald-400':'text-red-400'}">${t.res}</td><td>${t.time}</td></tr>`; });
+        }
+    }
+    b.innerHTML = html;
+
+    // 4. SMART SCROLL: Only allows sliding if there is something to see
+    if (curView !== 'i') {
+        if (hasData) {
+            if(panel) panel.classList.remove('no-scroll'); 
+        } else {
+            if(panel) {
+                panel.classList.add('no-scroll'); 
+                panel.scrollTop = 0; // Snap chart back to top
+            }
+        }
+    }
+} 
+
+    b.innerHTML = html;
+
+    // --- THE SCROLL LOCK ENGINE ---
+    if (curView !== 'i') { // If we are not on news
+        if (hasData) {
+            panel.classList.remove('no-scroll'); // Unlock if there are trades
+        } else {
+            panel.classList.add('no-scroll'); // Lock if empty
+            panel.scrollTop = 0; // Snap chart back to top
+        }
     }
 }
 
