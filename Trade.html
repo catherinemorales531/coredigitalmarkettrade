@@ -99,7 +99,7 @@
 /* --- LIVING LEDGER: ELASTIC GROWTH --- */
 #panel-portfolio, #panel-intel {
     height: auto; 
-    min-height: 250px; 
+    min-height: 400px; 
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
@@ -304,35 +304,39 @@
 
     // --- MOBILE NAVIGATION FIX ---
 // --- UNIFIED TERMINAL BRAIN ---
-
 function switchMobile(tab, element) {
-    // 1. Reset all panels
+    // 1. Line 309: Don't run this switching logic if on a laptop
+    if (window.innerWidth > 1024) return;
+
+    // 2. Line 312: Hide all panels and reset HUD buttons
     document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
     document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
     if (element) element.classList.add('active');
 
     const chartSection = document.getElementById('panel-chart');
     const tvArea = document.getElementById('tv_area');
-    const header = document.querySelector('.p-3.border-b'); 
+    const header = document.querySelector('#chart-header'); // The EUR/USD label
 
     if (tab === 'analysis') {
         chartSection.style.display = 'flex';
         tvArea.style.display = 'block';
         if(header) header.style.display = 'flex';
-        setTab('o');
-    } else if (tab === 'intel') {
+        setTab('o'); // Show Open Positions by default
+    } 
+    else if (tab === 'intel') {
         chartSection.style.display = 'flex';
-        tvArea.style.display = 'none'; // KILLS CHART ON MOBILE NEWS
-        if(header) header.style.display = 'none'; // KILLS HEADER ON MOBILE NEWS
-        setTab('i');
-    } else {
+        tvArea.style.display = 'none'; // HIDE CHART FOR NEWS
+        if(header) header.style.display = 'none'; // HIDE HEADER FOR NEWS
+        setTab('i'); // Show Market Intel feed
+    } 
+    else if (tab === 'trade') {
         document.getElementById('panel-trade').style.display = 'flex';
     }
 }
 
 function setTab(t) {
     curView = t;
-    // 2. Highlight correct tab
+    // 1. Highlight the correct tab inside the portfolio section
     if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o');
     if(document.getElementById('tab-c')) document.getElementById('tab-c').classList.toggle('active', t === 'c');
     if(document.getElementById('tab-i')) document.getElementById('tab-i').classList.toggle('active', t === 'i');
@@ -341,15 +345,17 @@ function setTab(t) {
     const empty = document.getElementById('empty-state');
     const intel = document.getElementById('panel-intel');
 
-    // 3. Clear the content box (Fixes "Wrong Information" bug)
+    // 2. Hide everything in the section first
     if(table) table.classList.add('hidden');
     if(empty) empty.classList.add('hidden');
     if(intel) intel.classList.add('hidden');
 
+    // 3. Logic to show the News or the Tables
     if (t === 'i') {
         if(intel) intel.classList.remove('hidden'); 
+        window.dispatchEvent(new Event('resize')); // Refresh News Widget
     } else {
-        render(); // Shows table or "No trades" message
+        render(); // This shows the trade tables
     }
 }
 
