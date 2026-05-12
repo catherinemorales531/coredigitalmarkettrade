@@ -53,30 +53,33 @@
         .p-btn .price { font-family: 'JetBrains Mono'; font-weight: 900; font-size: 18px; }
         .exec-btn { width: 100%; padding: 18px; border-radius: 8px; font-weight: 900; font-size: 20px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.2); transition: 0.2s; }
 
-        /* --- GRID & MOBILE HUD --- */
-  .terminal-grid { 
+    .terminal-grid { 
     display: grid; 
     grid-template-columns: 280px 1fr 360px; 
-    height: 100vh; 
+    height: calc(100vh - 70px); /* Adjust for header */
     overflow: hidden; 
 }
 #tv_area { height: 650px !important; width: 100%; }
-#trade-display-area { height: 400px; overflow-y: auto; position: relative; }
+#trade-display-area { 
+    width: 100%; 
+    overflow-x: auto; /* Allows sliding inside */
+    overflow-y: hidden; /* Prevents vertical fighting inside the box */
+    position: relative; 
+    display: block;
+}
         .panel { background: #070412; overflow-y: auto; display: flex; flex-direction: column; }
         .mobile-hud { display: none; background: #000; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 60; }
         .m-hud-btn { flex: 1; padding: 15px; font-size: 10px; font-weight: 900; text-transform: uppercase; text-align: center; color: #475569; cursor: pointer; }
         .m-hud-btn.active { color: #3b82f6; border-bottom: 2px solid #3b82f6; }
 
-        @media (max-width: 1024px) {
-            .terminal-grid { display: block; height: calc(100vh - 120px); overflow-y: auto; }
-            .panel { display: none; width: 100%; }
-            .panel.m-active { display: flex !important; min-height: calc(100vh - 120px); }
-            #tv_area { height: 450px !important; min-height: 450px; }
-            .mobile-hud { display: flex; }
-            .side-hide { display: none; }
-        }
+    .terminal-grid { display: block; height: calc(100vh - 120px); overflow: hidden; }
+    .panel { display: none; width: 100%; height: 100%; overflow-y: auto; }
+    /* This makes the Analysis tab a scrolling stack on mobile */
+    .panel.m-active { display: flex !important; flex-direction: column; }
+    #tv_area { height: 400px !important; min-height: 400px; }
+    .mobile-hud { display: flex; }
 
-        .tab-btn { padding: 12px 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; color: #475569; border-bottom: 2px solid transparent; }
+      .tab-btn { padding: 12px 15px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; color: #475569; border-bottom: 2px solid transparent; white-space: nowrap; flex-shrink: 0; }
         .tab-btn.active { color: #3b82f6; border-bottom: 2px solid #3b82f6; background: rgba(59, 130, 246, 0.05); }
         .win-notif { animation: fadeInUp 0.6s ease-out; border-left: 4px solid var(--buy-green); background: rgba(16, 185, 129, 0.05); margin-bottom: 10px; padding: 12px; border-radius: 4px; }
         .market-row { border-bottom: 1px solid rgba(255,255,255,0.03); padding: 12px 15px; cursor: pointer; }
@@ -105,21 +108,36 @@
     flex-direction: column;
 }
 
+/* --- THE SLIDE WINDOW --- */
 #trade-display-area, #intel-engine-core {
     flex: 1;
     height: auto;
     max-height: 550px; 
-    overflow-y: auto; 
+    overflow-x: auto;   /* This allows the side-to-side slide */
+    overflow-y: visible; /* This lets the whole page scroll vertically */
     scrollbar-width: thin;
     scrollbar-color: #3b82f6 transparent;
+    width: 100%;
 }
 
-#l-head {
+/* --- THE WIDE PAPER (Forces the slide) --- */
+#ledger-table { 
+    min-width: 1000px !important; 
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+/* --- THE STICKY TITLES --- */
+#l-head th {
     position: sticky;
     top: 0;
-    background: #070412;
+    background: #000;
     z-index: 20;
-}        
+    padding: 12px 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
 
 #trade-display-area, #intel-engine-core {
     height: auto;
@@ -136,7 +154,46 @@
     background: #070412;
     z-index: 20;
 }
-        
+   /* --- LAPTOP ONLY: THE 3-CORRIDOR SYSTEM --- */
+@media (min-width: 1024px) {
+    .terminal-grid { 
+        display: grid !important; 
+        grid-template-columns: 280px 1fr 360px; /* Forces 3 columns */
+        height: calc(100vh - 70px); 
+        overflow: hidden; 
+    }
+
+    /* Independent Scroll: Each corridor moves alone */
+    #panel-analysis, #panel-trade { 
+        height: 100%; 
+        overflow-y: auto; 
+        display: flex !important; 
+    }
+    
+    /* Middle Corridor: Vertical Scroll (Chart slides up) */
+    #panel-chart { 
+        height: 100%; 
+        overflow-y: auto; 
+        display: flex !important; 
+        flex-direction: column;
+        position: relative;
+    }
+
+    /* Tab Sticky: Sticks to the top of the middle corridor ONLY */
+    #tab-anchor { 
+        position: sticky; 
+        top: 0; 
+        z-index: 100; 
+        background: #070412; 
+    }
+
+    /* Horizontal Slide: Table moves side-to-side INSIDE the box */
+    #trade-display-area { 
+        width: 100%; 
+        overflow-x: auto; 
+        overflow-y: visible; 
+    }
+}     
     </style>
 </head>
 <body>
@@ -305,28 +362,46 @@
     // --- MOBILE NAVIGATION FIX ---
 // --- UNIFIED TERMINAL BRAIN ---
 
-function switchMobile(tab, element) {
-    // 1. Reset all panels
-    document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+    function switchMobile(tab, element) {
+    // 1. Reset
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('m-active'));
     document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
-    if (element) element.classList.add('active');
+    element.classList.add('active');
 
-    const chartSection = document.getElementById('panel-chart');
-    const tvArea = document.getElementById('tv_area');
-    const header = document.querySelector('.p-3.border-b'); 
-
+    // 2. Sequential Logic (No Overlap)
     if (tab === 'analysis') {
-        chartSection.style.display = 'flex';
-        tvArea.style.display = 'block';
-        if(header) header.style.display = 'flex';
-        setTab('o');
+        // Show BOTH Analysis (List) and Chart/Ledger stacked
+        document.getElementById('panel-analysis').classList.add('m-active');
+        document.getElementById('panel-chart').classList.add('m-active');
+        setTab('o'); // Show Open Positions by default
+    } else if (tab === 'trade') {
+        // Show ONLY the Trading Engine
+        document.getElementById('panel-trade').classList.add('m-active');
     } else if (tab === 'intel') {
-        chartSection.style.display = 'flex';
-        tvArea.style.display = 'none'; // KILLS CHART ON MOBILE NEWS
-        if(header) header.style.display = 'none'; // KILLS HEADER ON MOBILE NEWS
-        setTab('i');
+        // Show ONLY the News
+        document.getElementById('panel-chart').classList.add('m-active');
+        setTab('i'); // Trigger the Intel view
+    }
+}
+
+function setTab(t) {
+    curView = t;
+    
+    // Highlight active tab button
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    if(document.getElementById('tab-'+t)) document.getElementById('tab-'+t).classList.add('active');
+
+    const table = document.getElementById('ledger-table');
+    const empty = document.getElementById('empty-state');
+    const intel = document.getElementById('panel-intel');
+
+    // THE INFORMATION LOCK: Clean sweep before reveal
+    [table, empty, intel].forEach(el => el?.classList.add('hidden'));
+
+    if (t === 'i') {
+        intel?.classList.remove('hidden'); 
     } else {
-        document.getElementById('panel-trade').style.display = 'flex';
+        render(); // This shows table or "No Trades" msg correctly
     }
 }
 
