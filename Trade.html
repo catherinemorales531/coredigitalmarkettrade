@@ -362,25 +362,35 @@
     // --- MOBILE NAVIGATION FIX ---
 // --- UNIFIED TERMINAL BRAIN ---
 
-    function switchMobile(tab, element) {
-    // 1. Reset
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('m-active'));
+function switchMobile(tab, element) {
+    // 1. First, hide EVERY panel so we start with a clean screen
+    document.getElementById('panel-analysis').style.display = 'none';
+    document.getElementById('panel-chart').style.display = 'none';
+    document.getElementById('panel-trade').style.display = 'none';
+    
+    // 2. Clear the active look from the HUD buttons
     document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
     element.classList.add('active');
 
-    // 2. Sequential Logic (No Overlap)
+    // 3. THE REVEAL LOGIC (This is what you requested)
     if (tab === 'analysis') {
-        // Show BOTH Analysis (List) and Chart/Ledger stacked
-        document.getElementById('panel-analysis').classList.add('m-active');
-        document.getElementById('panel-chart').classList.add('m-active');
-        setTab('o'); // Show Open Positions by default
+        // Show the List AND the Chart/Ledger as a vertical stack
+        document.getElementById('panel-analysis').style.display = 'flex';
+        document.getElementById('panel-chart').style.display = 'flex';
+        
+        // Ensure the Chart is visible and News is hidden
+        document.getElementById('tv_area').style.display = 'block';
+        setTab('o'); // Show Open Trades under the chart
+        
     } else if (tab === 'trade') {
         // Show ONLY the Trading Engine
-        document.getElementById('panel-trade').classList.add('m-active');
+        document.getElementById('panel-trade').style.display = 'flex';
+        
     } else if (tab === 'intel') {
         // Show ONLY the News
-        document.getElementById('panel-chart').classList.add('m-active');
-        setTab('i'); // Trigger the Intel view
+        document.getElementById('panel-chart').style.display = 'flex';
+        document.getElementById('tv_area').style.display = 'none'; // Hide Chart
+        setTab('i'); // Force the News to show
     }
 }
 
