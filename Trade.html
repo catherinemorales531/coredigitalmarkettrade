@@ -24,166 +24,43 @@
             color: white; margin: 0; height: 100vh; overflow: hidden;
         }
 
-     
-        .silver-text { color: var(--spark-silver); text-shadow: 0 0 10px rgba(203, 213, 225, 0.3); }
-      .mono { font-family: 'JetBrains Mono', monospace; }
-
-        header.glass {
-    position: sticky !important;
-    top: 0;
-    z-index: 9999;
-    /* This color #0a061a is the darkest part of your Shiva gradient */
-    background-color: #0a061a !important; 
-    background-image: url('https://www.transparenttextures.com/patterns/stardust.png') !important;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-#panel-chart {
-    height: calc(100vh - 70px);
-    overflow-y: auto !important;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
-}
-        
-        /* --- SIDEBAR & PULSE --- */
-        #side-nav { position: fixed; top: 0; left: -100%; width: 100%; height: 100vh; background: var(--shiva-bg); background-image: url('https://www.transparenttextures.com/patterns/stardust.png'), var(--shiva-bg); z-index: 99999; transition: 0.5s ease; overflow-y: auto; padding: 20px; }
-        #side-nav.active { left: 0; }
-        .nav-blog { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; border-bottom: 0.5px solid rgba(203, 213, 225, 0.15); cursor: pointer; color: var(--spark-silver); font-weight: 700; }
-        .nav-content { display: flex; align-items: center; gap: 15px; }
-        .nav-icon { width: 22px; height: 22px; stroke: var(--spark-silver); fill: none; stroke-width: 1.5; }
-        .ammunition-pulse { width: 12px; height: 12px; background: #fff; border-radius: 50%; position: relative; box-shadow: 0 0 10px #3b82f6; }
-        .ammunition-pulse::before { content: ''; position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px; border: 2px solid #3b82f6; border-radius: 50%; animation: pulse-ring 2s infinite ease-out; }
-        @keyframes pulse-ring { 0% { transform: scale(0.5); opacity: 0; } 50% { opacity: 0.6; } 100% { transform: scale(3); opacity: 0; } }
-        .id-verify-card { background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(30,58,138,0.3)); border: 1px solid rgba(59,130,246,0.4); border-radius: 12px; padding: 18px; display: flex; align-items: center; gap: 15px; margin: 30px 0; }
-        .sub-menu { display: none; padding-left: 35px; background: rgba(0,0,0,0.2); }
-        .sub-menu.active { display: block; }
-        .sub-item { padding: 10px 0; font-size: 13px; opacity: 0.7; color: var(--spark-silver); border-bottom: 1px solid rgba(255,255,255,0.05); }
-
-        /* --- ENGINE DNA --- */
-        .engine-container { background: var(--engine-teal); border-radius: 14px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .trading-toggle { display: flex; background: rgba(0,0,0,0.4); border-radius: 8px; padding: 4px; margin-bottom: 20px; }
-        .toggle-btn { flex: 1; padding: 10px; border-radius: 6px; font-size: 11px; font-weight: 900; color: #94a3b8; cursor: pointer; text-align: center; text-transform: uppercase; transition: 0.3s; }
-        .toggle-btn.active { background: rgba(255,255,255,0.1); color: #fff; }
-        .inst-label { font-size: 10px; font-weight: 900; color: #64748b; text-transform: uppercase; margin-bottom: 5px; display: block; }
-        .inst-field { width: 100%; background: #cbd5e1 !important; color: #0f172a !important; border: none; padding: 12px; border-radius: 6px; font-weight: 900; font-size: 13px; outline: none; }
-        .p-btn { padding: 15px 5px; border-radius: 4px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
-        .p-btn .price { font-family: 'JetBrains Mono'; font-weight: 900; font-size: 18px; }
-        .exec-btn { width: 100%; padding: 18px; border-radius: 8px; font-weight: 900; font-size: 20px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.2); transition: 0.2s; }
-.terminal-grid { 
-    display: grid; 
-    grid-template-columns: 280px 1fr 360px; 
-    height: calc(100vh - 70px); 
-    overflow: hidden; 
-}
-
-#panel-chart {
-    overflow-y: auto !important;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
-    background: #070412;
-    display: flex;
-    flex-direction: column;
-}
-
-#tv_area { 
-    height: 600px !important; 
-    width: 100%; 
-    flex-shrink: 0; 
-}
- 
-        .panel { background: #070412; overflow-y: auto; display: flex; flex-direction: column; }
-        .mobile-hud { display: none; background: #000; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 60; }
-        .m-hud-btn { flex: 1; padding: 15px; font-size: 10px; font-weight: 900; text-transform: uppercase; text-align: center; color: #475569; cursor: pointer; }
-        .m-hud-btn.active { color: #3b82f6; border-bottom: 2px solid #3b82f6; }
-
-        @media (max-width: 1024px) {
-            .terminal-grid { display: block; height: calc(100vh - 120px); overflow-y: auto; }
-            .panel { display: none; width: 100%; }
-            .panel.m-active { display: flex !important; min-height: calc(100vh - 120px); }
-            #tv_area { height: 450px !important; min-height: 450px; }
-            .mobile-hud { display: flex; }
-            .side-hide { display: none; }
+     /* 1. SOLID HEADER (Hides chart when it slides up) */
+        header.glass { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+            z-index: 9999; background: #0a061a !important; 
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
         }
 
-        .tab-btn { padding: 12px 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; color: #475569; border-bottom: 2px solid transparent; }
-        .tab-btn.active { color: #3b82f6; border-bottom: 2px solid #3b82f6; background: rgba(59, 130, 246, 0.05); }
-        .win-notif { animation: fadeInUp 0.6s ease-out; border-left: 4px solid var(--buy-green); background: rgba(16, 185, 129, 0.05); margin-bottom: 10px; padding: 12px; border-radius: 4px; }
-        .market-row { border-bottom: 1px solid rgba(255,255,255,0.03); padding: 12px 15px; cursor: pointer; }
-        .hidden { display: none !important; }
+        /* 2. LAYOUT GRID */
+        .terminal-grid { 
+            display: grid; grid-template-columns: 280px 1fr 360px; 
+            height: 100vh; padding-top: 70px; box-sizing: border-box;
+        }
 
-#news-wire-container { position: relative; height: 100%; width: 100%; overflow: hidden; }
-.news-shield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 99; cursor: default; }
-#news-wire-container iframe { pointer-events: none !important; }
+        /* 3. CENTER COLUMN (The Film Strip) */
+        #panel-chart { 
+            overflow-y: auto !important; overflow-x: hidden;
+            scroll-behavior: smooth; background: #070412;
+        }
 
-    /* MARKET INTEL INDEPENDENT DESIGN */
-#panel-intel { background: transparent !important; backdrop-filter: blur(10px); }
-.intel-header-glow { background: rgba(59, 130, 246, 0.05); border-left: 4px solid #3b82f6; margin-bottom: 2px; }
-.news-click-shield { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; background: transparent; } 
+        /* 4. UI COMPONENTS */
+        .tab-btn { 
+            padding: 15px 20px; font-size: 11px; font-weight: 900; 
+            color: #475569; cursor: pointer; border-bottom: 2px solid transparent; 
+        }
+        .tab-btn.active { color: #3b82f6; border-bottom: 2px solid #3b82f6; background: rgba(59,130,246,0.05); }
+        .market-row { border-bottom: 1px solid rgba(255,255,255,0.03); padding: 12px 15px; }
+        .empty-msg { color: #94a3b8; font-size: 11px; font-weight: 800; text-align: center; padding: 60px 20px; text-transform: uppercase; }
 
-        .empty-msg { 
-    color: #94a3b8; font-size: 11px; font-weight: 800; text-align: center; 
-    padding: 60px 20px; text-transform: uppercase; letter-spacing: 0.1em; line-height: 1.6;
-}
-
-/* --- LIVING LEDGER: ELASTIC GROWTH --- */
-#panel-portfolio, #panel-intel {
-    height: auto; 
-    min-height: 250px; 
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-#trade-display-area, #intel-engine-core {
-    flex: 1;
-    height: auto;
-    max-height: 550px; 
-    overflow-y: auto; 
-    scrollbar-width: thin;
-    scrollbar-color: #3b82f6 transparent;
-}
-
-#l-head {
-    position: sticky;
-    top: 0;
-    background: #070412;
-    z-index: 20;
-}        
-
-#trade-display-area, #intel-engine-core {
-    height: auto;
-    max-height: 550px; /* Limits growth so it doesn't break the page */
-    overflow-y: auto; /* Adds scrollbar ONLY when needed */
-    scrollbar-width: thin;
-    scrollbar-color: #3b82f6 transparent;
-}
-
-/* Make headers stick to top while scrolling */
-#l-head {
-    position: sticky;
-    top: 0;
-    background: #070412;
-    z-index: 20;
-}
-
-header.glass { 
-    position: sticky; 
-    top: 0; 
-    z-index: 9999; 
-    background: #0a061a; 
-    border-bottom: 1px solid rgba(255,255,255,0.1); 
-}
-#panel-chart { 
-    height: calc(100vh - 70px); 
-    overflow-y: auto; 
-    overflow-x: hidden; 
-    scroll-behavior: smooth; 
-    display: block; 
-}
-.no-scroll { 
-    overflow-y: hidden !important; 
-}
-
+        @media (max-width: 1024px) {
+            .terminal-grid { display: block; padding-bottom: 80px; }
+            #panel-analysis, #panel-chart, #panel-trade { display: none; width: 100%; }
+            .mobile-hud { display: flex; position: fixed; bottom: 0; width: 100%; background: #000; z-index: 1000; border-top: 1px solid #1e293b; }
+            .m-hud-btn { flex: 1; padding: 20px; text-align: center; font-size: 10px; font-weight: 900; color: #475569; }
+            .m-hud-btn.active { color: #3b82f6; }
+        }
+     
         
     </style>
 </head>
@@ -242,166 +119,94 @@ header.glass {
 <div class="m-hud-btn" onclick="switchMobile('intel', this)">MARKET INTEL</div>
     </nav>
 
-    <main class="terminal-grid">
-        
-        <!-- LEFT: MARKET WATCH (Analysis Tab Mobile) -->
-        <aside id="panel-analysis" class="panel m-active border-r border-white/5">
-            <div class="p-4 border-b border-white/10 bg-white/5 font-black text-[10px] uppercase text-gray-400 tracking-widest">Market Watch</div>
-            <div id="watchlist-feed" class="flex-1 overflow-y-auto"></div>
+<main class="terminal-grid">
+        <!-- LEFT SIDEBAR -->
+        <aside id="panel-analysis" class="panel border-r border-white/5 overflow-y-auto">
+            <div class="p-4 border-b border-white/10 bg-white/5 font-black text-[10px] uppercase text-gray-400">Market Watch</div>
+            <div id="watchlist-feed"></div>
         </aside>
 
-        <!-- CENTER: CHART & LEDGER (Analysis/Portfolio Tab Mobile) -->
-      <section id="panel-chart" class="panel m-active border-r border-white/5">
-    
-    <!-- 1. THE CHART (Top of the strip) -->
-    <div id="tv_area" style="height: 600px; width: 100%; flex-shrink: 0;"></div>
-
-    <!-- 2. THE TABS (Stay on one line) -->
-    <div class="flex bg-white/5 border-b border-white/5 sticky top-0 z-50">
-        <div id="tab-o" class="tab-btn active" onclick="setTab('o')">Open Positions</div>
-        <div id="tab-c" class="tab-btn" onclick="setTab('c')">Closed Trades</div>
-        <div id="tab-i" class="tab-btn" onclick="setTab('i')">Market Intel</div>
-    </div>
-
-    <!-- 3. THE DATA AREA (Where info swaps) -->
-    <div id="display-content" style="min-height: 500px; padding-bottom: 50px;">
-        <div id="empty-state" class="empty-msg"></div>
-        
-        <table id="ledger-table" class="w-full text-left min-w-[950px] hidden">
-            <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-[45px] bg-black">
-                <tr id="l-head"></tr>
-            </thead>
-            <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
-        </table>
-
-        <!-- MARKET INTEL (Inside the scroller) -->
-        <div id="panel-intel" class="hidden relative p-4">
-            <!-- SHIELD: Blocks clicks but allows scroll -->
-            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;"></div>
-            <div class="tradingview-widget-container">
-                <div class="tradingview-widget-container__widget"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-                {"feedMode": "all_symbols","isTransparent": true,"displayMode": "regular","width": "100%","height": 800,"colorTheme": "dark","locale": "en"}
-                </script>
+        <!-- CENTER SCROLLER -->
+        <section id="panel-chart" class="panel">
+            <div id="asset-header" class="p-3 border-b border-white/5 bg-black/20 flex justify-between items-center">
+                <span id="active-asset-label" class="text-sm font-black silver-text uppercase">EUR / USD</span>
+                <span class="text-[8px] font-bold text-emerald-400 uppercase">Institutional Live</span>
             </div>
-        </div>
-    </div>
-        <div class="flex-1 overflow-auto relative" id="trade-display-area">
-            <div id="empty-state" class="empty-msg"></div>
-            <table id="ledger-table" class="w-full text-left min-w-[950px] hidden">
-                <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-0 bg-black"><tr id="l-head"></tr></thead>
-                <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
-            </table>
-        </div>
-    </div>
-          
-<div id="panel-intel" class="hidden flex-col p-4 relative">
-    <!-- SHIELD: Blocks clicks, allows scroll -->
-    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5;"></div>
-    
-    <div class="tradingview-widget-container">
-        <div class="tradingview-widget-container__widget"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-        {"feedMode": "all_symbols","isTransparent": true,"displayMode": "regular","width": "100%","height": 800,"colorTheme": "dark","locale": "en"}
-        </script>
-    </div>
-</div>
-</section>
+            <div id="tv_area" style="height: 650px; width: 100%; flex-shrink: 0;"></div>
 
-        <!-- RIGHT: ENGINE (Trade Tab Mobile) -->
-        <aside id="panel-trade" class="panel p-5 bg-[#0a061a]">
-            <div class="trading-toggle">
-                <div id="fx-t" class="toggle-btn active" onclick="setMode('fx')">Forex Pairs</div>
-                <div id="cry-t" class="toggle-btn" onclick="setMode('crypto')">Cryptocurrency</div>
+            <div class="flex bg-white/5 border-b border-white/5 sticky top-0 z-50">
+                <div id="tab-o" class="tab-btn active" onclick="setTab('o')">Open Positions</div>
+                <div id="tab-c" class="tab-btn" onclick="setTab('c')">Closed Trades</div>
+                <div id="tab-i" class="tab-btn" onclick="setTab('i')">Market Intel</div>
             </div>
-            <div class="engine-container space-y-6">
+
+            <div id="display-content" style="min-height: 500px;">
+                <div id="empty-state" class="empty-msg"></div>
+                <table id="ledger-table" class="w-full text-left min-w-[900px] hidden">
+                    <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-[45px] bg-black"><tr id="l-head"></tr></thead>
+                    <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
+                </table>
+                <div id="panel-intel" class="hidden relative p-4">
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;"></div>
+                    <div id="tradingview_news"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT ENGINE -->
+        <aside id="panel-trade" class="panel p-5 bg-[#0a061a] border-l border-white/5">
+             <div class="engine-container space-y-6">
                 <div class="grid grid-cols-2 gap-2">
-                    <div class="p-btn" style="background:#dc2626"><span class="inst-label opacity-60">SELL</span><span class="price" id="p-s">--.----</span></div>
-                    <div class="p-btn" style="background:#2563eb"><span class="inst-label opacity-60">BUY</span><span class="price" id="p-b">--.----</span></div>
+                    <div class="p-3 rounded bg-red-600 text-center"><span class="block text-[10px] opacity-60">SELL</span><span id="p-s" class="mono font-black">--.----</span></div>
+                    <div class="p-3 rounded bg-blue-600 text-center"><span class="block text-[10px] opacity-60">BUY</span><span id="p-b" class="mono font-black">--.----</span></div>
                 </div>
-                <div><span class="inst-label">Institutional Asset</span><select id="asset-picker" class="inst-field font-black" onchange="applyAsset()"></select></div>
-                
-                <div id="fx-only" class="space-y-4">
-                    <div><span class="inst-label">Order Type</span><select class="inst-field font-black"><option>Market Order</option><option>Limit Order</option><option>Stop Order</option><option>Stop-Limit Order</option></select></div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><span class="inst-label">Trade Size</span><input type="text" placeholder="0.00" class="inst-field" id="lots-in" oninput="calc()"></div>
-                        <div><span class="inst-label">Margin Req.</span><input type="text" placeholder="$0.00" class="inst-field" id="margin-out" readonly></div>
-                    </div>
-                    <div><span class="inst-label">Duration</span><select class="inst-field font-black"><option>Good ’Til Cancelled</option><option>Day</option><option>Immediate or Cancel</option><option>Fill or Kill (FOK)</option><option>Good ’Til Date (GTD)</option></select></div>
-                </div>
-
-                <div id="cry-only" class="space-y-4 hidden">
-                    <div><span class="inst-label">Order Type</span><select class="inst-field font-black"><option>Limit Order</option><option>Stop Order</option><option>Stop-Limit Order</option><option>Market Order</option></select></div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><span class="inst-label">Amount</span><input type="text" placeholder="0.00" class="inst-field" id="amt-in" oninput="calc()"></div>
-                        <div><span class="inst-label">Total USDT</span><input type="text" placeholder="0.00" class="inst-field" id="total-out" readonly></div>
-                    </div>
-                    <div><span class="inst-label">Time in Force</span><select class="inst-field font-black"><option>Good ’Til Cancelled (GTC)</option><option>Immediate or Cancel (IOC)</option><option>Fill or Kill (FOK)</option><option>Good ’Til Date (GTD)</option></select></div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div><span class="inst-label">Stop Loss</span><input type="text" placeholder="Auto" class="inst-field"></div>
-                    <div><span class="inst-label">Take Profit</span><input type="text" placeholder="Auto" class="inst-field"></div>
-                </div>
-
-                <div><span class="inst-label">Interval</span><select class="inst-field font-black"><option>1 min</option><option>3 min</option><option>5 min</option><option>15 min</option><option>30 min</option><option>1 hr</option><option>2 hr</option><option>1 day</option></select></div>
-                <button class="exec-btn buy-main" onclick="order('BUY')">Execute Buy Order</button>
-                <button class="exec-btn sell-main" onclick="order('SELL')">Execute Sell Order</button>
+                <select id="asset-picker" class="inst-field font-black" onchange="applyAsset()">
+                    <option value="EUR/USD">EUR/USD</option>
+                    <option value="GBP/USD">GBP/USD</option>
+                    <option value="BTC/USDT">BTC/USDT</option>
+                </select>
+                <button class="exec-btn bg-blue-600 text-white" onclick="order('BUY')">Execute Buy Order</button>
+                <button class="exec-btn bg-red-600 text-white" onclick="order('SELL')">Execute Sell Order</button>
             </div>
-            <div id="testimony-feed" class="mt-8 border-t border-white/5 pt-6 space-y-2"></div>
         </aside>
     </main>
-
-  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
-    // 1. DATA & STATE VARIABLES
-    let curMkt = 'fx'; 
-    let curAsset = 'EUR/USD'; 
-    let curView = 'o';
-    let oArr = []; 
-    let cArr = [];
+    let curAsset = 'EUR/USD'; let curView = 'o'; let oArr = []; let cArr = [];
+    const fxPool = ["EUR/USD","GBP/USD","USD/JPY","USD/CAD","AUD/USD"];
+    const cryPool = ["BTC/USDT","ETH/USDT","XRP/USDT","LTC/USDT"];
 
-    const fxPool = ["EUR/USD","GBP/USD","USD/JPY","USD/CHF","USD/CAD","AUD/USD","NZD/USD","EUR/GBP","EUR/JPY","GBP/JPY","AUD/CAD","AUD/JPY","AUD/NZD","CAD/JPY","EUR/AUD","EUR/CAD","EUR/CHF","EUR/NZD","GBP/AUD","GBP/CAD","GBP/CHF","GBP/NZD","NZD/CAD","NZD/JPY","USD/MXN","USD/TRY","USD/ZAR","USD/SEK","USD/NOK","USD/DKK","USD/SGD","USD/HKD"];
-    const cryPool = ["BTC/USDT","ETH/USDT","SOL/USDT","XRP/USDT","ADA/USDT","DOT/USDT","DOGE/USDT","MATIC/USDT","LINK/USDT","AVAX/USDT","SHIB/USDT","UNI/USDT","LTC/USDT","ATOM/USDT","ALGO/USDT","TRX/USDT"];
-
-    // 2. GENERAL UTILITIES
-    function toggleSideMenu() { document.getElementById('side-nav').classList.toggle('active'); }
-    function toggleSub(id) { document.getElementById(id).classList.toggle('active'); }
     function clock() { document.getElementById('inst-clock').innerText = new Date().toLocaleString(); }
     setInterval(clock, 1000);
 
-    // 3. THE MASTER NAVIGATION BRAIN
     function switchMobile(tab, element) {
         document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
         document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
         if (element) element.classList.add('active');
 
-        const chartSection = document.getElementById('panel-chart');
+        const chartZone = document.getElementById('panel-chart');
         const tvArea = document.getElementById('tv_area');
-        const header = document.getElementById('asset-header'); 
+        const header = document.getElementById('asset-header');
 
         if (tab === 'analysis') {
-            chartSection.style.display = 'block';
-            if(tvArea) tvArea.style.display = 'block';
-            if(header) header.style.display = 'flex';
+            chartZone.style.display = 'block';
+            tvArea.style.display = 'block';
+            header.style.display = 'flex';
             setTab('o');
         } else if (tab === 'intel') {
-            chartSection.style.display = 'block';
-            if(tvArea) tvArea.style.display = 'none'; 
-            if(header) header.style.display = 'none'; 
+            chartZone.style.display = 'block';
+            tvArea.style.display = 'none'; // HIDE CHART ON MOBILE NEWS
+            header.style.display = 'none'; // HIDE HEADER ON MOBILE NEWS
             setTab('i');
-        } else {
-            document.getElementById('panel-trade').style.display = 'flex';
+        } else if (tab === 'trade') {
+            document.getElementById('panel-trade').style.display = 'block';
         }
     }
 
     function setTab(t) {
         curView = t;
-        const panel = document.getElementById('panel-chart');
-        
-        if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o');
-        if(document.getElementById('tab-c')) document.getElementById('tab-c').classList.toggle('active', t === 'c');
-        if(document.getElementById('tab-i')) document.getElementById('tab-i').classList.toggle('active', t === 'i');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        if(document.getElementById('tab-' + t)) document.getElementById('tab-' + t).classList.add('active');
 
         const table = document.getElementById('ledger-table');
         const empty = document.getElementById('empty-state');
@@ -412,118 +217,79 @@ header.glass {
         if(intel) intel.classList.add('hidden');
 
         if (t === 'i') {
-            if(intel) intel.classList.remove('hidden');
-            if(panel) panel.classList.remove('no-scroll'); 
+            intel.classList.remove('hidden');
+            loadNews();
         } else {
-            render(); 
+            render();
         }
     }
 
-    // 4. TRADING ENGINE LOGIC
-    function initWatch() {
-        const b = document.getElementById('watchlist-feed'); 
-        let html = '';
-        const clickable = ["EUR/USD", "GBP/USD", "USD/JPY", "BTC/USDT", "ETH/USDT", "LTC/USDT", "XRP/USDT"];
+    function loadNews() {
+        const container = document.getElementById('tradingview_news');
+        container.innerHTML = '';
+        const script = document.createElement('script');
+        script.src = "https://s3.tradingview.com/external-embedding/embed-widget-timeline.js";
+        script.async = true;
+        script.innerHTML = JSON.stringify({"feedMode": "all_symbols","isTransparent": true,"displayMode": "regular","width": "100%","height": 800,"colorTheme": "dark","locale": "en"});
+        container.appendChild(script);
+    }
 
+    function initWatch() {
+        const b = document.getElementById('watchlist-feed');
+        let html = '';
         [...fxPool, ...cryPool].forEach(s => {
-            const isLive = clickable.includes(s);
-            const price = (Math.random() * (1.5 - 1.1) + 1.1).toFixed(4);
-            html += `<div class="market-row flex justify-between items-center ${isLive ? 'cursor-pointer' : ''}" 
-                 ${isLive ? `onclick="document.getElementById('asset-picker').value='${s}';applyAsset();"` : ''}>
-                <div>
-                    <p class="text-[11px] font-black silver-text uppercase tracking-wider">${s}</p>
-                    <p class="text-[7px] font-bold uppercase ${isLive ? 'text-blue-400' : 'text-gray-500'}">${isLive ? 'Live Execution' : 'Market Data'}</p>
-                </div>
-                <p class="text-xs mono font-bold text-emerald-400">${price}</p>
+            html += `<div class="market-row flex justify-between items-center" onclick="document.getElementById('asset-picker').value='${s}';applyAsset();">
+                <div><p class="text-[11px] font-black uppercase text-white">${s}</p><p class="text-[7px] text-blue-400">INSTITUTIONAL</p></div>
+                <p class="text-xs mono font-bold text-emerald-400">1.${Math.floor(Math.random()*9000)}</p>
             </div>`;
         });
         b.innerHTML = html;
     }
 
-    function setMode(m) {
-        curMkt = m;
-        document.getElementById('fx-t').classList.toggle('active', m==='fx');
-        document.getElementById('cry-t').classList.toggle('active', m==='crypto');
-        document.getElementById('fx-only').classList.toggle('hidden', m!=='fx');
-        document.getElementById('cry-only').classList.toggle('hidden', m==='fx');
-        const s = document.getElementById('asset-picker');
-        s.innerHTML = (m==='fx' ? fxPool : cryPool).map(a => `<option value="${a}">${a}</option>`).join('');
-        applyAsset();
-    }
-
     function applyAsset() {
-        curAsset = document.getElementById('asset-picker').value || curAsset;
+        curAsset = document.getElementById('asset-picker').value;
         document.getElementById('active-asset-label').innerText = curAsset;
-        new TradingView.widget({"autosize": true, "symbol": (curMkt==='fx'?'FX:':'BINANCE:')+curAsset.replace('/',''), "interval": "15", "theme": "dark", "style": "1", "container_id": "tv_area"});
-    }
-
-    function calc() {
-        if(curMkt==='fx') document.getElementById('margin-out').value = '$' + (document.getElementById('lots-in').value * 1000).toLocaleString();
-        else document.getElementById('total-out').value = (document.getElementById('amt-in').value * 62300).toFixed(2);
+        new TradingView.widget({"autosize": true, "symbol": curAsset.replace('/',''), "interval": "15", "theme": "dark", "style": "1", "container_id": "tv_area"});
     }
 
     function updatePrices() {
-        let bse = curAsset.includes('BTC')?62300:1.0842;
-        const s = (bse + Math.random()*0.002).toFixed(5);
+        const s = (1.0842 + Math.random()*0.002).toFixed(5);
         document.getElementById('p-s').innerText = s;
         document.getElementById('p-b').innerText = (parseFloat(s)+0.0001).toFixed(5);
-        oArr.forEach(t => { t.pl = (Math.random()*120-40).toFixed(2); });
+        oArr.forEach(t => { t.pl = (Math.random()*100 - 50).toFixed(2); });
         render();
     }
     setInterval(updatePrices, 2000);
 
     function order(side) {
-        oArr.unshift({id: Math.floor(100000+Math.random()*899999)+"XP", asset:curAsset, side, str:document.getElementById('p-b').innerText, pl:"0.00"});
-        render(); alert("Execution Successful");
+        oArr.unshift({id: Math.floor(1000+Math.random()*9000)+"XP", asset:curAsset, side, str:document.getElementById('p-b').innerText, pl:"0.00"});
+        render(); alert("Order Executed");
     }
 
     function settle(id) {
-        const t = oArr.splice(oArr.findIndex(t => t.id === id), 1)[0];
+        const t = oArr.splice(oArr.findIndex(x => x.id === id), 1)[0];
         t.res = parseFloat(t.pl)>0?"WIN":"LOSS"; t.time = new Date().toLocaleTimeString();
         cArr.unshift(t); render();
     }
-        
-    function render() {
-        const b = document.getElementById('l-body'); const h = document.getElementById('l-head'); 
-        const e = document.getElementById('empty-state'); const tbl = document.getElementById('ledger-table');
-        const panel = document.getElementById('panel-chart');
-        if (!b) return;
-        
-        let html = '';
-        const hasData = (curView === 'o' && oArr.length > 0) || (curView === 'c' && cArr.length > 0);
 
+    function render() {
+        const b = document.getElementById('l-body'); const h = document.getElementById('l-head');
+        const e = document.getElementById('empty-state'); const tbl = document.getElementById('ledger-table');
+        if (!b) return;
+        let html = '';
         if (curView === 'o') {
             h.innerHTML = '<th>ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>P/L</th><th>Action</th>';
-            if (oArr.length === 0) { 
-                if(e) { e.innerText = "No active positions."; e.classList.remove('hidden'); }
-                if(tbl) tbl.classList.add('hidden');
-            } else {
-                if(e) e.classList.add('hidden');
-                if(tbl) tbl.classList.remove('hidden');
-                oArr.forEach(t => { html += `<tr class="border-b border-white/5"><td class="p-3">${t.id}</td><td>${t.asset}</td><td class="${t.side==='BUY'?'text-emerald-400':'text-red-400'}">${t.side}</td><td>${t.str}</td><td class="${parseFloat(t.pl)>0?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td><button onclick="settle('${t.id}')" class="text-blue-400">CLOSE</button></td></tr>`; });
-            }
-        } else if (curView === 'c') {
+            if (oArr.length === 0) { e.classList.remove('hidden'); tbl.classList.add('hidden'); e.innerText="No active positions."; }
+            else { e.classList.add('hidden'); tbl.classList.remove('hidden'); oArr.forEach(t => { html += `<tr class="border-b border-white/5"><td class="p-3">${t.id}</td><td>${t.asset}</td><td class="text-emerald-400">${t.side}</td><td>${t.str}</td><td>$${t.pl}</td><td><button onclick="settle('${t.id}')">CLOSE</button></td></tr>`; }); }
+        } else {
             h.innerHTML = '<th>ID</th><th>Asset</th><th>Result</th><th>Time</th>';
-            if (cArr.length === 0) {
-                if(e) { e.innerText = "History empty."; e.classList.remove('hidden'); }
-                if(tbl) tbl.classList.add('hidden');
-            } else {
-                if(e) e.classList.add('hidden');
-                if(tbl) tbl.classList.remove('hidden');
-                cArr.forEach(t => { html += `<tr class="border-b border-white/5 opacity-70"><td class="p-3">${t.id}</td><td>${t.asset}</td><td class="${t.res==='WIN'?'text-emerald-400':'text-red-400'}">${t.res}</td><td>${t.time}</td></tr>`; });
-            }
+            if (cArr.length === 0) { e.classList.remove('hidden'); tbl.classList.add('hidden'); e.innerText="History empty."; }
+            else { e.classList.add('hidden'); tbl.classList.remove('hidden'); cArr.forEach(t => { html += `<tr class="border-b border-white/5 opacity-70"><td class="p-3">${t.id}</td><td>${t.asset}</td><td class="text-red-400">${t.res}</td><td>${t.time}</td></tr>`; }); }
         }
         b.innerHTML = html;
-
-        if (curView !== 'i') {
-            if (hasData) { if(panel) panel.classList.remove('no-scroll'); } 
-            else { if(panel) { panel.classList.add('no-scroll'); panel.scrollTop = 0; } }
-        }
     }
-
-    // 5. STARTUP
-    window.onload = () => { clock(); initWatch(); setMode('fx'); render(); };
+    window.onload = () => { initWatch(); applyAsset(); render(); };
 </script>
-    
 </body>
 </html>
+
