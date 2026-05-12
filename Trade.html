@@ -16,6 +16,19 @@
             --sell-red: #ef4444;
         }
 
+/* Add this to your CSS */
+.panel, #tv_area, #panel-intel {
+    backface-visibility: hidden;
+    transform: translateZ(0); /* Forces GPU acceleration */
+    transition: none !important; /* Transitions cause lag during heavy widget loading */
+}
+
+/* Speed up click response on mobile */
+.m-hud-btn, .tab-btn, .nav-blog {
+    touch-action: manipulation;
+    cursor: pointer;
+}
+        
         body {
             font-family: 'Inter', sans-serif;
             background: var(--shiva-bg);
@@ -296,44 +309,48 @@
 <script>
     let curMkt = 'fx'; let curAsset = 'EUR/USD'; let curView = 'o';
     let oArr = []; let cArr = [];
+let tvWidget = null; // <--- PASTE THIS HERE 
 
     function toggleSideMenu() { document.getElementById('side-nav').classList.toggle('active'); }
     function toggleSub(id) { document.getElementById(id).classList.toggle('active'); }
     function clock() { document.getElementById('inst-clock').innerText = new Date().toLocaleString(); }
     setInterval(clock, 1000);
 
-    // --- MOBILE NAVIGATION FIX ---
-// --- UNIFIED TERMINAL BRAIN ---
 function switchMobile(tab, element) {
-    // 1. Line 309: Don't run this switching logic if on a laptop
     if (window.innerWidth > 1024) return;
 
-    // 2. Line 312: Hide all panels and reset HUD buttons
-    document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+    // 1. Immediate UI Feedback (Highlight the button instantly)
     document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
-    if (element) element.classList.add('active');
+    element.classList.add('active');
 
-    const chartSection = document.getElementById('panel-chart');
-    const tvArea = document.getElementById('tv_area');
-    const header = document.querySelector('#chart-header'); // The EUR/USD label
+    // 2. Use requestAnimationFrame to make the switch feel instant
+    window.requestAnimationFrame(() => {
+        const panels = ['panel-analysis', 'panel-chart', 'panel-trade', 'panel-intel'];
+        panels.forEach(p => document.getElementById(p).style.display = 'none');
 
-    if (tab === 'analysis') {
-        chartSection.style.display = 'flex';
-        tvArea.style.display = 'block';
-        if(header) header.style.display = 'flex';
-        setTab('o'); // Show Open Positions by default
-    } 
-    else if (tab === 'intel') {
-        chartSection.style.display = 'flex';
-        tvArea.style.display = 'none'; // HIDE CHART FOR NEWS
-        if(header) header.style.display = 'none'; // HIDE HEADER FOR NEWS
-        setTab('i'); // Show Market Intel feed
-    } 
-    else if (tab === 'trade') {
-        document.getElementById('panel-trade').style.display = 'flex';
-    }
+        const tvArea = document.getElementById('tv_area');
+        const header = document.querySelector('#chart-header');
+
+        if (tab === 'analysis') {
+            document.getElementById('panel-analysis').style.display = 'flex';
+            document.getElementById('panel-chart').style.display = 'flex';
+            tvArea.style.display = 'block';
+            if(header) header.style.display = 'flex';
+            setTab('o');
+        } 
+        else if (tab === 'trade') {
+            document.getElementById('panel-trade').style.display = 'flex';
+        } 
+        else if (tab === 'intel') {
+            document.getElementById('panel-chart').style.display = 'flex';
+            tvArea.style.display = 'none'; // Hiding the chart saves huge memory
+            if(header) header.style.display = 'none';
+            setTab('i');
+        }
+    });
 }
 
+    
 function setTab(t) {
     curView = t;
     // 1. Highlight the correct tab inside the portfolio section
@@ -394,13 +411,28 @@ function setMode(m) {
     s.innerHTML = (m==='fx' ? fxPool : cryPool).map(a => `<option value="${a}">${a}</option>`).join('');
     applyAsset();
 }
-
 function applyAsset() {
     curAsset = document.getElementById('asset-picker').value || curAsset;
     document.getElementById('active-asset-label').innerText = curAsset;
-    new TradingView.widget({"autosize": true, "symbol": (curMkt==='fx'?'FX:':'BINANCE:')+curAsset.replace('/',''), "interval": "15", "theme": "dark", "style": "1", "container_id": "tv_area"});
-}
 
+    // This part stops the lag by clearing the old chart before loading the new one
+    const tvArea = document.getElementById('tv_area');
+    if (tvArea) {
+        tvArea.innerHTML = ''; 
+    }
+
+    tvWidget = new TradingView.widget({
+        "autosize": true,
+        "symbol": (curMkt==='fx'?'FX:':'BINANCE:')+curAsset.replace('/',''),
+        "interval": "15",
+        "theme": "dark",
+        "style": "1",
+        "container_id": "tv_area",
+        "hide_top_toolbar": true,
+        "save_image": false
+    });
+}
+    
 function calc() {
     if(curMkt==='fx') document.getElementById('margin-out').value = '$' + (document.getElementById('lots-in').value * 1000).toLocaleString();
     else document.getElementById('total-out').value = (document.getElementById('amt-in').value * 62300).toFixed(2);
