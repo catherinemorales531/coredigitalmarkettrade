@@ -21,7 +21,7 @@
             background: var(--shiva-bg);
             background-image: url('https://www.transparenttextures.com/patterns/stardust.png'), var(--shiva-bg);
             background-attachment: fixed;
-            color: white; margin: 0; height: 100vh; overflow: hidden;
+            color: white; margin: 0;min-height: 100vh; overflow-x: hidden; overflow-y: auto;
         }
 
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
@@ -57,18 +57,17 @@
   .terminal-grid { 
     display: grid; 
     grid-template-columns: 280px 1fr 360px; 
-    height: 100vh; 
-    overflow: hidden; 
+   height: auto; min-height: calc(100vh - 70px);
 }
 #tv_area { height: 650px !important; width: 100%; }
-#trade-display-area { height: 400px; overflow-y: auto; position: relative; }
-        .panel { background: #070412; overflow-y: auto; display: flex; flex-direction: column; }
+ #trade-display-area { height: auto; min-height: 400px; overflow-y: visible; position: relative; }
+  panel { background: #070412; overflow-y: visible; display: flex; flex-direction: column; }
         .mobile-hud { display: none; background: #000; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 60; }
         .m-hud-btn { flex: 1; padding: 15px; font-size: 10px; font-weight: 900; text-transform: uppercase; text-align: center; color: #475569; cursor: pointer; }
         .m-hud-btn.active { color: #3b82f6; border-bottom: 2px solid #3b82f6; }
 
         @media (max-width: 1024px) {
-            .terminal-grid { display: block; height: calc(100vh - 120px); overflow-y: auto; }
+            .terminal-grid { display: block; height: calc(100vh - 120px); overflow-y: visible; }
             .panel { display: none; width: 100%; }
             .panel.m-active { display: flex !important; min-height: calc(100vh - 120px); }
             #tv_area { height: 450px !important; min-height: 450px; }
@@ -76,7 +75,18 @@
             .side-hide { display: none; }
         }
 
-        .tab-btn { padding: 12px 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; cursor: pointer; color: #475569; border-bottom: 2px solid transparent; }
+       .tab-btn { 
+    padding: 12px 15px; 
+    font-size: 10px; 
+    font-weight: 900; 
+    text-transform: uppercase; 
+    cursor: pointer; 
+    color: #475569; 
+    border-bottom: 2px solid transparent; 
+    white-space: nowrap; 
+    flex-shrink: 0; 
+    transition: 0.2s;
+}
         .tab-btn.active { color: #3b82f6; border-bottom: 2px solid #3b82f6; background: rgba(59, 130, 246, 0.05); }
         .win-notif { animation: fadeInUp 0.6s ease-out; border-left: 4px solid var(--buy-green); background: rgba(16, 185, 129, 0.05); margin-bottom: 10px; padding: 12px; border-radius: 4px; }
         .market-row { border-bottom: 1px solid rgba(255,255,255,0.03); padding: 12px 15px; cursor: pointer; }
@@ -135,6 +145,16 @@
     top: 0;
     background: #070412;
     z-index: 20;
+}
+
+@media (min-width: 1024px) {
+    #tab-anchor {
+        position: sticky;
+        top: 70px; 
+        z-index: 100;
+        background: #070412;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
 }
         
     </style>
@@ -214,7 +234,7 @@
 
     <!-- 2. TRADES LEDGER (Middle) -->
     <div id="panel-portfolio" class="panel flex flex-col border-t border-white/10">
-        <div class="flex bg-white/5 border-b border-white/5 overflow-x-auto">
+      <div id="tab-anchor" class="flex bg-white/5 border-b border-white/5 overflow-x-auto">
           <div id="tab-o" class="tab-btn active" onclick="setTab('o')">Open Positions</div>
 <div id="tab-c" class="tab-btn" onclick="setTab('c')">Closed Trades</div>
 <div id="tab-i" class="tab-btn" onclick="setTab('i')">Market Intel</div> 
@@ -223,29 +243,33 @@
             <div id="empty-state" class="empty-msg"></div>
             <table id="ledger-table" class="w-full text-left min-w-[950px] hidden">
                 <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-0 bg-black"><tr id="l-head"></tr></thead>
-                <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
+              <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
+        
             </table>
+       <!-- 2. EMPTY STATE MSG -->
+    <div id="empty-state" class="empty-msg hidden"></div>
+
+    <!-- 3. MARKET INTEL (The News Feed) -->
+    <div id="panel-intel" class="hidden flex-col p-4 relative">
+        <div class="news-shield absolute inset-0 z-50 pointer-events-none"></div>
+        <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+            {
+              "feedMode": "all_symbols",
+              "isTransparent": true,
+              "displayMode": "regular",
+              "width": "100%",
+              "height": 600,
+              "colorTheme": "dark",
+              "locale": "en"
+            }
+            </script>
         </div>
     </div>
-
-    <!-- 3. MARKET INTEL (Bottom) -->
-   <div class="flex-1 relative" id="trade-display-area">
-    <div id="empty-state" class="empty-msg"></div>
-    
-    <table id="ledger-table" class="w-full text-left min-w-[950px] hidden">
-        <thead class="text-[9px] text-gray-600 uppercase font-black sticky top-0 bg-black"><tr id="l-head"></tr></thead>
-        <tbody id="l-body" class="mono text-[11px] font-bold silver-text"></tbody>
-    </table>
-
-    <div id="panel-intel" class="hidden flex-col p-4">
-        <!-- News feed will show here and hide the table above -->
-        <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-        {"feedMode": "all_symbols","isTransparent": true,"displayMode": "regular","width": "100%","height": 600,"colorTheme": "dark","locale": "en"}
-        </script></div>
+      </div>
     </div>
-</div>
-    </div>
+
 </section>
 
         <!-- RIGHT: ENGINE (Trade Tab Mobile) -->
@@ -332,7 +356,8 @@ function switchMobile(tab, element) {
 
 function setTab(t) {
     curView = t;
-    // 2. Highlight correct tab
+    
+    // 1. Highlight the active button
     if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o');
     if(document.getElementById('tab-c')) document.getElementById('tab-c').classList.toggle('active', t === 'c');
     if(document.getElementById('tab-i')) document.getElementById('tab-i').classList.toggle('active', t === 'i');
@@ -341,15 +366,16 @@ function setTab(t) {
     const empty = document.getElementById('empty-state');
     const intel = document.getElementById('panel-intel');
 
-    // 3. Clear the content box (Fixes "Wrong Information" bug)
+    // 2. THE LOCK: Hide everything first so nothing overlaps
     if(table) table.classList.add('hidden');
     if(empty) empty.classList.add('hidden');
     if(intel) intel.classList.add('hidden');
 
+    // 3. THE REVEAL: Show only what was clicked
     if (t === 'i') {
         if(intel) intel.classList.remove('hidden'); 
     } else {
-        render(); // Shows table or "No trades" message
+        render(); // This shows the table or the "No trades" message for O/C
     }
 }
 
