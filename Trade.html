@@ -352,209 +352,176 @@ header.glass {
         </aside>
     </main>
 
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
-    let curMkt = 'fx'; let curAsset = 'EUR/USD'; let curView = 'o';
-    let oArr = []; let cArr = [];
+    // 1. DATA & STATE VARIABLES
+    let curMkt = 'fx'; 
+    let curAsset = 'EUR/USD'; 
+    let curView = 'o';
+    let oArr = []; 
+    let cArr = [];
 
+    const fxPool = ["EUR/USD","GBP/USD","USD/JPY","USD/CHF","USD/CAD","AUD/USD","NZD/USD","EUR/GBP","EUR/JPY","GBP/JPY","AUD/CAD","AUD/JPY","AUD/NZD","CAD/JPY","EUR/AUD","EUR/CAD","EUR/CHF","EUR/NZD","GBP/AUD","GBP/CAD","GBP/CHF","GBP/NZD","NZD/CAD","NZD/JPY","USD/MXN","USD/TRY","USD/ZAR","USD/SEK","USD/NOK","USD/DKK","USD/SGD","USD/HKD"];
+    const cryPool = ["BTC/USDT","ETH/USDT","SOL/USDT","XRP/USDT","ADA/USDT","DOT/USDT","DOGE/USDT","MATIC/USDT","LINK/USDT","AVAX/USDT","SHIB/USDT","UNI/USDT","LTC/USDT","ATOM/USDT","ALGO/USDT","TRX/USDT"];
+
+    // 2. GENERAL UTILITIES
     function toggleSideMenu() { document.getElementById('side-nav').classList.toggle('active'); }
     function toggleSub(id) { document.getElementById(id).classList.toggle('active'); }
     function clock() { document.getElementById('inst-clock').innerText = new Date().toLocaleString(); }
     setInterval(clock, 1000);
 
-    // --- MOBILE NAVIGATION FIX ---
-// --- UNIFIED TERMINAL BRAIN ---
+    // 3. THE MASTER NAVIGATION BRAIN
+    function switchMobile(tab, element) {
+        document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+        document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
+        if (element) element.classList.add('active');
 
-   function switchMobile(tab, element) {
-    // 1. Reset all panels
-    document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
-    document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
-    if (element) element.classList.add('active');
+        const chartSection = document.getElementById('panel-chart');
+        const tvArea = document.getElementById('tv_area');
+        const header = document.getElementById('asset-header'); 
 
-    const chartSection = document.getElementById('panel-chart');
-    const tvArea = document.getElementById('tv_area');
-    const header = document.getElementById('asset-header'); // The bar that says EUR/USD
-
-    if (tab === 'analysis') {
-        chartSection.style.display = 'block';
-        if(tvArea) tvArea.style.display = 'block';
-        if(header) header.style.display = 'flex';
-        setTab('o');
-    } else if (tab === 'intel') {
-        chartSection.style.display = 'block';
-        if(tvArea) tvArea.style.display = 'none'; // KILLS CHART ON MOBILE NEWS
-        if(header) header.style.display = 'none'; // KILLS HEADER ON MOBILE NEWS
-        setTab('i');
-    } else {
-        document.getElementById('panel-trade').style.display = 'flex';
-    }
-}
-
-function setTab(t) {
-    curView = t;
-    const panel = document.getElementById('panel-chart');
-    
-    // 2. Highlight correct Tab Button
-    if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o');
-    if(document.getElementById('tab-c')) document.getElementById('tab-c').classList.toggle('active', t === 'c');
-    if(document.getElementById('tab-i')) document.getElementById('tab-i').classList.toggle('active', t === 'i');
-
-    const table = document.getElementById('ledger-table');
-    const empty = document.getElementById('empty-state');
-    const intel = document.getElementById('panel-intel');
-
-    // 3. INFORMATION LOCK: Clear the screen before showing new data
-    if(table) table.classList.add('hidden');
-    if(empty) empty.classList.add('hidden');
-    if(intel) intel.classList.add('hidden');
-
-    if (t === 'i') {
-        if(intel) intel.classList.remove('hidden');
-        if(panel) panel.classList.remove('no-scroll'); // News always allows scroll
-    } else {
-        render(); // This will decide if it needs to lock scroll for trades
-    }
-}
-
-function render() {
-    const b = document.getElementById('l-body');
-    const h = document.getElementById('l-head');
-    const e = document.getElementById('empty-state');
-    const tbl = document.getElementById('ledger-table');
-    const panel = document.getElementById('panel-chart');
-    if (!b) return;
-    
-    let html = '';
-    const hasData = (curView === 'o' && oArr.length > 0) || (curView === 'c' && cArr.length > 0);
-
-    if (curView === 'o') {
-        h.innerHTML = '<th>ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>P/L</th><th>Action</th>';
-        if (oArr.length === 0) { 
-            e.innerText = "No active positions."; e.classList.remove('hidden'); if(tbl) tbl.classList.add('hidden');
+        if (tab === 'analysis') {
+            chartSection.style.display = 'block';
+            if(tvArea) tvArea.style.display = 'block';
+            if(header) header.style.display = 'flex';
+            setTab('o');
+        } else if (tab === 'intel') {
+            chartSection.style.display = 'block';
+            if(tvArea) tvArea.style.display = 'none'; 
+            if(header) header.style.display = 'none'; 
+            setTab('i');
         } else {
-            e.classList.add('hidden'); if(tbl) tbl.classList.remove('hidden');
-            oArr.forEach(t => { html += `<tr class="border-b border-white/5"><td class="p-3">${t.id}</td><td>${t.asset}</td><td class="${t.side==='BUY'?'text-emerald-400':'text-red-400'}">${t.side}</td><td>${t.str}</td><td class="${parseFloat(t.pl)>0?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td><button onclick="settle('${t.id}')" class="text-blue-400">CLOSE</button></td></tr>`; });
-        }
-    } else if (curView === 'c') {
-        h.innerHTML = '<th>ID</th><th>Asset</th><th>Result</th><th>Time</th>';
-        if (cArr.length === 0) {
-            e.innerText = "History empty."; e.classList.remove('hidden'); if(tbl) tbl.classList.add('hidden');
-        } else {
-            e.classList.add('hidden'); if(tbl) tbl.classList.remove('hidden');
-            cArr.forEach(t => { html += `<tr class="border-b border-white/5 opacity-70"><td class="p-3">${t.id}</td><td>${t.asset}</td><td class="${t.res==='WIN'?'text-emerald-400':'text-red-400'}">${t.res}</td><td>${t.time}</td></tr>`; });
+            document.getElementById('panel-trade').style.display = 'flex';
         }
     }
-    b.innerHTML = html;
 
-    // 4. SMART SCROLL: Only allows sliding if there is something to see
-    if (curView !== 'i') {
-        if (hasData) {
+    function setTab(t) {
+        curView = t;
+        const panel = document.getElementById('panel-chart');
+        
+        if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o');
+        if(document.getElementById('tab-c')) document.getElementById('tab-c').classList.toggle('active', t === 'c');
+        if(document.getElementById('tab-i')) document.getElementById('tab-i').classList.toggle('active', t === 'i');
+
+        const table = document.getElementById('ledger-table');
+        const empty = document.getElementById('empty-state');
+        const intel = document.getElementById('panel-intel');
+
+        if(table) table.classList.add('hidden');
+        if(empty) empty.classList.add('hidden');
+        if(intel) intel.classList.add('hidden');
+
+        if (t === 'i') {
+            if(intel) intel.classList.remove('hidden');
             if(panel) panel.classList.remove('no-scroll'); 
         } else {
-            if(panel) {
-                panel.classList.add('no-scroll'); 
-                panel.scrollTop = 0; // Snap chart back to top
-            }
+            render(); 
         }
     }
-} 
 
-    b.innerHTML = html;
+    // 4. TRADING ENGINE LOGIC
+    function initWatch() {
+        const b = document.getElementById('watchlist-feed'); 
+        let html = '';
+        const clickable = ["EUR/USD", "GBP/USD", "USD/JPY", "BTC/USDT", "ETH/USDT", "LTC/USDT", "XRP/USDT"];
 
-    // --- THE SCROLL LOCK ENGINE ---
-    if (curView !== 'i') { // If we are not on news
-        if (hasData) {
-            panel.classList.remove('no-scroll'); // Unlock if there are trades
-        } else {
-            panel.classList.add('no-scroll'); // Lock if empty
-            panel.scrollTop = 0; // Snap chart back to top
-        }
-    }
-}
-
-const fxPool = ["EUR/USD","GBP/USD","USD/JPY","USD/CHF","USD/CAD","AUD/USD","NZD/USD","EUR/GBP","EUR/JPY","GBP/JPY","AUD/CAD","AUD/JPY","AUD/NZD","CAD/JPY","EUR/AUD","EUR/CAD","EUR/CHF","EUR/NZD","GBP/AUD","GBP/CAD","GBP/CHF","GBP/NZD","NZD/CAD","NZD/JPY","USD/MXN","USD/TRY","USD/ZAR","USD/SEK","USD/NOK","USD/DKK","USD/SGD","USD/HKD"];
-const cryPool = ["BTC/USDT","ETH/USDT","SOL/USDT","XRP/USDT","ADA/USDT","DOT/USDT","DOGE/USDT","MATIC/USDT","LINK/USDT","AVAX/USDT","SHIB/USDT","UNI/USDT","LTC/USDT","ATOM/USDT","ALGO/USDT","TRX/USDT"];
-
-function initWatch() {
-    const b = document.getElementById('watchlist-feed'); b.innerHTML = '';
-    const allAssets = [...fxPool, ...cryPool];
-    const clickableAssets = ["EUR/USD", "GBP/USD", "USD/JPY", "BTC/USDT", "ETH/USDT", "LTC/USDT", "XRP/USDT"];
-
-    allAssets.forEach(s => {
-        const price = (Math.random() * (1.5 - 1.1) + 1.1).toFixed(4);
-        const isLive = clickableAssets.includes(s);
-        b.innerHTML += `
-            <div class="market-row flex justify-between items-center ${isLive ? 'cursor-pointer hover:bg-white/5' : 'cursor-default'}" 
+        [...fxPool, ...cryPool].forEach(s => {
+            const isLive = clickable.includes(s);
+            const price = (Math.random() * (1.5 - 1.1) + 1.1).toFixed(4);
+            html += `<div class="market-row flex justify-between items-center ${isLive ? 'cursor-pointer' : ''}" 
                  ${isLive ? `onclick="document.getElementById('asset-picker').value='${s}';applyAsset();"` : ''}>
                 <div>
                     <p class="text-[11px] font-black silver-text uppercase tracking-wider">${s}</p>
-                    <p class="text-[7px] font-bold uppercase ${isLive ? 'text-blue-400' : 'text-gray-500'}">
-                        ${isLive ? 'Live Execution' : 'Market Data Only'}
-                    </p>
+                    <p class="text-[7px] font-bold uppercase ${isLive ? 'text-blue-400' : 'text-gray-500'}">${isLive ? 'Live Execution' : 'Market Data'}</p>
                 </div>
-                <div class="text-right"><p class="text-xs mono font-bold text-emerald-400">${price}</p></div>
+                <p class="text-xs mono font-bold text-emerald-400">${price}</p>
             </div>`;
-    });
-}
-
-function setMode(m) {
-    curMkt = m;
-    document.getElementById('fx-t').classList.toggle('active', m==='fx');
-    document.getElementById('cry-t').classList.toggle('active', m==='crypto');
-    document.getElementById('fx-only').classList.toggle('hidden', m!=='fx');
-    document.getElementById('cry-only').classList.toggle('hidden', m==='fx');
-    const s = document.getElementById('asset-picker');
-    s.innerHTML = (m==='fx' ? fxPool : cryPool).map(a => `<option value="${a}">${a}</option>`).join('');
-    applyAsset();
-}
-
-function applyAsset() {
-    curAsset = document.getElementById('asset-picker').value || curAsset;
-    document.getElementById('active-asset-label').innerText = curAsset;
-    new TradingView.widget({"autosize": true, "symbol": (curMkt==='fx'?'FX:':'BINANCE:')+curAsset.replace('/',''), "interval": "15", "theme": "dark", "style": "1", "container_id": "tv_area"});
-}
-
-function calc() {
-    if(curMkt==='fx') document.getElementById('margin-out').value = '$' + (document.getElementById('lots-in').value * 1000).toLocaleString();
-    else document.getElementById('total-out').value = (document.getElementById('amt-in').value * 62300).toFixed(2);
-}
-
-function updatePrices() {
-    let bse = curAsset.includes('BTC')?62300:1.0842;
-    const s = (bse + Math.random()*0.002).toFixed(5);
-    document.getElementById('p-s').innerText = s;
-    document.getElementById('p-b').innerText = (parseFloat(s)+0.0001).toFixed(5);
-    oArr.forEach(t => { t.pl = (Math.random()*120-40).toFixed(2); });
-    render();
-}
-setInterval(updatePrices, 1500);
-
-function order(side) {
-    oArr.unshift({id: Math.floor(100000+Math.random()*899999)+"XP", asset:curAsset, side, str:document.getElementById('p-b').innerText, pl:"0.00"});
-    render(); alert("Execution Successful");
-}
-
-function settle(id) {
-    const t = oArr.splice(oArr.findIndex(t => t.id === id), 1)[0];
-    t.res = parseFloat(t.pl)>0?"WIN":"LOSS"; t.time = new Date().toLocaleTimeString();
-    cArr.unshift(t); render();
-}
-        
-function render() {
-    const b = document.getElementById('l-body'); const h = document.getElementById('l-head'); 
-    const e = document.getElementById('empty-state'); const tbl = document.getElementById('ledger-table');
-    if (!b || !e) return;
-    b.innerHTML = '';
-    if(curView === 'o') {
-        h.innerHTML = '<th>ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>P/L</th><th>Action</th>';
-        if(oArr.length === 0) { e.innerText = "No active positions."; e.classList.remove('hidden'); tbl.classList.add('hidden'); } 
-        else { e.classList.add('hidden'); tbl.classList.remove('hidden'); oArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5"><td class="p-3">${t.id}</td><td>${t.asset}</td><td class="${t.side==='BUY'?'text-emerald-400':'text-red-400'}">${t.side}</td><td>${t.str}</td><td class="${parseFloat(t.pl)>0?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td><button onclick="settle('${t.id}')" class="text-blue-400">CLOSE</button></td></tr>`); }
-    } else if(curView === 'c') {
-        h.innerHTML = '<th>ID</th><th>Asset</th><th>Result</th><th>Time</th>';
-        if(cArr.length === 0) { e.innerText = "History empty."; e.classList.remove('hidden'); tbl.classList.add('hidden'); } 
-        else { e.classList.add('hidden'); tbl.classList.remove('hidden'); cArr.forEach(t => b.innerHTML += `<tr class="border-b border-white/5 opacity-70"><td class="p-3">${t.id}</td><td>${t.asset}</td><td class="${t.res==='WIN'?'text-emerald-400':'text-red-400'}">${t.res}</td><td>${t.time}</td></tr>`); }
+        });
+        b.innerHTML = html;
     }
-}
+
+    function setMode(m) {
+        curMkt = m;
+        document.getElementById('fx-t').classList.toggle('active', m==='fx');
+        document.getElementById('cry-t').classList.toggle('active', m==='crypto');
+        document.getElementById('fx-only').classList.toggle('hidden', m!=='fx');
+        document.getElementById('cry-only').classList.toggle('hidden', m==='fx');
+        const s = document.getElementById('asset-picker');
+        s.innerHTML = (m==='fx' ? fxPool : cryPool).map(a => `<option value="${a}">${a}</option>`).join('');
+        applyAsset();
+    }
+
+    function applyAsset() {
+        curAsset = document.getElementById('asset-picker').value || curAsset;
+        document.getElementById('active-asset-label').innerText = curAsset;
+        new TradingView.widget({"autosize": true, "symbol": (curMkt==='fx'?'FX:':'BINANCE:')+curAsset.replace('/',''), "interval": "15", "theme": "dark", "style": "1", "container_id": "tv_area"});
+    }
+
+    function calc() {
+        if(curMkt==='fx') document.getElementById('margin-out').value = '$' + (document.getElementById('lots-in').value * 1000).toLocaleString();
+        else document.getElementById('total-out').value = (document.getElementById('amt-in').value * 62300).toFixed(2);
+    }
+
+    function updatePrices() {
+        let bse = curAsset.includes('BTC')?62300:1.0842;
+        const s = (bse + Math.random()*0.002).toFixed(5);
+        document.getElementById('p-s').innerText = s;
+        document.getElementById('p-b').innerText = (parseFloat(s)+0.0001).toFixed(5);
+        oArr.forEach(t => { t.pl = (Math.random()*120-40).toFixed(2); });
+        render();
+    }
+    setInterval(updatePrices, 2000);
+
+    function order(side) {
+        oArr.unshift({id: Math.floor(100000+Math.random()*899999)+"XP", asset:curAsset, side, str:document.getElementById('p-b').innerText, pl:"0.00"});
+        render(); alert("Execution Successful");
+    }
+
+    function settle(id) {
+        const t = oArr.splice(oArr.findIndex(t => t.id === id), 1)[0];
+        t.res = parseFloat(t.pl)>0?"WIN":"LOSS"; t.time = new Date().toLocaleTimeString();
+        cArr.unshift(t); render();
+    }
+        
+    function render() {
+        const b = document.getElementById('l-body'); const h = document.getElementById('l-head'); 
+        const e = document.getElementById('empty-state'); const tbl = document.getElementById('ledger-table');
+        const panel = document.getElementById('panel-chart');
+        if (!b) return;
+        
+        let html = '';
+        const hasData = (curView === 'o' && oArr.length > 0) || (curView === 'c' && cArr.length > 0);
+
+        if (curView === 'o') {
+            h.innerHTML = '<th>ID</th><th>Asset</th><th>Side</th><th>Strike</th><th>P/L</th><th>Action</th>';
+            if (oArr.length === 0) { 
+                if(e) { e.innerText = "No active positions."; e.classList.remove('hidden'); }
+                if(tbl) tbl.classList.add('hidden');
+            } else {
+                if(e) e.classList.add('hidden');
+                if(tbl) tbl.classList.remove('hidden');
+                oArr.forEach(t => { html += `<tr class="border-b border-white/5"><td class="p-3">${t.id}</td><td>${t.asset}</td><td class="${t.side==='BUY'?'text-emerald-400':'text-red-400'}">${t.side}</td><td>${t.str}</td><td class="${parseFloat(t.pl)>0?'text-emerald-400':'text-red-400'}">$${t.pl}</td><td><button onclick="settle('${t.id}')" class="text-blue-400">CLOSE</button></td></tr>`; });
+            }
+        } else if (curView === 'c') {
+            h.innerHTML = '<th>ID</th><th>Asset</th><th>Result</th><th>Time</th>';
+            if (cArr.length === 0) {
+                if(e) { e.innerText = "History empty."; e.classList.remove('hidden'); }
+                if(tbl) tbl.classList.add('hidden');
+            } else {
+                if(e) e.classList.add('hidden');
+                if(tbl) tbl.classList.remove('hidden');
+                cArr.forEach(t => { html += `<tr class="border-b border-white/5 opacity-70"><td class="p-3">${t.id}</td><td>${t.asset}</td><td class="${t.res==='WIN'?'text-emerald-400':'text-red-400'}">${t.res}</td><td>${t.time}</td></tr>`; });
+            }
+        }
+        b.innerHTML = html;
+
+        if (curView !== 'i') {
+            if (hasData) { if(panel) panel.classList.remove('no-scroll'); } 
+            else { if(panel) { panel.classList.add('no-scroll'); panel.scrollTop = 0; } }
+        }
+    }
+
+    // 5. STARTUP
     window.onload = () => { clock(); initWatch(); setMode('fx'); render(); };
 </script>
     
