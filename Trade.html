@@ -16,19 +16,6 @@
             --sell-red: #ef4444;
         }
 
-/* Add this to your CSS */
-.panel, #tv_area, #panel-intel {
-    backface-visibility: hidden;
-    transform: translateZ(0); /* Forces GPU acceleration */
-    transition: none !important; /* Transitions cause lag during heavy widget loading */
-}
-
-/* Speed up click response on mobile */
-.m-hud-btn, .tab-btn, .nav-blog {
-    touch-action: manipulation;
-    cursor: pointer;
-}
-        
         body {
             font-family: 'Inter', sans-serif;
             background: var(--shiva-bg);
@@ -112,7 +99,7 @@
 /* --- LIVING LEDGER: ELASTIC GROWTH --- */
 #panel-portfolio, #panel-intel {
     height: auto; 
-    min-height: 400px; 
+    min-height: 250px; 
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
@@ -309,51 +296,43 @@
 <script>
     let curMkt = 'fx'; let curAsset = 'EUR/USD'; let curView = 'o';
     let oArr = []; let cArr = [];
-let tvWidget = null; // <--- PASTE THIS HERE 
 
     function toggleSideMenu() { document.getElementById('side-nav').classList.toggle('active'); }
     function toggleSub(id) { document.getElementById(id).classList.toggle('active'); }
     function clock() { document.getElementById('inst-clock').innerText = new Date().toLocaleString(); }
     setInterval(clock, 1000);
 
+    // --- MOBILE NAVIGATION FIX ---
+// --- UNIFIED TERMINAL BRAIN ---
+
 function switchMobile(tab, element) {
-    if (window.innerWidth > 1024) return;
-
-    // 1. Immediate UI Feedback (Highlight the button instantly)
+    // 1. Reset all panels
+    document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
     document.querySelectorAll('.m-hud-btn').forEach(b => b.classList.remove('active'));
-    element.classList.add('active');
+    if (element) element.classList.add('active');
 
-    // 2. Use requestAnimationFrame to make the switch feel instant
-    window.requestAnimationFrame(() => {
-        const panels = ['panel-analysis', 'panel-chart', 'panel-trade', 'panel-intel'];
-        panels.forEach(p => document.getElementById(p).style.display = 'none');
+    const chartSection = document.getElementById('panel-chart');
+    const tvArea = document.getElementById('tv_area');
+    const header = document.querySelector('.p-3.border-b'); 
 
-        const tvArea = document.getElementById('tv_area');
-        const header = document.querySelector('#chart-header');
-
-        if (tab === 'analysis') {
-            document.getElementById('panel-analysis').style.display = 'flex';
-            document.getElementById('panel-chart').style.display = 'flex';
-            tvArea.style.display = 'block';
-            if(header) header.style.display = 'flex';
-            setTab('o');
-        } 
-        else if (tab === 'trade') {
-            document.getElementById('panel-trade').style.display = 'flex';
-        } 
-        else if (tab === 'intel') {
-            document.getElementById('panel-chart').style.display = 'flex';
-            tvArea.style.display = 'none'; // Hiding the chart saves huge memory
-            if(header) header.style.display = 'none';
-            setTab('i');
-        }
-    });
+    if (tab === 'analysis') {
+        chartSection.style.display = 'flex';
+        tvArea.style.display = 'block';
+        if(header) header.style.display = 'flex';
+        setTab('o');
+    } else if (tab === 'intel') {
+        chartSection.style.display = 'flex';
+        tvArea.style.display = 'none'; // KILLS CHART ON MOBILE NEWS
+        if(header) header.style.display = 'none'; // KILLS HEADER ON MOBILE NEWS
+        setTab('i');
+    } else {
+        document.getElementById('panel-trade').style.display = 'flex';
+    }
 }
 
-    
 function setTab(t) {
     curView = t;
-    // 1. Highlight the correct tab inside the portfolio section
+    // 2. Highlight correct tab
     if(document.getElementById('tab-o')) document.getElementById('tab-o').classList.toggle('active', t === 'o');
     if(document.getElementById('tab-c')) document.getElementById('tab-c').classList.toggle('active', t === 'c');
     if(document.getElementById('tab-i')) document.getElementById('tab-i').classList.toggle('active', t === 'i');
@@ -362,17 +341,15 @@ function setTab(t) {
     const empty = document.getElementById('empty-state');
     const intel = document.getElementById('panel-intel');
 
-    // 2. Hide everything in the section first
+    // 3. Clear the content box (Fixes "Wrong Information" bug)
     if(table) table.classList.add('hidden');
     if(empty) empty.classList.add('hidden');
     if(intel) intel.classList.add('hidden');
 
-    // 3. Logic to show the News or the Tables
     if (t === 'i') {
         if(intel) intel.classList.remove('hidden'); 
-        window.dispatchEvent(new Event('resize')); // Refresh News Widget
     } else {
-        render(); // This shows the trade tables
+        render(); // Shows table or "No trades" message
     }
 }
 
@@ -411,28 +388,13 @@ function setMode(m) {
     s.innerHTML = (m==='fx' ? fxPool : cryPool).map(a => `<option value="${a}">${a}</option>`).join('');
     applyAsset();
 }
+
 function applyAsset() {
     curAsset = document.getElementById('asset-picker').value || curAsset;
     document.getElementById('active-asset-label').innerText = curAsset;
-
-    // This part stops the lag by clearing the old chart before loading the new one
-    const tvArea = document.getElementById('tv_area');
-    if (tvArea) {
-        tvArea.innerHTML = ''; 
-    }
-
-    tvWidget = new TradingView.widget({
-        "autosize": true,
-        "symbol": (curMkt==='fx'?'FX:':'BINANCE:')+curAsset.replace('/',''),
-        "interval": "15",
-        "theme": "dark",
-        "style": "1",
-        "container_id": "tv_area",
-        "hide_top_toolbar": true,
-        "save_image": false
-    });
+    new TradingView.widget({"autosize": true, "symbol": (curMkt==='fx'?'FX:':'BINANCE:')+curAsset.replace('/',''), "interval": "15", "theme": "dark", "style": "1", "container_id": "tv_area"});
 }
-    
+
 function calc() {
     if(curMkt==='fx') document.getElementById('margin-out').value = '$' + (document.getElementById('lots-in').value * 1000).toLocaleString();
     else document.getElementById('total-out').value = (document.getElementById('amt-in').value * 62300).toFixed(2);
