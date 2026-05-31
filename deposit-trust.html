@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Institutional Funding Portal - Core Digital</title>
+    <!-- Frameworks -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --shiva-gradient: radial-gradient(circle at 20% 35%, #1b1035 0%, #0a061a 100%);
+            --spark-silver: #cbd5e1;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--shiva-gradient);
+            background-image: url('https://www.transparenttextures.com/patterns/stardust.png'), var(--shiva-gradient);
+            background-attachment: fixed;
+            color: white; margin: 0; min-height: 100vh; overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR STYLE (STRICT COMPLIANCE) --- */
+        #side-nav {
+            position: fixed; top: 0; left: -100%; width: 100%; height: 100vh;
+            background: var(--shiva-gradient); background-image: url('https://www.transparenttextures.com/patterns/stardust.png'), var(--shiva-gradient);
+            z-index: 99999; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; padding: 20px;
+        }
+        #side-nav.active { left: 0; }
+        .nav-blog { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; border-bottom: 0.5px solid rgba(203, 213, 225, 0.15); cursor: pointer; }
+        .nav-content { display: flex; align-items: center; gap: 15px; color: var(--spark-silver); font-size: 15px; font-weight: 700; }
+        .nav-icon { width: 20px; height: 20px; stroke: var(--spark-silver); fill: none; stroke-width: 1.5; }
+        .sub-menu { display: none; padding-left: 45px; background: rgba(0, 0, 0, 0.2); }
+        .sub-menu.active { display: block; }
+        .sub-item { padding: 12px 0; color: var(--spark-silver); font-size: 13px; font-weight: 500; opacity: 0.7; border-bottom: 0.5px solid rgba(255, 255, 255, 0.05); cursor: pointer; }
+        .id-verify-card { background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(30,58,138,0.3)); border: 1px solid rgba(59,130,246,0.4); border-radius: 12px; padding: 18px; display: flex; align-items: center; gap: 15px; margin: 30px 0; }
+        .ammunition-pulse { width: 12px; height: 12px; background: #fff; border-radius: 50%; position: relative; box-shadow: 0 0 10px #3b82f6; }
+        .ammunition-pulse::before { content: ''; position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px; border: 2px solid #3b82f6; border-radius: 50%; animation: pulse-ring 2s infinite ease-out; }
+        @keyframes pulse-ring { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(3); opacity: 0; } }
+
+        /* --- BOX MODEL INTEGRITY & HELEKET CARD --- */
+        .deposit-card {
+            background: #ffffff; color: #111827; border-radius: 28px; width: 92%; max-width: 480px;
+            margin: 20px auto; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            box-sizing: border-box;
+        }
+        .selector-box { border: 2px solid #f3f4f6; border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s; }
+        .selector-box:hover { border-color: #111827; }
+
+        /* BOLD VISUAL FIXES */
+        .bold-help-btn { border: 2.5px solid #111827; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #111827; font-size: 16px; }
+        .lang-selector { position: relative; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 14px; color: #111827; }
+        #crypto-search { color: #000000 !important; font-weight: 800; border: 2.5px solid #f3f4f6; padding: 16px; border-radius: 14px; width: 100%; outline: none; }
+        .timer-label { color: #000000 !important; font-weight: 900; text-transform: uppercase; font-size: 11px; }
+        .timer-green { color: #10b981 !important; font-weight: 900; font-family: 'JetBrains Mono'; }
+
+        /* HORIZONTAL TRACKER */
+        .h-tracker { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 30px; }
+        .h-dot { width: 10px; height: 10px; border-radius: 50%; background: #e5e7eb; position: relative; flex-shrink: 0; }
+        .h-dot.active { background: #10b981; box-shadow: 0 0 10px #10b981; }
+        .h-line { flex: 1; height: 2.5px; background: #e5e7eb; margin: 0 8px; }
+        .h-line.active { background: #10b981; }
+
+        /* INFO BOXES */
+        .info-box { background: #f9fafb; border-radius: 12px; padding: 15px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #f1f5f9; }
+        .info-label { font-size: 11px; font-weight: 700; color: #6b7280; }
+        .info-val { font-size: 13px; font-weight: 900; color: #111827; }
+
+        /* MODALS */
+        .modal-overlay { display: none; position: fixed; inset: 0; z-index: 100001; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: white; width: 100%; max-width: 460px; border-radius: 28px; padding: 25px; height: 80vh; display: flex; flex-direction: column; color: #111827; }
+        .coin-item { display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 14px; cursor: pointer; }
+        .coin-item:hover { background: #f3f4f6; }
+
+        .btn-pay { background: #111827; color: white; width: 100%; padding: 20px; border-radius: 16px; font-weight: 800; text-transform: uppercase; margin-top: 20px; transition: 0.3s; }
+        .btn-pay:disabled { opacity: 0.3; cursor: not-allowed; }
+        
+        .live-chat-fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.4); z-index: 999; }
+
+
+        /* Ensure Language Dropdown is visible and on top */
+#lang-dropdown {
+    display: none; /* Controlled by JS */
+    position: absolute;
+    z-index: 999999 !important;
+    background: white !important;
+    border: 1px solid #e5e7eb;
+}
+
+/* Professional FAQ Modal Styling */
+.faq-box {
+    background: white;
+    width: 95%;
+    max-width: 550px;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh; /* Limits height on mobile/laptop */
+    overflow: hidden; /* Clips the inner content */
+    box-shadow: 0 30px 60px -12px rgba(0,0,0,0.5);
+}
+
+.faq-header {
+    padding: 25px 30px;
+    border-bottom: 1.5px solid #f3f4f6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+}
+
+.faq-body {
+    padding: 10px 30px 30px 30px;
+    overflow-y: auto; /* ENABLE SCROLLING HERE */
+    scrollbar-width: thin;
+}
+
+/* Scrollbar styling for a professional look */
+.faq-body::-webkit-scrollbar { width: 6px; }
+.faq-body::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+
+.faq-item { margin-top: 25px; }
+
+.faq-q {
+    font-weight: 900;
+    color: #111827;
+    font-size: 15px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.faq-a {
+    color: #6b7280;
+    font-size: 13.5px;
+    line-height: 1.6;
+    font-weight: 500;
+}
+ 
+/* Fixed Language Selector UI */
+.lang-selector-container {
+    position: relative;
+    display: inline-block;
+}
+
+.lang-current-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f8fafc;
+    padding: 8px 12px;
+    border-radius: 99px;
+    cursor: pointer;
+    border: 1.5px solid #e2e8f0;
+    transition: 0.2s;
+}
+
+.lang-current-btn:hover { border-color: #111827; }
+
+.lang-flag-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ddd;
+}
+
+.lang-dropdown-menu {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: white;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    border-radius: 18px;
+    width: 200px;
+    z-index: 999999;
+    padding: 10px;
+    border: 1px solid #f1f5f9;
+}
+
+.lang-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: #111827;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.lang-option:hover { background: #f3f4f6; }
+
+/* Flag sizing for menu items */
+.lang-option img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
+
+
+ </style>
+</head>
+<body>
+
+    <!-- 1. FULL SIDEBAR (EXACT COMPLIANCE) -->
+      <div id="side-nav">
+        <div onclick="toggleSideMenu()" class="text-3xl text-white opacity-40 mb-6 cursor-pointer w-fit">✕</div>
+        <div class="flex items-center gap-5 mb-10">
+            <div class="w-14 h-14 rounded-full border-2 border-white/10 p-1 flex items-center justify-center bg-white/5 font-black text-xl">JD</div>
+            <div>
+                <h2 class="text-xl font-black silver-text uppercase tracking-tight">JOHN</h2>
+                <div class="flex items-center gap-2 mt-1"><div class="ammunition-pulse"></div><span class="text-[10px] font-bold text-blue-400 tracking-widest uppercase">Live Account</span></div>
+            </div>
+        </div>
+
+        <div class="flex flex-col mt-4">
+            <div class="nav-blog" onclick="location.href='index.html'"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg><span>Dashboard</span></div></div>
+            <div class="nav-blog" onclick="toggleSideMenu()"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 3v18M18 3v18M3 8h6M15 13h6M3 15h6M15 6h6"></path></svg><span>Trade</span></div></div>
+            <div class="nav-blog" onclick="toggleSub('sub-trans')"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg><span>Transactions</span></div><svg class="nav-icon w-3 h-3" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div>
+            <div id="sub-trans" class="sub-menu"><div class="sub-item">Trade History</div><div class="sub-item">Earnings</div></div>
+            <div class="nav-blog" onclick="toggleSub('sub-depo')"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"></path><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"></path></svg><span>Deposit</span></div><svg class="nav-icon w-3 h-3" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div>
+            <div id="sub-depo" class="sub-menu"><div class="sub-item">Deposit Funds</div><div class="sub-item">Deposit History</div></div>
+            <div class="nav-blog" onclick="toggleSub('sub-with')"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg><span>Withdraw</span></div><svg class="nav-icon w-3 h-3" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></div>
+            <div id="sub-with" class="sub-menu"><div class="sub-item">Withdrawal Funds</div><div class="sub-item">Withdrawal History</div></div>
+            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg><span>Investment Plans</span></div></div>
+            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg><span>Copy Experts</span></div></div>
+            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path><circle cx="12" cy="12" r="3"></circle></svg><span>Signals</span></div></div>
+            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="16" y1="11" x2="22" y2="11"></line></svg><span>Invite Friends</span></div></div>
+            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 21h18M3 7v14M21 7v14M3 7l9-4 9 4M10 21V11M14 21V11"></path></svg><span>Stocks</span></div></div>
+            <div class="nav-blog"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg><span>Security & 2FA</span></div></div>
+        </div>
+
+        <div class="id-verify-card">
+            <div class="w-14 h-14 bg-blue-600/20 rounded-xl flex items-center justify-center border border-blue-400/30">
+                <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </div>
+            <div><p class="font-black silver-text text-sm uppercase tracking-wider">Identity Verification</p><p class="text-[10px] font-bold text-blue-300 opacity-70">Lv.1 Verified</p></div>
+        </div>
+        <button class="w-full py-4 border border-white/20 rounded text-center font-bold text-white tracking-widest mt-6 uppercase">Log Out</button>
+    </div>
+
+    <!-- 2. MASTER HEADER -->
+    <header class="p-6 flex justify-between items-center max-w-[1400px] mx-auto sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center font-black">CD</div>
+            <span class="silver-text font-black text-xl uppercase tracking-tighter">JOHN</span>
+        </div>
+        <div class="flex items-center gap-8">
+            <div class="ammunition-pulse"></div>
+            <div onclick="toggleSideMenu()" class="space-y-1.5 cursor-pointer opacity-70 hover:opacity-100 transition">
+                <div class="w-8 h-0.5 bg-white"></div><div class="w-8 h-0.5 bg-white"></div><div class="w-8 h-0.5 bg-white"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. MAIN DEPOSIT SECTION -->
+    <main class="px-4 pb-20">
+        <div class="deposit-card">
+            <!-- Top Branding -->
+            <div class="flex justify-between items-center mb-8">
+                <span class="text-red-600 font-black text-xl tracking-tighter">Heleket</span>
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleFaq(true)" class="bold-help-btn">?</button>
+                    <div class="lang-selector" onclick="toggleLangMenu()">
+                        <img id="curr-flag" src="https://flagcdn.com/w40/us.png" class="w-6 h-6 rounded-full object-cover">
+                        <span>EN</span>
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                        <div id="lang-dropdown" class="lang-dropdown">
+                            <div class="lang-item" onclick="changeLang('EN', 'us')"><img src="https://flagcdn.com/w20/us.png" class="w-5"> English</div>
+                            <div class="lang-item" onclick="changeLang('ES', 'es')"><img src="https://flagcdn.com/w20/es.png" class="w-5"> Spanish</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 1: SELECTION -->
+            <div id="step-selection">
+                <div class="flex justify-between border-b pb-4 mb-4">
+                    <span class="text-gray-400 font-bold">To pay:</span>
+                    <span id="usd-header" class="text-2xl font-black text-gray-900">$0.00 USD</span>
+                </div>
+
+                <div class="h-tracker">
+                    <div class="h-dot active"></div><div class="h-line active"></div>
+                    <div class="h-dot"></div><div class="h-line"></div>
+                    <div class="h-dot"></div>
+                </div>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase">Select currency</label>
+                        <div class="selector-box mt-1" onclick="openSearch()">
+                            <div class="flex items-center gap-3">
+                                <img id="sel-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" class="w-6 h-6 opacity-30">
+                                <span id="sel-name" class="font-bold text-gray-400">Select Cryptocurrency</span>
+                            </div>
+                            <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase">Select network</label>
+                        <select id="net-select" class="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 font-bold outline-none bg-white appearance-none cursor-pointer" onchange="updateUI()">
+                            <option value="">-- Choose Network --</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase">Amount (Enter USD)</label>
+                        <input type="number" id="amt-input" class="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 font-bold text-lg outline-none focus:border-blue-500" placeholder="0.00" oninput="updateUI()">
+                    </div>
+
+                    <!-- CALCULATED INFO BOXES -->
+                    <div id="payable-box" class="info-box hidden">
+                        <span class="info-label">Amount payable in selected currency</span>
+                        <span id="payable-val" class="info-val text-blue-600">0.00 --</span>
+                    </div>
+
+                    <div id="rate-box" class="info-box hidden">
+                        <span class="info-label">The exchange rate is valid for</span>
+                        <div class="flex items-center gap-2">
+                             <div class="w-4 h-4 border-2 border-emerald-500 rounded-full border-t-transparent animate-spin"></div>
+                             <span id="rate-timer" class="info-val text-emerald-500">02:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btn-proc" class="btn-pay" disabled onclick="goToStep(2)">Proceed to payment</button>
+                
+                <div class="mt-8 text-center border-t pt-6">
+                    <p class="timer-label">Time remaining for payment: <span class="timer-green ml-2" id="main-timer">59:59</span></p>
+                    <span class="text-[10px] text-gray-300 font-black uppercase tracking-widest block mt-2">Powered by Heleket</span>
+                </div>
+            </div>
+
+            <!-- STEP 2: PAYMENT SCREEN -->
+            <div id="step-payment" class="hidden">
+                <div class="h-tracker">
+                    <div class="h-dot active"></div><div class="h-line active"></div>
+                    <div class="h-dot active"></div><div class="h-line active"></div>
+                    <div class="h-dot"></div>
+                </div>
+                <p id="instr-text" class="bg-blue-50 border border-blue-100 p-4 rounded-xl text-center text-[11px] text-blue-700 font-black uppercase mb-6">Send funds to the vault</p>
+                <div class="flex justify-center mb-6"><img id="qr-img" src="" class="w-44 h-44 border-2 p-2 rounded-3xl shadow-sm"></div>
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 mb-6">
+                    <label class="text-[9px] font-black text-gray-400 uppercase">Wallet Address</label>
+                    <div class="flex justify-between items-center mt-1">
+                        <span id="addr-text" class="text-[11px] font-mono font-bold truncate text-blue-600">--</span>
+                        <button onclick="copyAddr()" class="text-blue-500 font-black text-xs uppercase ml-3">Copy</button>
+                    </div>
+                </div>
+                <button class="btn-pay" onclick="goToStep(3)">I have sent funds</button>
+                <button class="w-full text-[10px] font-black text-gray-400 uppercase mt-5" onclick="location.reload()">Cancel Payment</button>
+            </div>
+
+            <!-- STEP 3: VERIFICATION -->
+            <div id="step-verify" class="hidden text-center py-5">
+                <div class="h-tracker mb-10">
+                    <div class="h-dot active"></div><div class="h-line active"></div>
+                    <div class="h-dot active"></div><div class="h-line active"></div>
+                    <div class="h-dot active"></div>
+                </div>
+                <div class="loader-pulse mb-8"><div class="w-4 h-4 bg-emerald-500 rounded-full"></div></div>
+                <h3 class="font-black text-xl uppercase tracking-tighter">Awaiting Confirmations</h3>
+                <p class="text-gray-400 text-sm font-semibold px-4 mt-3">Our nodes are scanning the blockchain. Your balance will update automatically upon 3 confirmations.</p>
+                <button class="btn-pay bg-blue-600" onclick="location.href='index.php'">Return to Dashboard</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- SEARCH MODAL -->
+    <div id="search-modal" class="modal-overlay" onclick="closeSearch()">
+        <div class="modal-content shadow-2xl" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center"><span class="font-black uppercase text-lg">Select Asset</span><button onclick="closeSearch()" class="text-3xl">&times;</button></div>
+            <input type="text" id="crypto-search" placeholder="Search Global Assets..." oninput="renderCoins()">
+            <div id="coin-list" class="coin-list"></div>
+        </div>
+    </div>
+
+    
+<!-- LIVE CHAT PLACEHOLDER -->
+<div class="live-chat-fab">
+    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm4 0H9v2h2V9zm4 0h-2v2h2V9z"></path></svg>
+</div>
+
+   
+   <!-- FAQ MODAL -->
+<div id="faq-modal" class="modal-overlay" onclick="toggleFaq(false)">
+    <div class="faq-box" onclick="event.stopPropagation()">
+        <!-- FIXED HEADER -->
+        <div class="faq-header">
+            <span class="text-xl font-black uppercase tracking-tighter">F.A.Q</span>
+            <button onclick="toggleFaq(false)" class="text-3xl text-gray-300 hover:text-gray-900 transition">&times;</button>
+        </div>
+
+        <!-- SCROLLABLE BODY -->
+        <div class="faq-body">
+            <div class="faq-item">
+                <span class="faq-q">How do I pay with Heleket?</span>
+                <p class="faq-a">To pay using our payment system, you need to send the amount specified on the payment page to the wallet address indicated there.</p>
+            </div>
+            
+            <div class="faq-item">
+                <span class="faq-q">Where can I get cryptocurrency for payment?</span>
+                <p class="faq-a">Please consider buying it on one of the convenient cryptocurrency exchanges like Binance, Coinbase, or Kraken.</p>
+            </div>
+            
+            <div class="faq-item">
+                <span class="faq-q">What if I’ve selected the wrong network?</span>
+                <p class="faq-a">Unfortunately, it is not possible to change the network after it has been selected. To proceed, you need to create a new order on the store’s website and select the desired network during checkout.</p>
+            </div>
+
+            <div class="faq-item">
+                <span class="faq-q">Why has my transaction not been completed but the timer expired?</span>
+                <p class="faq-a">Your transaction has not yet received the necessary confirmations from the network. You don’t need to worry about the timer on the payment page.</p>
+            </div>
+
+            <div class="faq-item">
+                <span class="faq-q">Where can I check the status of my transaction?</span>
+                <p class="faq-a">Please track the status of the transaction in any Blockchain Explorer. Enter the transaction hash (TXID) to get all the necessary information.</p>
+            </div>
+
+            <div class="faq-item">
+                <span class="faq-q">My payment has not been credited, what should I do?</span>
+                <p class="faq-a">Different cryptocurrencies require a different number of confirmations. If the payment was not credited after receiving the required confirmations, please contact technical support.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        const coins = [
+            { n: "Bitcoin", s: "BTC", i: "btc", rate: 65230, nets: [{ n: "Bitcoin Network", a: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" }] },
+            { n: "Ethereum", s: "ETH", i: "eth", rate: 3450, nets: [{ n: "Ethereum Mainnet (ERC20)", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }] },
+            { n: "Tether", s: "USDT", i: "usdt", rate: 1, nets: [{ n: "Tron (TRC20)", a: "TYv9S5X6zR2W3uP1B4m8L7k8V2p" }, { n: "Ethereum (ERC20)", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }, { n: "BSC (BEP20)", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }] },
+            { n: "Solana", s: "SOL", i: "sol", rate: 145, nets: [{ n: "Solana Network", a: "7vT8n9PqR1S2T3uV4W5X6yZ7" }] },
+            { n: "Dogecoin", s: "DOGE", i: "doge", rate: 0.14, nets: [{ n: "Dogecoin Network", a: "D8vGf5D7H4zV9gB9f1S5pX9" }] },
+            { n: "Tron", s: "TRX", i: "trx", rate: 0.12, nets: [{ n: "Tron Network (TRC20)", a: "TYv9S5X6zR2W3uP1B4m8L7k8V2p" }] },
+            { n: "Binance Coin", s: "BNB", i: "bnb", rate: 580, nets: [{ n: "BEP20", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }] },
+            { n: "USD Coin", s: "USDC", i: "usdc", rate: 1, nets: [{ n: "Ethereum (ERC20)", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }] },
+            { n: "Avalanche", s: "AVAX", i: "avax", rate: 36.4, nets: [{ n: "Avalanche C-Chain", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }] },
+            { n: "DAI", s: "DAI", i: "dai", rate: 1, nets: [{ n: "ERC20", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }] },
+            { n: "Shiba Inu", s: "SHIB", i: "shib", rate: 0.000025, nets: [{ n: "ERC20", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }] },
+            { n: "Toncoin", s: "TON", i: "ton", rate: 7.52, nets: [{ n: "TON Network", a: "EQBvGf5D7H4zV9gB9f1S5pX9" }] },
+            { n: "Bitcoin Cash", s: "BCH", i: "bch", rate: 450, nets: [{ n: "BCH Network", a: "qpV9S5X6zR2W3uP1B4m8L7k" }] },
+            { n: "Dash", s: "DASH", i: "dash", rate: 30, nets: [{ n: "Dash Network", a: "XvGf5D7H4zV9gB9f1S5pX9" }] },
+            { n: "Polygon", s: "POL", i: "matic", rate: 0.70, nets: [{ n: "Polygon Chain", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }] },
+            { n: "Monero", s: "XMR", i: "xmr", rate: 172, nets: [{ n: "XMR Network", a: "44vGf5D7H4zV9gB9f1S5pX9" }] },
+            { n: "Litecoin", s: "LTC", i: "ltc", rate: 82, nets: [{ n: "LTC Network", a: "LUR9vGf5D7H4zV9gB9f1S5pX9" }] }
+        ];
+
+        window.selectedCoin = null;
+        function toggleSideMenu() { document.getElementById('side-nav').classList.toggle('active'); }
+        function toggleSub(id) { document.getElementById(id).classList.toggle('active'); }
+        function toggleLangMenu() { const d = document.getElementById('lang-dropdown'); d.style.display = (d.style.display === 'block') ? 'none' : 'block'; }
+        function changeLang(c, f) { document.getElementById('curr-lang').innerText = c; document.getElementById('curr-flag').src = `https://flagcdn.com/w40/${f}.png`; document.getElementById('lang-dropdown').style.display = 'none'; }
+        function openSearch() { document.getElementById('search-modal').style.display = 'flex'; renderCoins(); }
+        function closeSearch() { document.getElementById('search-modal').style.display = 'none'; }
+        function toggleFaq(s) { document.getElementById('faq-modal').style.display = s ? 'flex' : 'none'; }
+
+        function renderCoins() {
+            const q = document.getElementById('crypto-search').value.toLowerCase();
+            const list = document.getElementById('coin-list');
+            list.innerHTML = '';
+            coins.filter(c => c.n.toLowerCase().includes(q) || c.s.toLowerCase().includes(q)).forEach(c => {
+                list.innerHTML += `<div class="coin-item mb-2" onclick="selectCoin('${c.s}')"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/${c.i}.png" class="w-8 h-8 mr-3" onerror="this.src='https://ui-avatars.com/api/?name=${c.s}'"><div><p class="font-bold text-sm">${c.n}</p><p class="text-[10px] font-black opacity-40 uppercase">${c.s}</p></div></div>`;
+            });
+        }
+
+        function selectCoin(s) {
+            const c = coins.find(x => x.s === s);
+            window.selectedCoin = c;
+            document.getElementById('sel-name').innerText = c.s;
+            document.getElementById('sel-name').classList.remove('text-gray-400');
+            document.getElementById('sel-icon').src = `https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/${c.i}.png`;
+            document.getElementById('sel-icon').classList.remove('opacity-30');
+            document.getElementById('net-select').innerHTML = '<option value="">-- Choose Network --</option>' + c.nets.map(n => `<option value="${n.n}">${n.n}</option>`).join('');
+            document.getElementById('payable-box').classList.remove('hidden');
+            document.getElementById('rate-box').classList.remove('hidden');
+            closeSearch();
+            updateUI();
+        }
+
+        function updateUI() {
+            const usdIn = parseFloat(document.getElementById('amt-input').value) || 0;
+            const net = document.getElementById('net-select').value;
+            document.getElementById('usd-header').innerText = "$" + usdIn.toLocaleString(undefined, {minimumFractionDigits: 2}) + " USD";
+            if(window.selectedCoin) {
+                const cryptoVal = usdIn / window.selectedCoin.rate;
+                document.getElementById('payable-val').innerText = cryptoVal.toFixed(6) + " " + window.selectedCoin.s;
+                document.getElementById('btn-proc').disabled = !(usdIn > 0 && net !== "");
+                if(net !== "") {
+                    const nObj = window.selectedCoin.nets.find(x => x.n === net);
+                    document.getElementById('instr-text').innerText = `Send only ${window.selectedCoin.s} (${net}) to this address.`;
+                    document.getElementById('addr-text').innerText = nObj.a;
+                    document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${nObj.a}`;
+                }
+            }
+        }
+
+        function goToStep(s) {
+            document.getElementById('step-selection').classList.toggle('hidden', s !== 1);
+            document.getElementById('step-payment').classList.toggle('hidden', s !== 2);
+            document.getElementById('step-verify').classList.toggle('hidden', s !== 3);
+            if(s === 3) document.getElementById('card-footer').style.display = 'none';
+            window.scrollTo(0,0);
+        }
+
+        function copyAddr() { navigator.clipboard.writeText(document.getElementById('addr-text').innerText); alert("Address Copied"); }
+
+        let mainCount = 3600;
+        setInterval(() => { if(mainCount<=0) return; mainCount--; let m=Math.floor(mainCount/60), s=mainCount%60; document.getElementById('main-timer').innerText=`${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }, 1000);
+        let rateCount = 120;
+       
+     setInterval(() => { if(rateCount<=0) { rateCount = 120; return; } rateCount--; let m=Math.floor(rateCount/60), s=rateCount%60; document.getElementById('rate-timer').innerText=`${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }, 1000);
+   // Function to show/hide the Language Menu
+function toggleLangMenu(event) {
+    if (event) event.stopPropagation(); // Prevents click from closing immediately
+    const dropdown = document.getElementById('lang-dropdown');
+    if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+    } else {
+        dropdown.style.display = 'block';
+    }
+}
+
+function toggleFaq(show) {
+    const modal = document.getElementById('faq-modal');
+    if (show) {
+        modal.style.display = 'flex';
+        // PREVENT BACKGROUND SCROLL
+        document.body.style.overflow = 'hidden'; 
+    } else {
+        modal.style.display = 'none';
+        // RESTORE BACKGROUND SCROLL
+        document.body.style.overflow = 'auto'; 
+    }
+}
+// Close dropdowns if user clicks anywhere else on the screen
+window.onclick = function(event) {
+    if (!event.target.matches('.lang-selector') && !event.target.closest('.lang-selector')) {
+        document.getElementById('lang-dropdown').style.display = 'none';
+    }
+    if (event.target == document.getElementById('faq-modal')) {
+        toggleFaq(false);
+    }
+}
+   
+   </script>
+</body>
+</html>
