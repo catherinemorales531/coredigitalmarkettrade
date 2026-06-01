@@ -237,20 +237,6 @@
     }
 }
 
-.timer-label { 
-    color: #000000 !important; 
-    font-weight: 900; 
-    text-transform: uppercase; 
-    font-size: 11px; 
-}
-
-.timer-digits { 
-    color: #10b981 !important; 
-    font-weight: 900; 
-    font-family: 'JetBrains Mono', monospace; 
-    font-size: 14px;
-}
-        
         
  </style>
 </head>
@@ -331,84 +317,66 @@
                             <div class="lang-item" onclick="changeLang('EN', 'us')"><img src="https://flagcdn.com/w20/us.png" class="w-5"> English</div>
                            <div class="lang-item" onclick="changeLang('ES', 'es')"><img src="https://flagcdn.com/w20/es.png" class="w-5"> Spanish</div>
 
-                        
-
-    <!-- SHARED FOOTER: visible in Step 1 and Step 2 -->
-    <div id="card-footer" class="mt-8 text-center border-t pt-6">
-        <p class="timer-label">
-            <span data-i18n="timer-label">Time remaining for payment:</span> 
-            <span class="timer-digits ml-2" id="main-timer">59:59</span>
-        </p>
-        <span class="text-[10px] text-gray-300 font-black uppercase tracking-widest block mt-2">
-            Powered by Heleket
-        </span>
-    </div>
-</div>
+                        here    
                         
                         </div>
                     </div>
                 </div>
             </div>
-<!-- STEP 1: SELECTION (REPLACEMENT) -->
-<div id="step-selection">
-    <!-- 1. HEADER: Always displays USD -->
-    <div class="flex justify-between border-b pb-4 mb-4">
-        <span class="text-gray-400 font-black uppercase text-[10px]" data-i18n="to-pay">To pay:</span>
-        <span id="usd-header" class="text-2xl font-black text-gray-900">$0.00 USD</span>
-    </div>
 
-    <!-- 2. HORIZONTAL TRACKER: Dots and Lines -->
-    <div class="h-tracker">
-        <div class="h-dot active"></div><div class="h-line active"></div>
-        <div class="h-dot"></div><div class="h-line"></div>
-        <div class="h-dot"></div>
-    </div>
-
-    <div class="space-y-4">
-        <!-- 3. CURRENCY SELECTOR -->
-        <div>
-            <label class="text-[10px] font-black text-gray-400 uppercase ml-1" data-i18n="sel-cur">Select currency</label>
-            <div class="selector-box mt-1" onclick="openSearch()">
-                <div class="flex items-center gap-3">
-                    <img id="sel-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" class="w-6 h-6 opacity-30">
-                    <span id="sel-name" class="font-bold text-gray-400" data-i18n="placeholder-cur">Select Cryptocurrency</span>
+            <!-- STEP 1: SELECTION -->
+            <div id="step-selection">
+                <div class="flex justify-between border-b pb-4 mb-4">
+                    <span class="text-gray-400 font-bold">To pay:</span>
+                    <span id="usd-header" class="text-2xl font-black text-gray-900">$0.00 USD</span>
                 </div>
-                <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
-            </div>
-        </div>
 
-        <!-- 4. NETWORK SELECTOR -->
-        <div>
-            <label class="text-[10px] font-black text-gray-400 uppercase ml-1" data-i18n="sel-net">Select network</label>
-            <select id="net-select" class="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 font-bold outline-none bg-white appearance-none cursor-pointer" onchange="updateUI()">
-                <option value="">-- Choose Network --</option>
-            </select>
-        </div>
+                <div class="h-tracker">
+                    <div class="h-dot active"></div><div class="h-line active"></div>
+                    <div class="h-dot"></div><div class="h-line"></div>
+                    <div class="h-dot"></div>
+                </div>
 
-        <!-- 5. AMOUNT INPUT -->
-        <div>
-            <label class="text-[10px] font-black text-gray-400 uppercase ml-1">Amount (USD)</label>
-            <input type="number" id="amt-input" class="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 font-bold text-lg outline-none focus:border-blue-500" placeholder="0.00" oninput="updateUI()">
-        </div>
+                <div class="space-y-5">
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase">Select currency</label>
+                        <div class="selector-box mt-1" onclick="openSearch()">
+                            <div class="flex items-center gap-3">
+                                <img id="sel-icon" src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png" class="w-6 h-6 opacity-30">
+                                <span id="sel-name" class="font-bold text-gray-400">Select Cryptocurrency</span>
+                            </div>
+                            <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+                        </div>
+                    </div>
 
-        <!-- 6. CALCULATED INFO BOXES -->
-        <div id="payable-box" class="info-box hidden">
-            <span class="info-label">Amount payable in selected currency</span>
-            <span id="payable-val" class="info-val text-blue-600">0.00 --</span>
-        </div>
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase">Select network</label>
+                        <select id="net-select" class="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 font-bold outline-none bg-white appearance-none cursor-pointer" onchange="updateUI()">
+                            <option value="">-- Choose Network --</option>
+                        </select>
+                    </div>
 
-        <div id="rate-box" class="info-box hidden">
-            <span class="info-label">The exchange rate is valid for</span>
-            <div class="flex items-center gap-2">
-                 <div class="w-4 h-4 border-2 border-emerald-500 rounded-full border-t-transparent animate-spin"></div>
-                 <span id="rate-timer" class="info-val text-emerald-500">02:00</span>
-            </div>
-        </div>
-    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 uppercase">Amount (Enter USD)</label>
+                        <input type="number" id="amt-input" class="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 font-bold text-lg outline-none focus:border-blue-500" placeholder="0.00" oninput="updateUI()">
+                    </div>
 
-    <button id="btn-proc" class="btn-proceed" disabled onclick="goToStep(2)" data-i18n="btn-proc">Proceed to payment</button>
-</div>
-        
+                    <!-- CALCULATED INFO BOXES -->
+                    <div id="payable-box" class="info-box hidden">
+                        <span class="info-label">Amount payable in selected currency</span>
+                        <span id="payable-val" class="info-val text-blue-600">0.00 --</span>
+                    </div>
+
+                    <div id="rate-box" class="info-box hidden">
+                        <span class="info-label">The exchange rate is valid for</span>
+                        <div class="flex items-center gap-2">
+                             <div class="w-4 h-4 border-2 border-emerald-500 rounded-full border-t-transparent animate-spin"></div>
+                             <span id="rate-timer" class="info-val text-emerald-500">02:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btn-proc" class="btn-pay" disabled onclick="goToStep(2)">Proceed to payment</button>
                 
                 <div class="mt-8 text-center border-t pt-6">
                     <p class="timer-label">Time remaining for payment: <span class="timer-green ml-2" id="main-timer">59:59</span></p>
@@ -581,27 +549,14 @@
             }
         }
 
-       function goToStep(s) {
-    // Hide all steps
-    document.getElementById('step-1').classList.add('hidden');
-    document.getElementById('step-2').classList.add('hidden');
-    document.getElementById('step-verify').classList.add('hidden');
+        function goToStep(s) {
+            document.getElementById('step-selection').classList.toggle('hidden', s !== 1);
+            document.getElementById('step-payment').classList.toggle('hidden', s !== 2);
+            document.getElementById('step-verify').classList.toggle('hidden', s !== 3);
+            if(s === 3) document.getElementById('card-footer').style.display = 'none';
+            window.scrollTo(0,0);
+        }
 
-    // Show the requested step
-    if(s === 1) document.getElementById('step-1').classList.remove('hidden');
-    if(s === 2) document.getElementById('step-2').classList.remove('hidden');
-    if(s === 3) document.getElementById('step-verify').classList.remove('hidden');
-
-    // Timer Logic: Only show footer on Selection and Payment screens
-    const footer = document.getElementById('card-footer');
-    if (s === 3) {
-        footer.classList.add('hidden'); // Hide timer when verifying
-    } else {
-        footer.classList.remove('hidden'); // Keep timer visible for steps 1 and 2
-    }
-
-    window.scrollTo(0, 0);
-}
         function copyAddr() { navigator.clipboard.writeText(document.getElementById('addr-text').innerText); alert("Address Copied"); }
 
         let mainCount = 3600;
