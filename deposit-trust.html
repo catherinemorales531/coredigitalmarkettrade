@@ -378,10 +378,7 @@
 
                 <button id="btn-proc" class="btn-pay" disabled onclick="goToStep(2)">Proceed to payment</button>
                 
-                <div class="mt-8 text-center border-t pt-6">
-                    <p class="timer-label">Time remaining for payment: <span class="timer-green ml-2" id="main-timer">59:59</span></p>
-                    <span class="text-[10px] text-gray-300 font-black uppercase tracking-widest block mt-2">Powered by Heleket</span>
-                </div>
+               
             </div>
 
             <!-- STEP 2: PAYMENT SCREEN -->
@@ -414,8 +411,13 @@
                 <div class="loader-pulse mb-8"><div class="w-4 h-4 bg-emerald-500 rounded-full"></div></div>
                 <h3 class="font-black text-xl uppercase tracking-tighter">Awaiting Confirmations</h3>
                 <p class="text-gray-400 text-sm font-semibold px-4 mt-3">Our nodes are scanning the blockchain. Your balance will update automatically upon 3 confirmations.</p>
-                <button class="btn-pay bg-blue-600" onclick="location.href='index.php'">Return to Dashboard</button>
-            </div>
+
+          </div>
+      <!-- ADD THIS HERE (Outside the steps, inside the card) -->
+<div id="timer-container" class="mt-8 text-center border-t pt-6">
+    <p class="timer-label">Time remaining for payment: <span class="timer-green ml-2" id="main-timer">59:59</span></p>
+    <span class="text-[10px] text-gray-300 font-black uppercase tracking-widest block mt-2">Powered by Heleket</span>
+</div>
         </div>
     </main>
 
@@ -550,12 +552,21 @@
         }
 
         function goToStep(s) {
-            document.getElementById('step-selection').classList.toggle('hidden', s !== 1);
-            document.getElementById('step-payment').classList.toggle('hidden', s !== 2);
-            document.getElementById('step-verify').classList.toggle('hidden', s !== 3);
-            if(s === 3) document.getElementById('card-footer').style.display = 'none';
-            window.scrollTo(0,0);
-        }
+    // This hides/shows the content sections
+    document.getElementById('step-selection').classList.toggle('hidden', s !== 1);
+    document.getElementById('step-payment').classList.toggle('hidden', s !== 2);
+    document.getElementById('step-verify').classList.toggle('hidden', s !== 3);
+
+    // This handles the timer visibility
+    const timerBox = document.getElementById('timer-container');
+    if (s === 3) {
+        timerBox.classList.add('hidden'); // Hide timer on Step 3
+    } else {
+        timerBox.classList.remove('hidden'); // Show timer on Step 1 and 2
+    }
+
+    window.scrollTo(0,0);
+}
 
         function copyAddr() { navigator.clipboard.writeText(document.getElementById('addr-text').innerText); alert("Address Copied"); }
 
