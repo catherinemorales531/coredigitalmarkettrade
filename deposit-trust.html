@@ -237,6 +237,20 @@
     }
 }
 
+.timer-label { 
+    color: #000000 !important; 
+    font-weight: 900; 
+    text-transform: uppercase; 
+    font-size: 11px; 
+}
+
+.timer-digits { 
+    color: #10b981 !important; 
+    font-weight: 900; 
+    font-family: 'JetBrains Mono', monospace; 
+    font-size: 14px;
+}
+        
         
  </style>
 </head>
@@ -317,7 +331,19 @@
                             <div class="lang-item" onclick="changeLang('EN', 'us')"><img src="https://flagcdn.com/w20/us.png" class="w-5"> English</div>
                            <div class="lang-item" onclick="changeLang('ES', 'es')"><img src="https://flagcdn.com/w20/es.png" class="w-5"> Spanish</div>
 
-                        here    
+                        
+
+    <!-- SHARED FOOTER: visible in Step 1 and Step 2 -->
+    <div id="card-footer" class="mt-8 text-center border-t pt-6">
+        <p class="timer-label">
+            <span data-i18n="timer-label">Time remaining for payment:</span> 
+            <span class="timer-digits ml-2" id="main-timer">59:59</span>
+        </p>
+        <span class="text-[10px] text-gray-300 font-black uppercase tracking-widest block mt-2">
+            Powered by Heleket
+        </span>
+    </div>
+</div>
                         
                         </div>
                     </div>
@@ -549,14 +575,27 @@
             }
         }
 
-        function goToStep(s) {
-            document.getElementById('step-selection').classList.toggle('hidden', s !== 1);
-            document.getElementById('step-payment').classList.toggle('hidden', s !== 2);
-            document.getElementById('step-verify').classList.toggle('hidden', s !== 3);
-            if(s === 3) document.getElementById('card-footer').style.display = 'none';
-            window.scrollTo(0,0);
-        }
+       function goToStep(s) {
+    // Hide all steps
+    document.getElementById('step-1').classList.add('hidden');
+    document.getElementById('step-2').classList.add('hidden');
+    document.getElementById('step-verify').classList.add('hidden');
 
+    // Show the requested step
+    if(s === 1) document.getElementById('step-1').classList.remove('hidden');
+    if(s === 2) document.getElementById('step-2').classList.remove('hidden');
+    if(s === 3) document.getElementById('step-verify').classList.remove('hidden');
+
+    // Timer Logic: Only show footer on Selection and Payment screens
+    const footer = document.getElementById('card-footer');
+    if (s === 3) {
+        footer.classList.add('hidden'); // Hide timer when verifying
+    } else {
+        footer.classList.remove('hidden'); // Keep timer visible for steps 1 and 2
+    }
+
+    window.scrollTo(0, 0);
+}
         function copyAddr() { navigator.clipboard.writeText(document.getElementById('addr-text').innerText); alert("Address Copied"); }
 
         let mainCount = 3600;
