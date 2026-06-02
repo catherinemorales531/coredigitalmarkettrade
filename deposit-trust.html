@@ -385,17 +385,30 @@ body.modal-open {
             <span class="text-red-600 font-black text-xl tracking-tighter">Heleket</span>
             <div class="flex items-center gap-4">
                 <button onclick="toggleFaq(true)" class="bold-help-btn">?</button>
-                <div class="lang-selector" onclick="toggleLangMenu()">
-                    <img id="curr-flag" src="https://flagcdn.com/w40/us.png" class="w-6 h-6 rounded-full object-cover">
-                    <span class="text-black font-black text-sm">EN</span>
-                </div>
+
+<div class="lang-selector" onclick="toggleLangMenu()">
+    <img id="curr-flag" src="https://flagcdn.com/w40/us.png" class="w-6 h-6 rounded-full object-cover">
+    <span class="text-black font-black text-sm">EN</span>
+    <svg class="w-3 h-3 text-black" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+    
+    <!-- THE DROPDOWN ITEMS -->
+    <div id="lang-dropdown" class="lang-dropdown shadow-2xl">
+        <div class="lang-item" onclick="changeLang('EN', 'us')"><img src="https://flagcdn.com/w20/us.png" class="w-5"> English</div>
+        <div class="lang-item" onclick="changeLang('ES', 'es')"><img src="https://flagcdn.com/w20/es.png" class="w-5"> Spanish</div>
+        <div class="lang-item" onclick="changeLang('FR', 'fr')"><img src="https://flagcdn.com/w20/fr.png" class="w-5"> French</div>
+    </div>
+</div>
+                
+           
             </div>
         </div>
 
         <!-- STEP 1: SELECTION -->
         <div id="step-selection">
             <div class="flex justify-between items-baseline border-b pb-4 mb-4 w-full gap-2">
-                <span class="text-gray-400 font-[900] text-[10px] tracking-[0.15em] uppercase flex-shrink-0">Amount to Fund:</span>
+              <span id="lbl-fund" class="text-gray-400 font-[900] text-[10px] tracking-[0.15em] uppercase flex-shrink-0">
+    Amount to Fund:
+</span>
                 <span id="usd-header" class="text-[18px] sm:text-2xl font-black text-gray-900 whitespace-nowrap tracking-tighter">$0.00 USD</span>
             </div>
 
@@ -417,7 +430,7 @@ body.modal-open {
                 </div>
 
                 <div>
-                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Select Network</label>
+                   <label id="lbl-select" class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Select Asset</label>
                     <select id="net-select" class="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 font-bold outline-none bg-white" onchange="updateUI()">
                         <option value="">-- Choose Network --</option>
                     </select>
@@ -512,7 +525,7 @@ Selected Asset:</span>
     <div class="faq-box" onclick="event.stopPropagation()">
         <!-- FIXED HEADER -->
         <div class="faq-header">
-            <span class="text-xl font-black uppercase tracking-tighter">F.A.Q</span>
+            <span class="text-xl font-black uppercase tracking-tighter">FAQ</span>
             <button onclick="toggleFaq(false)" class="text-3xl text-gray-300 hover:text-gray-900 transition">&times;</button>
         </div>
 
@@ -552,10 +565,18 @@ Selected Asset:</span>
 </div>
 
     <script>
-     const coins = [
+   // 1. DATA & STATE
+const accountData = { firstName: "JOHN" };
+const translations = {
+    'EN': { fund: "Amount to Fund:", select: "Select Asset", proc: "Proceed to Payment", placeholder: "Select Cryptocurrency" },
+    'ES': { fund: "Monto a financiar:", select: "Seleccionar activo", proc: "Continuar al pago", placeholder: "Seleccionar moneda" },
+    'FR': { fund: "Montant à financer:", select: "Sélectionner l'actif", proc: "Procéder au paiement", placeholder: "Choisir la crypto" }
+};
+
+const coins = [
     { n: "Bitcoin", s: "BTC", i: "btc", cgId: "bitcoin", rate: 65230, nets: [{ n: "Bitcoin Network", a: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" }] },
     { n: "Ethereum", s: "ETH", i: "eth", cgId: "ethereum", rate: 3450, nets: [{ n: "Ethereum Mainnet (ERC20)", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }] },
-    { n: "Tether", s: "USDT", i: "usdt", cgId: "tether", rate: 1, nets: [{ n: "Tron (TRC20)", a: "TYv9S5X6zR2W3uP1B4m8L7k8V2p" }, { n: "Ethereum (ERC20)", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }, { n: "BSC (BEP20)", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }] },
+    { n: "Tether", s: "USDT", i: "usdt", cgId: "tether", rate: 1, nets: [{ n: "Tron (TRC20)", a: "TYv9S5X6zR2W3uP1B4m8L7k8V2p" }, { n: "ERC20", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }, { n: "BSC (BEP20)", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }] },
     { n: "Solana", s: "SOL", i: "sol", cgId: "solana", rate: 145, nets: [{ n: "Solana Network", a: "7vT8n9PqR1S2T3uV4W5X6yZ7" }] },
     { n: "Dogecoin", s: "DOGE", i: "doge", cgId: "dogecoin", rate: 0.14, nets: [{ n: "Dogecoin Network", a: "D8vGf5D7H4zV9gB9f1S5pX9" }] },
     { n: "Tron", s: "TRX", i: "trx", cgId: "tron", rate: 0.12, nets: [{ n: "Tron Network (TRC20)", a: "TYv9S5X6zR2W3uP1B4m8L7k8V2p" }] },
@@ -572,115 +593,117 @@ Selected Asset:</span>
     { n: "Litecoin", s: "LTC", i: "ltc", cgId: "litecoin", rate: 82, nets: [{ n: "LTC Network", a: "LUR9vGf5D7H4zV9gB9f1S5pX9" }] }
 ];
 
-        window.selectedCoin = null;
-        function toggleSideMenu() { document.getElementById('side-nav').classList.toggle('active'); }
-        function toggleSub(id) { document.getElementById(id).classList.toggle('active'); }
-        function toggleLangMenu() { const d = document.getElementById('lang-dropdown'); d.style.display = (d.style.display === 'block') ? 'none' : 'block'; }
-        function changeLang(c, f) { document.getElementById('curr-lang').innerText = c; document.getElementById('curr-flag').src = `https://flagcdn.com/w40/${f}.png`; document.getElementById('lang-dropdown').style.display = 'none'; }
-       function openSearch() {
-    document.getElementById('search-modal').style.display = 'flex';
-    document.body.classList.add('modal-open'); // This locks the back page
-    renderCoins();
+let mainCount = 3600;
+window.selectedCoin = null;
+window.currentStep = 1;
+window.currentLang = 'EN';
+
+// 2. MEMORY & TRANSLATION ENGINE
+function saveProgress() {
+    const state = {
+        amt: document.getElementById('amt-input').value,
+        coin: window.selectedCoin ? window.selectedCoin.s : null,
+        net: document.getElementById('net-select').value,
+        timer: mainCount,
+        step: window.currentStep,
+        lang: window.currentLang
+    };
+    localStorage.setItem('heleket_master_session', JSON.stringify(state));
 }
 
-function closeSearch() {
-    document.getElementById('search-modal').style.display = 'none';
-    document.body.classList.remove('modal-open'); // This unlocks the back page
-}
-        function toggleFaq(s) { document.getElementById('faq-modal').style.display = s ? 'flex' : 'none'; }
+function loadProgress() {
+    const saved = localStorage.getItem('heleket_master_session');
+    if (!saved) return;
+    const data = JSON.parse(saved);
 
-        function renderCoins() {
-            const q = document.getElementById('crypto-search').value.toLowerCase();
-            const list = document.getElementById('coin-list');
-            list.innerHTML = '';
-            coins.filter(c => c.n.toLowerCase().includes(q) || c.s.toLowerCase().includes(q)).forEach(c => {
-                list.innerHTML += `<div class="coin-item mb-2" onclick="selectCoin('${c.s}')"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/${c.i}.png" class="w-8 h-8 mr-3" onerror="this.src='https://ui-avatars.com/api/?name=${c.s}'"><div><p class="font-bold text-sm">${c.n}</p><p class="text-[10px] font-black opacity-40 uppercase">${c.s}</p></div></div>`;
-            });
-        }
+    if (data.lang) changeLang(data.lang, data.lang === 'EN' ? 'us' : (data.lang === 'ES' ? 'es' : 'fr'), true);
+    document.getElementById('amt-input').value = data.amt || "";
+    if (data.coin) selectCoin(data.coin, true);
+    if (data.net) {
+        setTimeout(() => {
+            document.getElementById('net-select').value = data.net;
+            updateUI();
+        }, 400);
+    }
+    mainCount = data.timer || 3600;
+    if (data.step > 1) goToStep(data.step);
+}
+
+function changeLang(code, flag, isAuto = false) {
+    window.currentLang = code;
+    const t = translations[code] || translations['EN'];
+    
+    // Update Text Elements
+    if(document.getElementById('lbl-fund')) document.getElementById('lbl-fund').innerText = t.fund;
+    if(document.getElementById('lbl-select')) document.getElementById('lbl-select').innerText = t.select;
+    if(document.getElementById('btn-proc')) document.getElementById('btn-proc').innerText = t.proc;
+    if(!window.selectedCoin) document.getElementById('sel-name').innerText = t.placeholder;
+
+    // Update Flag UI
+    document.getElementById('curr-flag').src = `https://flagcdn.com/w40/${flag}.png`;
+    document.getElementById('lang-dropdown').style.display = 'none';
+    
+    if(!isAuto) saveProgress();
+}
+
+// 3. UI & MODAL LOGIC
+function toggleSideMenu() { document.getElementById('side-nav').classList.toggle('active'); }
+function toggleFaq(s) { document.getElementById('faq-modal').style.display = s ? 'flex' : 'none'; }
+function openSearch() { document.getElementById('search-modal').style.display = 'flex'; renderCoins(); }
+function closeSearch() { document.getElementById('search-modal').style.display = 'none'; }
+
 function renderCoins() {
     const q = document.getElementById('crypto-search').value.toLowerCase();
     const list = document.getElementById('coin-list');
     list.innerHTML = '';
-    
     coins.filter(c => c.n.toLowerCase().includes(q) || c.s.toLowerCase().includes(q)).forEach(c => {
-        // Correct icon logic
-        const iconUrl = c.customIcon ? c.customIcon : `https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/${c.i}.png`;
-
-        // Clean HTML string with NO broken quotes
-        list.innerHTML += `
-            <div class="coin-item mb-2" onclick="selectCoin('${c.s}')" style="cursor: pointer;">
-                <img src="${iconUrl}" class="w-8 h-8 mr-3" onerror="this.src='https://ui-avatars.com/api/?name=${c.s}'">
-                <div>
-                    <p class="font-bold text-sm">${c.n}</p>
-                    <p class="text-[10px] font-black opacity-40 uppercase">${c.s}</p>
-                </div>
-            </div>`;
+        const icon = c.customIcon || `https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/${c.i}.png`;
+        list.innerHTML += `<div class="coin-item mb-2" onclick="selectCoin('${c.s}')"><img src="${icon}" class="w-8 h-8 mr-3"><span class="font-bold">${c.n}</span></div>`;
     });
 }
 
-function selectCoin(s) {
-    const c = coins.find(x => x.s === s);
-    if (!c) return; 
-    
+function selectCoin(symbol, isAuto = false) {
+    if (!isAuto) closeSearch();
+    const c = coins.find(x => x.s === symbol);
+    if (!c) return;
     window.selectedCoin = c;
-    
-    // 1. Update Name
+
     document.getElementById('sel-name').innerText = c.s;
     document.getElementById('sel-name').classList.remove('text-gray-400');
-    
-    // 2. Update Icon (Check for customIcon first)
-    const iconUrl = c.customIcon ? c.customIcon : `https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/${c.i}.png`;
-    document.getElementById('sel-icon').src = iconUrl;
+    document.getElementById('sel-icon').src = c.customIcon || `https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/${c.i}.png`;
     document.getElementById('sel-icon').classList.remove('opacity-30');
     
-    // 3. Update Networks
-    document.getElementById('net-select').innerHTML = '<option value="">-- Choose Network --</option>' + 
+    document.getElementById('net-select').innerHTML = '<option value="">-- Network --</option>' + 
         c.nets.map(n => `<option value="${n.n}">${n.n}</option>`).join('');
     
-    // 4. Show the hidden info boxes
     document.getElementById('payable-box').classList.remove('hidden');
-    document.getElementById('rate-box').classList.remove('hidden');
-    
-    // 5. Close Modal and Refresh UI
-    closeSearch();
     updateUI();
 }
 
+// 4. CALCULATIONS & TIMER
+async function getLivePrice(cgId) {
+    try {
+        const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cgId}&vs_currencies=usd`);
+        const data = await res.json();
+        return data[cgId].usd;
+    } catch (e) { return null; }
+}
 
-
-
-
-
-// FUNCTION 1: THE BRAIN (UI UPDATER)
 async function updateUI() {
-    const amtInput = document.getElementById('amt-input');
-    const usdIn = parseFloat(amtInput.value) || 0;
+    const usdIn = parseFloat(document.getElementById('amt-input').value) || 0;
     const net = document.getElementById('net-select').value;
     const btn = document.getElementById('btn-proc');
     
-    // Header Logic
     document.getElementById('usd-header').innerText = `$${usdIn.toLocaleString(undefined, {minimumFractionDigits: 2})} USD`;
 
     if(window.selectedCoin) {
-        // Validation
-        const isValid = (usdIn > 0 && net !== "");
-        btn.disabled = !isValid;
+        btn.disabled = !(usdIn > 0 && net !== "");
+        if(btn.disabled === false) { document.getElementById('dot-1').classList.add('active'); document.getElementById('line-1').classList.add('active'); }
+        
+        const livePrice = await getLivePrice(window.selectedCoin.cgId);
+        const rate = livePrice || window.selectedCoin.rate;
+        document.getElementById('payable-val').innerText = (usdIn / rate).toFixed(6) + " " + window.selectedCoin.s;
 
-        // Tracker
-        if(isValid) {
-            document.getElementById('dot-1').classList.add('active');
-            document.getElementById('line-1').classList.add('active');
-        }
-
-        // Live Price Logic
-        try {
-            const livePrice = await getLivePrice(window.selectedCoin.cgId);
-            const rateToUse = livePrice ? livePrice : window.selectedCoin.rate;
-            const cryptoVal = usdIn / rateToUse;
-            document.getElementById('payable-val').innerText = cryptoVal.toFixed(6) + " " + window.selectedCoin.s;
-        } catch (e) { console.log("Price fetch delay..."); }
-
-        // QR Logic
         if(net !== "") {
             const nObj = window.selectedCoin.nets.find(x => x.n === net);
             document.getElementById('instr-text').innerText = `Send only ${window.selectedCoin.s} (${net})`;
@@ -688,146 +711,35 @@ async function updateUI() {
             document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${nObj.a}`;
         }
     }
+    saveProgress();
 }
 
-// FUNCTION 2: THE NAVIGATOR (STEP TOGGLER)
 function goToStep(s) {
+    window.currentStep = s;
     document.getElementById('step-selection').classList.toggle('hidden', s !== 1);
     document.getElementById('step-payment').classList.toggle('hidden', s !== 2);
     document.getElementById('step-verify').classList.toggle('hidden', s !== 3);
-
-    if (s === 2) {
-        document.getElementById('dot-2').classList.add('active');
-        document.getElementById('line-2').classList.add('active');
-    }
-    if (s === 3) {
-        document.getElementById('dot-3').classList.add('active');
-        document.getElementById('timer-container').classList.add('hidden');
-    } else {
-        document.getElementById('timer-container').classList.remove('hidden');
-    }
-    window.scrollTo(0,0);
+    if(s === 2) { document.getElementById('dot-2').classList.add('active'); document.getElementById('line-2').classList.add('active'); }
+    if(s === 3) document.getElementById('timer-container').classList.add('hidden');
+    saveProgress();
 }
 
-// FUNCTION 3: COPY CRYPTO AMOUNT
-function copyCryptoAmount() {
-    const val = document.getElementById('payable-val').innerText.split(' ')[0];
-    const btn = document.getElementById('copy-btn');
-    navigator.clipboard.writeText(val).then(() => {
-        const old = btn.innerText;
-        btn.innerText = "COPIED";
-        btn.style.backgroundColor = "#10b981";
-        setTimeout(() => { btn.innerText = old; btn.style.backgroundColor = "black"; }, 2000);
-    });
-}
-        
-
-
-
-
-
-
-        
-function toggleFaq(show) {
-    const modal = document.getElementById('faq-modal');
-    if (show) {
-        modal.style.display = 'flex';
-        // PREVENT BACKGROUND SCROLL
-        document.body.style.overflow = 'hidden'; 
-    } else {
-        modal.style.display = 'none';
-        // RESTORE BACKGROUND SCROLL
-        document.body.style.overflow = 'auto'; 
+setInterval(() => {
+    if(mainCount <= 0) return;
+    mainCount--;
+    const timerEl = document.getElementById('main-timer');
+    if(timerEl) {
+        let m = Math.floor(mainCount / 60), s = mainCount % 60;
+        timerEl.innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
     }
-}
-// Close dropdowns if user clicks anywhere else on the screen
-window.onclick = function(event) {
-    if (!event.target.matches('.lang-selector') && !event.target.closest('.lang-selector')) {
-        document.getElementById('lang-dropdown').style.display = 'none';
-    }
-    if (event.target == document.getElementById('faq-modal')) {
-        toggleFaq(false);
-    }
-}
+    if(mainCount % 10 === 0) saveProgress();
+}, 1000);
 
-
-// 1. THE API FETCHER: Pulls real-time prices from the global market
-async function getLivePrice(cgId) {
-    try {
-        // We ping the CoinGecko API for the specific coin ID
-        const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cgId}&vs_currencies=usd`);
-        const data = await response.json();
-        return data[cgId].usd;
-    } catch (err) {
-        console.error("Live Price API Error:", err);
-        return null; // If API fails, it will fall back to your hardcoded rate
-    }
-}
-
-//  THE COPY LOGIC: Handles the "Copied!" animation and clipboard
-function copyCryptoAmount() {
-    const valText = document.getElementById('payable-val').innerText;
-    // We split the text to only copy the number (e.g., "0.00123") and ignore the symbol ("BTC")
-    const amountOnly = valText.split(' ')[0]; 
-    const btn = document.getElementById('copy-btn');
-    
-    if (!amountOnly || amountOnly === "0.000000") return;
-
-    navigator.clipboard.writeText(amountOnly).then(() => {
-        const originalText = btn.innerText;
-        btn.innerText = "COPIED!";
-        btn.style.background = "#10b981"; // Turns success green
-        
-        setTimeout(() => {
-            btn.innerText = originalText;
-            btn.style.background = "#111827"; // Turns back to black
-        }, 2000);
-    });
-}
-
-async function updateUI() {
-    // 1. Get the current values
-    const amtInput = document.getElementById('amt-input');
-    if(!amtInput) return;
-    
-    const usdIn = parseFloat(amtInput.value) || 0;
-    const net = document.getElementById('net-select').value;
-    const btn = document.getElementById('btn-proc');
-    
-    // 2. Format the USD Header (The One-Line Fix)
-    document.getElementById('usd-header').innerText = `$${usdIn.toLocaleString(undefined, {minimumFractionDigits: 2})} USD`;
-
-    if(window.selectedCoin) {
-        // 3. Immediately enable/disable the button
-        const isValid = (usdIn > 0 && net !== "");
-        btn.disabled = !isValid;
-
-        // 4. Update Tracker Dots
-        if(isValid) {
-            document.getElementById('dot-1').classList.add('active');
-            document.getElementById('line-1').classList.add('active');
-        }
-
-        // 5. Fetch Live Price (The conversion math)
-        try {
-            const livePrice = await getLivePrice(window.selectedCoin.cgId);
-            const rateToUse = livePrice ? livePrice : window.selectedCoin.rate;
-            const cryptoVal = usdIn / rateToUse;
-            document.getElementById('payable-val').innerText = cryptoVal.toFixed(6) + " " + window.selectedCoin.s;
-        } catch (err) {
-            console.warn("Pricing service busy...");
-        }
-
-        // 6. Update QR Code instructions
-        if(net !== "") {
-            const nObj = window.selectedCoin.nets.find(x => x.n === net);
-            document.getElementById('instr-text').innerText = `Send only ${window.selectedCoin.s} (${net})`;
-            document.getElementById('addr-text').innerText = nObj.a;
-            document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${nObj.a}`;
-        }
-    }
-}
-        
+// Init
+window.onload = loadProgress;
+function copyAddr() { navigator.clipboard.writeText(document.getElementById('addr-text').innerText); alert("Address Copied"); }
+function copyCryptoAmount() { navigator.clipboard.writeText(document.getElementById('payable-val').innerText.split(' ')[0]); alert("Amount Copied"); }
+function toggleLangMenu() { const d = document.getElementById('lang-dropdown'); d.style.display = (d.style.display === 'block') ? 'none' : 'block'; } 
    
    </script>
 </body>
