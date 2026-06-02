@@ -312,21 +312,21 @@ body.modal-open {
 <body>
 
     <!-- 1. FULL SIDEBAR (EXACT COMPLIANCE) -->
-      <!-- SIDEBAR USER SECTION -->
-        <div class="flex items-center gap-5 mb-10">
-            <!-- Initials Hook -->
-            <div class="user-initials-display w-14 h-14 rounded-full border-2 border-white/10 p-1 flex items-center justify-center bg-white/5 font-black text-xl">
-                J
-            </div>
-            <div>
-                <!-- Name Hook -->
-                <h2 class="user-name-display text-xl font-black silver-text uppercase tracking-tight">JOHN</h2>
-                <div class="flex items-center gap-2 mt-1">
-                    <div class="ammunition-pulse !w-2 !h-2"></div>
-                    <span class="text-[10px] font-bold text-blue-400 tracking-widest uppercase">Live Account</span>
-                </div>
-            </div>
+    <!-- SIDEBAR USER SECTION -->
+<div class="flex items-center gap-5 mb-10">
+    <!-- Initials Placeholder: Database will replace "J" -->
+    <div class="user-initials-display w-14 h-14 rounded-full border-2 border-white/10 p-1 flex items-center justify-center bg-white/5 font-black text-xl">
+        J
+    </div>
+    <div>
+        <!-- Name Placeholder: Database will replace "JOHN" -->
+        <h2 class="user-name-display text-xl font-black silver-text uppercase tracking-tight">JOHN</h2>
+        <div class="flex items-center gap-2 mt-1">
+            <div class="ammunition-pulse !w-2 !h-2"></div>
+            <span class="text-[10px] font-bold text-blue-400 tracking-widest uppercase">Live Account</span>
         </div>
+    </div>
+</div>
 
         <div class="flex flex-col mt-4">
             <div class="nav-blog" onclick="location.href='index.html'"><div class="nav-content"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg><span>Dashboard</span></div></div>
@@ -596,19 +596,19 @@ body.modal-open {
 
     <script>
 
-// DATABASE SIMULATION
+// DATABASE SIMULATION: Change the name here once, and it updates the whole site.
 const accountData = {
-    firstName: "JOHN" // Change this to any name to update the whole site instantly
+    firstName: "JOHN" 
 };
 
 function syncUserIdentity() {
-    // Sync all Name displays
+    // 1. Update all Names (Header + Sidebar)
     const nameElements = document.querySelectorAll('.user-name-display');
     nameElements.forEach(el => {
         el.innerText = accountData.firstName;
     });
 
-    // Sync all Initials displays (Takes the first letter)
+    // 2. Update all Initials (Header + Sidebar)
     const initialElements = document.querySelectorAll('.user-initials-display');
     const firstLetter = accountData.firstName.charAt(0).toUpperCase();
     initialElements.forEach(el => {
@@ -616,8 +616,9 @@ function syncUserIdentity() {
     });
 }
 
-// Run this when the page is ready
+// Execute as soon as the page is finished loading
 document.addEventListener('DOMContentLoaded', syncUserIdentity);
+
         
      const coins = [
     { n: "Bitcoin", s: "BTC", i: "btc", cgId: "bitcoin", rate: 65230, nets: [{ n: "Bitcoin Network", a: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" }] },
