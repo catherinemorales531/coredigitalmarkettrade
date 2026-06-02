@@ -278,7 +278,17 @@ body.modal-open {
         opacity: 0;
     }
 }
+.ammunition-pulse { 
+    width: 10px; 
+    height: 10px; 
+    background: #fff; 
+    border-radius: 50%; 
+    position: relative; /* This is the fix: ensures it stays in the flex box */
+    box-shadow: 0 0 10px #3b82f6; 
+    flex-shrink: 0;
+}
 
+        
         
  </style>
 </head>
@@ -330,21 +340,31 @@ body.modal-open {
     </div>
 
     <!-- 2. MASTER HEADER -->
-    <header class="p-6 flex justify-between items-center max-w-[1400px] mx-auto sticky top-0 z-50">
-        <div class="flex items-center gap-4">
-            <div class="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center font-black">CD</div>
-            <span class="silver-text font-black text-xl uppercase tracking-tighter">JOHN</span>
-        </div>
-        <div class="flex items-center gap-8">
-            <div class="ammunition-pulse"></div>
-            <div onclick="toggleSideMenu()" class="space-y-1.5 cursor-pointer opacity-70 hover:opacity-100 transition">
-                <div class="w-8 h-0.5 bg-white"></div><div class="w-8 h-0.5 bg-white"></div><div class="w-8 h-0.5 bg-white"></div>
+   <!-- THE PINNED HEADER -->
+<header class="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center z-[100] bg-[#0a061a] border-b border-white/5">
+    <div class="flex items-center gap-4">
+        <!-- CD Logo -->
+        <div class="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center font-black">CD</div>
+        
+        <!-- JOHN + Pinned Dot Container -->
+        <div class="flex flex-col">
+            <span class="silver-text font-black text-lg uppercase tracking-tighter leading-none">JOHN</span>
+            <div class="flex items-center gap-2 mt-1">
+                <div class="ammunition-pulse !w-2 !h-2"></div>
+                <span class="text-[8px] font-bold text-blue-400 uppercase tracking-widest">Secure Account</span>
             </div>
         </div>
-    </header>
+    </div>
 
+    <!-- Menu Trigger -->
+    <div onclick="toggleSideMenu()" class="space-y-1.5 cursor-pointer opacity-70 p-2">
+        <div class="w-8 h-0.5 bg-white"></div>
+        <div class="w-8 h-0.5 bg-white"></div>
+        <div class="w-8 h-0.5 bg-white"></div>
+    </div>
+</header>
     <!-- 3. MAIN DEPOSIT SECTION -->
-    <main class="px-4 pb-20">
+<main class="px-4 pb-20 pt-24">
         <div class="deposit-card">
             <!-- Top Branding -->
             <div class="flex justify-between items-center mb-8">
