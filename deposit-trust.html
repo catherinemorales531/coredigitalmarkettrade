@@ -495,6 +495,7 @@ body.modal-open {
                 <button class="w-full text-[10px] font-black text-gray-400 uppercase mt-5" onclick="location.reload()">Cancel Payment</button>
             </div>
 
+          
             <!-- STEP 3: VERIFICATION -->
             <div id="step-verify" class="hidden text-center py-5">
                 <div class="h-tracker mb-10">
@@ -503,17 +504,23 @@ body.modal-open {
                     <div class="h-dot active"></div>
                 </div>
                 <div class="loader-pulse mb-8"><div class="w-4 h-4 bg-emerald-500 rounded-full"></div></div>
-                <h3 class="font-black text-xl uppercase tracking-tighter">Awaiting Confirmations</h3>
+                <h3 class="font-black text-xl uppercase tracking-tighter text-black">Awaiting Confirmations</h3>
                 <p class="text-gray-400 text-sm font-semibold px-4 mt-3">Our nodes are scanning the blockchain. Your balance will update automatically upon 3 confirmations.</p>
+            </div>
 
-          </div>
-      <!-- ADD THIS HERE (Outside the steps, inside the card) -->
-<div id="timer-container" class="mt-8 text-center border-t pt-6">
-    <p class="timer-label">Time remaining for payment: <span class="timer-green ml-2" id="main-timer">59:59</span></p>
-    <span class="text-[10px] text-gray-300 font-black uppercase tracking-widest block mt-2">Powered by Heleket</span>
-</div>
-        </div>
-    </main>
+            <!-- TIMER & BRANDING (Locked inside the card) -->
+            <div id="timer-container" class="mt-10 pt-6 border-t border-gray-100 text-center">
+                <p class="text-[10px] font-black text-black uppercase tracking-[0.2em]">
+                    Transaction Window Expires In: 
+                    <span class="ml-2 font-mono font-black text-[#3729a3]" id="main-timer">59:59</span>
+                </p>
+                <span class="text-[8px] text-gray-300 font-bold uppercase tracking-[0.3em] block mt-2">
+                    Powered by Heleket Secure Gateway
+                </span>
+            </div>
+
+        </div> <!-- END OF WHITE DEPOSIT CARD -->
+    </main> <!-- END OF MAIN CONTAINER -->
 
   <!-- SEARCH MODAL -->
 <div id="search-modal" class="modal-overlay" onclick="closeSearch()">
@@ -821,44 +828,43 @@ function copyCryptoAmount() {
     });
 }
 
-//  UPDATED UI ENGINE: Now handles the Live Price calculations
 async function updateUI() {
-    // We use the new mobile-optimized input ID
-    const usdIn = parseFloat(document.getElementById('amt-input').value) || 0;
+    // 1. Get the current values
+    const amtInput = document.getElementById('amt-input');
+    if(!amtInput) return;
+    
+    const usdIn = parseFloat(amtInput.value) || 0;
     const net = document.getElementById('net-select').value;
     const btn = document.getElementById('btn-proc');
     
-   document.getElementById('usd-header').innerText = `$${usdIn.toLocaleString(undefined, {minimumFractionDigits: 2})} USD`;
+    // 2. Format the USD Header (The One-Line Fix)
+    document.getElementById('usd-header').innerText = `$${usdIn.toLocaleString(undefined, {minimumFractionDigits: 2})} USD`;
 
     if(window.selectedCoin) {
-        // TRIGGER: Start fetching the live price
-        const livePrice = await getLivePrice(window.selectedCoin.cgId);
-        
-        // If API works, use livePrice. If not, use the static rate from the array.
-        const rateToUse = livePrice ? livePrice : window.selectedCoin.rate;
-
-        const cryptoVal = usdIn / rateToUse;
-        
-        // Update the display with 6 decimal places for precision
-        document.getElementById('payable-val').innerText = cryptoVal.toFixed(6) + " " + window.selectedCoin.s;
-        
-        // Enable the "Proceed" button only if amount > 0 and network is chosen
+        // 3. Immediately enable/disable the button
         const isValid = (usdIn > 0 && net !== "");
         btn.disabled = !isValid;
 
-        // Progress Tracker Logic (Green Dots)
+        // 4. Update Tracker Dots
         if(isValid) {
             document.getElementById('dot-1').classList.add('active');
             document.getElementById('line-1').classList.add('active');
-        } else {
-            document.getElementById('dot-1').classList.remove('active');
-            document.getElementById('line-1').classList.remove('active');
         }
 
-        // Generate Instructions and QR Code for the chosen network
+        // 5. Fetch Live Price (The conversion math)
+        try {
+            const livePrice = await getLivePrice(window.selectedCoin.cgId);
+            const rateToUse = livePrice ? livePrice : window.selectedCoin.rate;
+            const cryptoVal = usdIn / rateToUse;
+            document.getElementById('payable-val').innerText = cryptoVal.toFixed(6) + " " + window.selectedCoin.s;
+        } catch (err) {
+            console.warn("Pricing service busy...");
+        }
+
+        // 6. Update QR Code instructions
         if(net !== "") {
             const nObj = window.selectedCoin.nets.find(x => x.n === net);
-            document.getElementById('instr-text').innerText = `Send only ${window.selectedCoin.s} (${net}) to this address.`;
+            document.getElementById('instr-text').innerText = `Send only ${window.selectedCoin.s} (${net})`;
             document.getElementById('addr-text').innerText = nObj.a;
             document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${nObj.a}`;
         }
