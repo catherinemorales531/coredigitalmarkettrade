@@ -401,11 +401,18 @@ body.modal-open {
             </div>
 
             <!-- STEP 1: SELECTION -->
-            <div id="step-selection">
-                <div class="flex justify-between border-b pb-4 mb-4">
-<span class="text-gray-400 font-[900] text-[11px] tracking-[0.15em] uppercase">Deposit Amount:</span>
-                    <span id="usd-header" class="text-2xl font-black text-gray-900">$0.00 USD</span>
-                </div>
+           <!-- PROFESSIONAL DEPOSIT HEADER (ONE-LINE LOCK) -->
+<div class="flex justify-between items-baseline border-b pb-4 mb-4 w-full gap-2 overflow-hidden">
+    <!-- Label: Locked to the left, cannot be squashed -->
+    <span class="text-gray-400 font-[900] text-[10px] tracking-[0.15em] uppercase flex-shrink-0">
+        Deposit Amount:
+    </span>
+
+    <!-- Value: Locked to a single line, aligns to the right -->
+    <span id="usd-header" class="text-[18px] sm:text-2xl font-black text-gray-900 whitespace-nowrap text-right tracking-tighter">
+        $0.00 USD
+    </span>
+</div>
 
                <div class="h-tracker">
     <div id="dot-1" class="h-dot"></div>
@@ -830,7 +837,7 @@ async function updateUI() {
     const btn = document.getElementById('btn-proc');
     
     // Update the header display
-    document.getElementById('usd-header').innerText = "$" + usdIn.toLocaleString(undefined, {minimumFractionDigits: 2}) + " USD";
+document.getElementById('usd-header').innerText = `$${usdIn.toLocaleString(undefined, {minimumFractionDigits: 2})} USD`;
 
     if(window.selectedCoin) {
         // TRIGGER: Start fetching the live price
