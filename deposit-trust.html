@@ -288,6 +288,10 @@ body.modal-open {
     flex-shrink: 0;
 }
 
+.header-solid {
+    background-color: #0a061a !important; /* Solid dark purple/black */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
         
         
  </style>
@@ -340,27 +344,25 @@ body.modal-open {
     </div>
 
     <!-- 2. MASTER HEADER -->
-   <!-- THE PINNED HEADER -->
-<header class="pinned-header flex justify-between items-center px-6 py-4">
-    <div class="flex items-center gap-3 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
-        <!-- Pulsing Green Dot -->
+<header class="fixed top-0 left-0 w-full flex justify-between items-center px-6 py-4 z-[1000] header-solid">
+    
+    <!-- LEFT SIDE: Security Pill -->
+    <div class="flex items-center gap-2.5 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
         <div class="relative flex h-2 w-2">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
         </div>
-        
-        <!-- Secure Label -->
         <div class="flex items-center gap-1.5">
             <svg class="w-3 h-3 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
             </svg>
-            <span class="text-[9px] font-black text-emerald-500 uppercase tracking-widest">
+            <span class="text-[9px] font-black text-emerald-500 uppercase tracking-widest leading-none">
                 256-bit Secure Session
             </span>
         </div>
     </div>
 
-    <!-- Menu Trigger (Remains the same) -->
+    <!-- RIGHT SIDE: Menu Trigger 
     <div onclick="toggleSideMenu()" class="space-y-1.5 cursor-pointer opacity-70 p-2">
         <div class="w-8 h-0.5 bg-white"></div>
         <div class="w-8 h-0.5 bg-white"></div>
