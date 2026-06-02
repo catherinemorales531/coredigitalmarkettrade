@@ -292,7 +292,15 @@ body.modal-open {
     background-color: #0a061a !important; /* Solid dark purple/black */
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
-        
+
+
+.timer-label {
+    color: #000000 !important;
+    font-weight: 700 !important; /* "Little bold" black */
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+}        
         
  </style>
 </head>
@@ -502,30 +510,27 @@ body.modal-open {
                 <button class="w-full text-[10px] font-black text-gray-400 uppercase mt-5" onclick="location.reload()">Cancel Payment</button>
             </div>
 
-            <!-- STEP 3: VERIFICATION -->
+           
+          <!-- STEP 3: VERIFICATION -->
             <div id="step-verify" class="hidden text-center py-5">
-                <div class="h-tracker mb-10">
-                    <div class="h-dot active"></div><div class="h-line active"></div>
-                    <div class="h-dot active"></div><div class="h-line active"></div>
-                    <div class="h-dot active"></div>
-                </div>
-                <div class="loader-pulse mb-8"><div class="w-4 h-4 bg-emerald-500 rounded-full"></div></div>
                 <h3 class="font-black text-xl uppercase tracking-tighter">Awaiting Confirmations</h3>
-                <p class="text-gray-400 text-sm font-semibold px-4 mt-3">Our nodes are scanning the blockchain. Your balance will update automatically upon 3 confirmations.</p>
+                <p class="text-gray-400 text-sm font-semibold px-4 mt-3">Scanning blockchain. Automatic update in progress.</p>
+            </div>
 
-          </div>
-    
-<div id="timer-container" class="mt-10 pt-6 border-t border-gray-100 text-center">
-    <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
-        Transaction Window Expires In: 
-        <span class="text-gray-900 ml-2 font-mono" id="main-timer">59:59</span>
-    </p>
-    <span class="text-[8px] text-gray-300 font-bold uppercase tracking-[0.3em] block mt-2">
-        Powered by Heleket
-    </span>
-</div>
-        </div>
-    </main>
+            <!-- TIMER & BRANDING (Now back inside the white card) -->
+            <div id="timer-container" class="mt-10 pt-6 border-t border-gray-100 text-center">
+                <p class="text-[10px] font-bold text-black uppercase tracking-[0.2em]">
+                    Transaction Window Expires In: 
+                    <!-- Using your specific color #3729a3 -->
+                    <span class="ml-2 font-mono font-black text-[#3729a3]" id="main-timer">59:59</span>
+                </p>
+                <span class="text-[8px] text-gray-300 font-bold uppercase tracking-[0.3em] block mt-2">
+                    Powered by Heleket
+                </span>
+            </div>
+
+        </div> <!-- This </div> closes the white deposit-card -->
+    </main> <!-- This </main> closes the main section -->
 
   <!-- SEARCH MODAL -->
 <div id="search-modal" class="modal-overlay" onclick="closeSearch()">
@@ -697,41 +702,44 @@ function selectCoin(s) {
 }
 
 async function updateUI() {
-    const usdIn = parseFloat(document.getElementById('amt-input').value) || 0;
+    const amtInput = document.getElementById('amt-input');
+    const usdIn = parseFloat(amtInput.value) || 0;
     const net = document.getElementById('net-select').value;
     const btn = document.getElementById('btn-proc');
     
-    document.getElementById('usd-header').innerText = "$" + usdIn.toLocaleString(undefined, {minimumFractionDigits: 2}) + " USD";
+    // 1. Update the USD Header (One-line fix)
+    document.getElementById('usd-header').innerText = `$${usdIn.toLocaleString(undefined, {minimumFractionDigits: 2})} USD`;
 
     if(window.selectedCoin) {
-        // TRIGGER: Fetch the actual market price via the API
-        const livePrice = await getLivePrice(window.selectedCoin.cgId);
-        const rateToUse = livePrice ? livePrice : window.selectedCoin.rate;
-
-        const cryptoVal = usdIn / rateToUse;
-        document.getElementById('payable-val').innerText = cryptoVal.toFixed(6) + " " + window.selectedCoin.s;
-        
+        // 2. Enable/Disable logic happens IMMEDIATELY
         const isValid = (usdIn > 0 && net !== "");
         btn.disabled = !isValid;
 
-        // Progress Tracker Logic
+        // 3. Update Progress Dots
         if(isValid) {
             document.getElementById('dot-1').classList.add('active');
             document.getElementById('line-1').classList.add('active');
-        } else {
-            document.getElementById('dot-1').classList.remove('active');
-            document.getElementById('line-1').classList.remove('active');
         }
 
+        // 4. Update Crypto Calculation (API)
+        try {
+            const livePrice = await getLivePrice(window.selectedCoin.cgId);
+            const rateToUse = livePrice ? livePrice : window.selectedCoin.rate;
+            const cryptoVal = usdIn / rateToUse;
+            document.getElementById('payable-val').innerText = cryptoVal.toFixed(6) + " " + window.selectedCoin.s;
+        } catch (e) {
+            console.log("API temporary delay...");
+        }
+
+        // 5. Update QR/Instructions
         if(net !== "") {
             const nObj = window.selectedCoin.nets.find(x => x.n === net);
-            document.getElementById('instr-text').innerText = `Send only ${window.selectedCoin.s} (${net}) to this address.`;
+            document.getElementById('instr-text').innerText = `Send only ${window.selectedCoin.s} (${net})`;
             document.getElementById('addr-text').innerText = nObj.a;
             document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${nObj.a}`;
         }
     }
 }
-
 
 
 
