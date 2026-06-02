@@ -9,6 +9,30 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
     
     <style>
+
+/* 1. THE PINNED HEADER STYLE */
+.pinned-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Stays above everything */
+    background: #0a061a; /* Solid background so content hides behind it */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 16px 24px;
+}
+
+/* 2. THE PULSE DOT FIX */
+.ammunition-pulse {
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border-radius: 50%;
+    position: relative; /* REQUIRED: Keeps dot from flying away on mobile */
+    box-shadow: 0 0 10px #3b82f6;
+    flex-shrink: 0;
+}
+        
         :root {
             --shiva-gradient: radial-gradient(circle at 20% 35%, #1b1035 0%, #0a061a 100%);
             --spark-silver: #cbd5e1;
@@ -285,13 +309,19 @@ body.modal-open {
 <body>
 
     <!-- 1. FULL SIDEBAR (EXACT COMPLIANCE) -->
-      <div id="side-nav">
-        <div onclick="toggleSideMenu()" class="text-3xl text-white opacity-40 mb-6 cursor-pointer w-fit">✕</div>
+   <!-- SIDEBAR USER SECTION -->
         <div class="flex items-center gap-5 mb-10">
-            <div class="w-14 h-14 rounded-full border-2 border-white/10 p-1 flex items-center justify-center bg-white/5 font-black text-xl">JD</div>
+            <!-- Initials Hook -->
+            <div class="user-initials-display w-14 h-14 rounded-full border-2 border-white/10 p-1 flex items-center justify-center bg-white/5 font-black text-xl">
+                J
+            </div>
             <div>
-                <h2 class="text-xl font-black silver-text uppercase tracking-tight">JOHN</h2>
-                <div class="flex items-center gap-2 mt-1"><div class="ammunition-pulse"></div><span class="text-[10px] font-bold text-blue-400 tracking-widest uppercase">Live Account</span></div>
+                <!-- Name Hook -->
+                <h2 class="user-name-display text-xl font-black silver-text uppercase tracking-tight">JOHN</h2>
+                <div class="flex items-center gap-2 mt-1">
+                    <div class="ammunition-pulse !w-2 !h-2"></div>
+                    <span class="text-[10px] font-bold text-blue-400 tracking-widest uppercase">Live Account</span>
+                </div>
             </div>
         </div>
 
@@ -330,18 +360,32 @@ body.modal-open {
     </div>
 
     <!-- 2. MASTER HEADER -->
-    <header class="p-6 flex justify-between items-center max-w-[1400px] mx-auto sticky top-0 z-50">
-        <div class="flex items-center gap-4">
-            <div class="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center font-black">CD</div>
-            <span class="silver-text font-black text-xl uppercase tracking-tighter">JOHN</span>
+    <header class="pinned-header flex justify-between items-center">
+    <div class="flex items-center gap-4">
+        <!-- Initials: Database will replace "J" later -->
+        <div class="user-initials-display w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center font-black">
+            J
         </div>
-        <div class="flex items-center gap-8">
-            <div class="ammunition-pulse"></div>
-            <div onclick="toggleSideMenu()" class="space-y-1.5 cursor-pointer opacity-70 hover:opacity-100 transition">
-                <div class="w-8 h-0.5 bg-white"></div><div class="w-8 h-0.5 bg-white"></div><div class="w-8 h-0.5 bg-white"></div>
+        
+        <!-- Name: Database will replace "JOHN" later -->
+        <div class="flex flex-col">
+            <span class="user-name-display silver-text font-black text-lg uppercase tracking-tighter leading-none">
+                JOHN
+            </span>
+            <div class="flex items-center gap-2 mt-1">
+                <div class="ammunition-pulse"></div>
+                <span class="text-[8px] font-bold text-blue-400 uppercase tracking-widest">Secure Account</span>
             </div>
         </div>
-    </header>
+    </div>
+
+    <!-- Menu Trigger -->
+    <div onclick="toggleSideMenu()" class="space-y-1.5 cursor-pointer opacity-70 p-2">
+        <div class="w-8 h-0.5 bg-white"></div>
+        <div class="w-8 h-0.5 bg-white"></div>
+        <div class="w-8 h-0.5 bg-white"></div>
+    </div>
+</header>
 
     <!-- 3. MAIN DEPOSIT SECTION -->
     <main class="px-4 pb-20">
@@ -548,6 +592,27 @@ body.modal-open {
 </div>
 
     <script>
+const accountData = {
+    firstName: "JOHN" 
+};
+
+function syncUserIdentity() {
+    // Updates all Names
+    document.querySelectorAll('.user-name-display').forEach(el => {
+        el.innerText = accountData.firstName;
+    });
+
+    // Updates all Initials
+    const firstLetter = accountData.firstName.charAt(0).toUpperCase();
+    document.querySelectorAll('.user-initials-display').forEach(el => {
+        el.innerText = firstLetter;
+    });
+}
+
+// Runs as soon as page loads
+document.addEventListener('DOMContentLoaded', syncUserIdentity);
+        
+        
      const coins = [
     { n: "Bitcoin", s: "BTC", i: "btc", cgId: "bitcoin", rate: 65230, nets: [{ n: "Bitcoin Network", a: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" }] },
     { n: "Ethereum", s: "ETH", i: "eth", cgId: "ethereum", rate: 3450, nets: [{ n: "Ethereum Mainnet (ERC20)", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }] },
