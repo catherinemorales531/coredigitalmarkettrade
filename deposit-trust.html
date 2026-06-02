@@ -292,15 +292,7 @@ body.modal-open {
     background-color: #0a061a !important; /* Solid dark purple/black */
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
-
-
-.timer-label {
-    color: #000000 !important;
-    font-weight: 700 !important; /* "Little bold" black */
-    text-transform: uppercase;
-    font-size: 10px;
-    letter-spacing: 0.1em;
-}        
+        
         
  </style>
 </head>
@@ -409,18 +401,11 @@ body.modal-open {
             </div>
 
             <!-- STEP 1: SELECTION -->
-           <!-- PROFESSIONAL DEPOSIT HEADER (ONE-LINE LOCK) -->
-<div class="flex justify-between items-baseline border-b pb-4 mb-4 w-full gap-2 overflow-hidden">
-    <!-- Label: Locked to the left, cannot be squashed -->
-    <span class="text-gray-400 font-[900] text-[10px] tracking-[0.15em] uppercase flex-shrink-0">
-        Deposit Amount:
-    </span>
-
-    <!-- Value: Locked to a single line, aligns to the right -->
-    <span id="usd-header" class="text-[18px] sm:text-2xl font-black text-gray-900 whitespace-nowrap text-right tracking-tighter">
-        $0.00 USD
-    </span>
-</div>
+            <div id="step-selection">
+                <div class="flex justify-between border-b pb-4 mb-4">
+<span class="text-[#111827] font-[900] text-[15px] tracking-tight">To pay:</span>
+                    <span id="usd-header" class="text-2xl font-black text-gray-900">$0.00 USD</span>
+                </div>
 
                <div class="h-tracker">
     <div id="dot-1" class="h-dot"></div>
@@ -460,22 +445,14 @@ body.modal-open {
                     </div>
 
                     <!-- CALCULATED INFO BOXES -->
-               <div id="payable-box" class="hidden mt-6 p-5 bg-gray-50 border border-gray-100 rounded-2xl flex justify-between items-center">
-    <div class="flex flex-col gap-1">
-        <!-- The Label -->
-        <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-tight">
-            Net Funding Equivalent <br> in Selected Asset:
-        </span>
-        <span id="payable-val" class="text-[#2563eb] font-black text-xl tracking-tighter" style="font-family: 'JetBrains Mono';">
-            0.000000 --
-        </span>
+                   <div id="payable-box" class="info-box hidden flex-col items-stretch gap-2">
+    <div class="flex justify-between items-center w-full">
+        <span class="info-label">Amount payable in selected currency</span>
+        <button onclick="copyCryptoAmount()" id="copy-btn" class="bg-[#111827] text-white text-[9px] font-black px-3 py-1.5 rounded-lg uppercase transition-all active:scale-90">Copy</button>
     </div>
-
-    <!-- The Black Copy Button -->
-    <button onclick="copyCryptoAmount()" id="copy-btn" class="bg-black text-white text-[10px] font-black px-5 py-2.5 rounded-xl uppercase transition-all active:scale-95 shadow-sm">
-        Copy
-    </button>
+    <span id="payable-val" class="info-val text-blue-600 text-lg" style="font-family: 'JetBrains Mono';">0.00 --</span>
 </div>
+
                     <div id="rate-box" class="info-box hidden">
                         <span class="info-label">The exchange rate is valid for</span>
                         <div class="flex items-center gap-2">
@@ -510,27 +487,25 @@ body.modal-open {
                 <button class="w-full text-[10px] font-black text-gray-400 uppercase mt-5" onclick="location.reload()">Cancel Payment</button>
             </div>
 
-           
-          <!-- STEP 3: VERIFICATION -->
+            <!-- STEP 3: VERIFICATION -->
             <div id="step-verify" class="hidden text-center py-5">
+                <div class="h-tracker mb-10">
+                    <div class="h-dot active"></div><div class="h-line active"></div>
+                    <div class="h-dot active"></div><div class="h-line active"></div>
+                    <div class="h-dot active"></div>
+                </div>
+                <div class="loader-pulse mb-8"><div class="w-4 h-4 bg-emerald-500 rounded-full"></div></div>
                 <h3 class="font-black text-xl uppercase tracking-tighter">Awaiting Confirmations</h3>
-                <p class="text-gray-400 text-sm font-semibold px-4 mt-3">Scanning blockchain. Automatic update in progress.</p>
-            </div>
+                <p class="text-gray-400 text-sm font-semibold px-4 mt-3">Our nodes are scanning the blockchain. Your balance will update automatically upon 3 confirmations.</p>
 
-            <!-- TIMER & BRANDING (Now back inside the white card) -->
-            <div id="timer-container" class="mt-10 pt-6 border-t border-gray-100 text-center">
-                <p class="text-[10px] font-bold text-black uppercase tracking-[0.2em]">
-                    Transaction Window Expires In: 
-                    <!-- Using your specific color #3729a3 -->
-                    <span class="ml-2 font-mono font-black text-[#3729a3]" id="main-timer">59:59</span>
-                </p>
-                <span class="text-[8px] text-gray-300 font-bold uppercase tracking-[0.3em] block mt-2">
-                    Powered by Heleket
-                </span>
-            </div>
-
-        </div> <!-- This </div> closes the white deposit-card -->
-    </main> <!-- This </main> closes the main section -->
+          </div>
+      <!-- ADD THIS HERE (Outside the steps, inside the card) -->
+<div id="timer-container" class="mt-8 text-center border-t pt-6">
+    <p class="timer-label">Time remaining for payment: <span class="timer-green ml-2" id="main-timer">59:59</span></p>
+    <span class="text-[10px] text-gray-300 font-black uppercase tracking-widest block mt-2">Powered by Heleket</span>
+</div>
+        </div>
+    </main>
 
   <!-- SEARCH MODAL -->
 <div id="search-modal" class="modal-overlay" onclick="closeSearch()">
@@ -702,44 +677,41 @@ function selectCoin(s) {
 }
 
 async function updateUI() {
-    const amtInput = document.getElementById('amt-input');
-    const usdIn = parseFloat(amtInput.value) || 0;
+    const usdIn = parseFloat(document.getElementById('amt-input').value) || 0;
     const net = document.getElementById('net-select').value;
     const btn = document.getElementById('btn-proc');
     
-    // 1. Update the USD Header (One-line fix)
-    document.getElementById('usd-header').innerText = `$${usdIn.toLocaleString(undefined, {minimumFractionDigits: 2})} USD`;
+    document.getElementById('usd-header').innerText = "$" + usdIn.toLocaleString(undefined, {minimumFractionDigits: 2}) + " USD";
 
     if(window.selectedCoin) {
-        // 2. Enable/Disable logic happens IMMEDIATELY
+        // TRIGGER: Fetch the actual market price via the API
+        const livePrice = await getLivePrice(window.selectedCoin.cgId);
+        const rateToUse = livePrice ? livePrice : window.selectedCoin.rate;
+
+        const cryptoVal = usdIn / rateToUse;
+        document.getElementById('payable-val').innerText = cryptoVal.toFixed(6) + " " + window.selectedCoin.s;
+        
         const isValid = (usdIn > 0 && net !== "");
         btn.disabled = !isValid;
 
-        // 3. Update Progress Dots
+        // Progress Tracker Logic
         if(isValid) {
             document.getElementById('dot-1').classList.add('active');
             document.getElementById('line-1').classList.add('active');
+        } else {
+            document.getElementById('dot-1').classList.remove('active');
+            document.getElementById('line-1').classList.remove('active');
         }
 
-        // 4. Update Crypto Calculation (API)
-        try {
-            const livePrice = await getLivePrice(window.selectedCoin.cgId);
-            const rateToUse = livePrice ? livePrice : window.selectedCoin.rate;
-            const cryptoVal = usdIn / rateToUse;
-            document.getElementById('payable-val').innerText = cryptoVal.toFixed(6) + " " + window.selectedCoin.s;
-        } catch (e) {
-            console.log("API temporary delay...");
-        }
-
-        // 5. Update QR/Instructions
         if(net !== "") {
             const nObj = window.selectedCoin.nets.find(x => x.n === net);
-            document.getElementById('instr-text').innerText = `Send only ${window.selectedCoin.s} (${net})`;
+            document.getElementById('instr-text').innerText = `Send only ${window.selectedCoin.s} (${net}) to this address.`;
             document.getElementById('addr-text').innerText = nObj.a;
             document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${nObj.a}`;
         }
     }
 }
+
 
 
 
@@ -823,20 +795,24 @@ async function getLivePrice(cgId) {
 //  THE COPY LOGIC: Handles the "Copied!" animation and clipboard
 function copyCryptoAmount() {
     const valText = document.getElementById('payable-val').innerText;
+    // We split the text to only copy the number (e.g., "0.00123") and ignore the symbol ("BTC")
     const amountOnly = valText.split(' ')[0]; 
     const btn = document.getElementById('copy-btn');
     
+    if (!amountOnly || amountOnly === "0.000000") return;
+
     navigator.clipboard.writeText(amountOnly).then(() => {
         const originalText = btn.innerText;
-        btn.innerText = "COPIED";
-        btn.classList.replace('bg-black', 'bg-emerald-500'); // Turn Green on success
+        btn.innerText = "COPIED!";
+        btn.style.background = "#10b981"; // Turns success green
         
         setTimeout(() => {
             btn.innerText = originalText;
-            btn.classList.replace('bg-emerald-500', 'bg-black'); // Turn back to Black
+            btn.style.background = "#111827"; // Turns back to black
         }, 2000);
     });
 }
+
 //  UPDATED UI ENGINE: Now handles the Live Price calculations
 async function updateUI() {
     // We use the new mobile-optimized input ID
@@ -845,7 +821,7 @@ async function updateUI() {
     const btn = document.getElementById('btn-proc');
     
     // Update the header display
-document.getElementById('usd-header').innerText = `$${usdIn.toLocaleString(undefined, {minimumFractionDigits: 2})} USD`;
+    document.getElementById('usd-header').innerText = "$" + usdIn.toLocaleString(undefined, {minimumFractionDigits: 2}) + " USD";
 
     if(window.selectedCoin) {
         // TRIGGER: Start fetching the live price
