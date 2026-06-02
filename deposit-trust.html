@@ -403,7 +403,7 @@ body.modal-open {
             <!-- STEP 1: SELECTION -->
             <div id="step-selection">
                 <div class="flex justify-between border-b pb-4 mb-4">
-<span class="text-[#111827] font-[900] text-[15px] tracking-tight">To pay:</span>
+<span class="text-[#111827] font-[900] text-[15px] tracking-tight uppercase">Amount to Fund:</span>
                     <span id="usd-header" class="text-2xl font-black text-gray-900">$0.00 USD</span>
                 </div>
 
@@ -445,14 +445,23 @@ body.modal-open {
                     </div>
 
                     <!-- CALCULATED INFO BOXES -->
-                   <div id="payable-box" class="info-box hidden flex-col items-stretch gap-2">
-    <div class="flex justify-between items-center w-full">
-        <span class="info-label">Amount payable in selected currency</span>
-        <button onclick="copyCryptoAmount()" id="copy-btn" class="bg-[#111827] text-white text-[9px] font-black px-3 py-1.5 rounded-lg uppercase transition-all active:scale-90">Copy</button>
+                  <div id="payable-box" class="info-box hidden flex-col items-start gap-3">
+    <div class="flex justify-between items-start w-full gap-4">
+        <!-- THE ACTION-BASED LABEL -->
+        <span class="info-label uppercase tracking-widest leading-tight text-blue-900/60">
+            Exact Funding Amount to be Sent in Selected Asset:
+        </span>
+        
+        <button onclick="copyCryptoAmount()" id="copy-btn" class="bg-[#111827] text-white text-[9px] font-black px-3 py-2 rounded-lg uppercase transition-all active:scale-90 flex-shrink-0">
+            Copy
+        </button>
     </div>
-    <span id="payable-val" class="info-val text-blue-600 text-lg" style="font-family: 'JetBrains Mono';">0.00 --</span>
+    
+    <!-- THE VALUE THEY NEED TO SEND -->
+    <span id="payable-val" class="info-val text-blue-600 text-xl" style="font-family: 'JetBrains Mono';">
+        0.00 --
+    </span>
 </div>
-
                     <div id="rate-box" class="info-box hidden">
                         <span class="info-label">The exchange rate is valid for</span>
                         <div class="flex items-center gap-2">
@@ -501,7 +510,7 @@ body.modal-open {
           </div>
       <!-- ADD THIS HERE (Outside the steps, inside the card) -->
 <div id="timer-container" class="mt-8 text-center border-t pt-6">
-    <p class="timer-label">Time remaining for payment: <span class="timer-green ml-2" id="main-timer">59:59</span></p>
+  <span class="text-[#111827] font-[900] text-[15px] tracking-tight uppercase">Amount to Fund:</span>
     <span class="text-[10px] text-gray-300 font-black uppercase tracking-widest block mt-2">Powered by Heleket</span>
 </div>
         </div>
