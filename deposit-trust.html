@@ -403,7 +403,7 @@ body.modal-open {
             <!-- STEP 1: SELECTION -->
             <div id="step-selection">
                 <div class="flex justify-between border-b pb-4 mb-4">
-<span class="text-[#111827] font-[900] text-[15px] tracking-tight">To pay:</span>
+<span class="text-gray-400 font-[900] text-[11px] tracking-[0.15em] uppercase">Deposit Amount:</span>
                     <span id="usd-header" class="text-2xl font-black text-gray-900">$0.00 USD</span>
                 </div>
 
@@ -445,14 +445,22 @@ body.modal-open {
                     </div>
 
                     <!-- CALCULATED INFO BOXES -->
-                   <div id="payable-box" class="info-box hidden flex-col items-stretch gap-2">
-    <div class="flex justify-between items-center w-full">
-        <span class="info-label">Amount payable in selected currency</span>
-        <button onclick="copyCryptoAmount()" id="copy-btn" class="bg-[#111827] text-white text-[9px] font-black px-3 py-1.5 rounded-lg uppercase transition-all active:scale-90">Copy</button>
+               <div id="payable-box" class="hidden mt-6 p-5 bg-gray-50 border border-gray-100 rounded-2xl flex justify-between items-center">
+    <div class="flex flex-col gap-1">
+        <!-- The Label -->
+        <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-tight">
+            Net Funding Equivalent <br> in Selected Asset:
+        </span>
+        <span id="payable-val" class="text-[#2563eb] font-black text-xl tracking-tighter" style="font-family: 'JetBrains Mono';">
+            0.000000 --
+        </span>
     </div>
-    <span id="payable-val" class="info-val text-blue-600 text-lg" style="font-family: 'JetBrains Mono';">0.00 --</span>
-</div>
 
+    <!-- The Black Copy Button -->
+    <button onclick="copyCryptoAmount()" id="copy-btn" class="bg-black text-white text-[10px] font-black px-5 py-2.5 rounded-xl uppercase transition-all active:scale-95 shadow-sm">
+        Copy
+    </button>
+</div>
                     <div id="rate-box" class="info-box hidden">
                         <span class="info-label">The exchange rate is valid for</span>
                         <div class="flex items-center gap-2">
@@ -499,10 +507,15 @@ body.modal-open {
                 <p class="text-gray-400 text-sm font-semibold px-4 mt-3">Our nodes are scanning the blockchain. Your balance will update automatically upon 3 confirmations.</p>
 
           </div>
-      <!-- ADD THIS HERE (Outside the steps, inside the card) -->
-<div id="timer-container" class="mt-8 text-center border-t pt-6">
-    <p class="timer-label">Time remaining for payment: <span class="timer-green ml-2" id="main-timer">59:59</span></p>
-    <span class="text-[10px] text-gray-300 font-black uppercase tracking-widest block mt-2">Powered by Heleket</span>
+    
+<div id="timer-container" class="mt-10 pt-6 border-t border-gray-100 text-center">
+    <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
+        Transaction Window Expires In: 
+        <span class="text-gray-900 ml-2 font-mono" id="main-timer">59:59</span>
+    </p>
+    <span class="text-[8px] text-gray-300 font-bold uppercase tracking-[0.3em] block mt-2">
+        Powered by Heleket
+    </span>
 </div>
         </div>
     </main>
@@ -795,24 +808,20 @@ async function getLivePrice(cgId) {
 //  THE COPY LOGIC: Handles the "Copied!" animation and clipboard
 function copyCryptoAmount() {
     const valText = document.getElementById('payable-val').innerText;
-    // We split the text to only copy the number (e.g., "0.00123") and ignore the symbol ("BTC")
     const amountOnly = valText.split(' ')[0]; 
     const btn = document.getElementById('copy-btn');
     
-    if (!amountOnly || amountOnly === "0.000000") return;
-
     navigator.clipboard.writeText(amountOnly).then(() => {
         const originalText = btn.innerText;
-        btn.innerText = "COPIED!";
-        btn.style.background = "#10b981"; // Turns success green
+        btn.innerText = "COPIED";
+        btn.classList.replace('bg-black', 'bg-emerald-500'); // Turn Green on success
         
         setTimeout(() => {
             btn.innerText = originalText;
-            btn.style.background = "#111827"; // Turns back to black
+            btn.classList.replace('bg-emerald-500', 'bg-black'); // Turn back to Black
         }, 2000);
     });
 }
-
 //  UPDATED UI ENGINE: Now handles the Live Price calculations
 async function updateUI() {
     // We use the new mobile-optimized input ID
