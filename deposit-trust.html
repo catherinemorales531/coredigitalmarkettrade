@@ -279,19 +279,52 @@ body.modal-open {
     }
 }
 
+<header class="pinned-header flex justify-between items-center">
+    <div class="flex items-center gap-4">
+        <!-- Initials Placeholder -->
+        <div class="user-initials-display w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center font-black">
+            J
+        </div>
+        
+        <!-- Name Placeholder -->
+        <div class="flex flex-col">
+            <span class="user-name-display silver-text font-black text-lg uppercase tracking-tighter leading-none">
+                JOHN
+            </span>
+            <div class="flex items-center gap-2 mt-1">
+                <div class="ammunition-pulse"></div>
+                <span class="text-[8px] font-bold text-blue-400 uppercase tracking-widest">Secure Account</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Trigger -->
+    <div onclick="toggleSideMenu()" class="space-y-1.5 cursor-pointer opacity-70 p-2">
+        <div class="w-8 h-0.5 bg-white"></div>
+        <div class="w-8 h-0.5 bg-white"></div>
+        <div class="w-8 h-0.5 bg-white"></div>
+    </div>
+</header>
+        
         
  </style>
 </head>
 <body>
 
     <!-- 1. FULL SIDEBAR (EXACT COMPLIANCE) -->
-      <div id="side-nav">
-        <div onclick="toggleSideMenu()" class="text-3xl text-white opacity-40 mb-6 cursor-pointer w-fit">✕</div>
+      <!-- SIDEBAR USER SECTION -->
         <div class="flex items-center gap-5 mb-10">
-            <div class="w-14 h-14 rounded-full border-2 border-white/10 p-1 flex items-center justify-center bg-white/5 font-black text-xl">JD</div>
+            <!-- Initials Hook -->
+            <div class="user-initials-display w-14 h-14 rounded-full border-2 border-white/10 p-1 flex items-center justify-center bg-white/5 font-black text-xl">
+                J
+            </div>
             <div>
-                <h2 class="text-xl font-black silver-text uppercase tracking-tight">JOHN</h2>
-                <div class="flex items-center gap-2 mt-1"><div class="ammunition-pulse"></div><span class="text-[10px] font-bold text-blue-400 tracking-widest uppercase">Live Account</span></div>
+                <!-- Name Hook -->
+                <h2 class="user-name-display text-xl font-black silver-text uppercase tracking-tight">JOHN</h2>
+                <div class="flex items-center gap-2 mt-1">
+                    <div class="ammunition-pulse !w-2 !h-2"></div>
+                    <span class="text-[10px] font-bold text-blue-400 tracking-widest uppercase">Live Account</span>
+                </div>
             </div>
         </div>
 
@@ -330,21 +363,35 @@ body.modal-open {
     </div>
 
     <!-- 2. MASTER HEADER -->
-    <header class="p-6 flex justify-between items-center max-w-[1400px] mx-auto sticky top-0 z-50">
-        <div class="flex items-center gap-4">
-            <div class="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center font-black">CD</div>
-            <span class="silver-text font-black text-xl uppercase tracking-tighter">JOHN</span>
+  <header class="pinned-header flex justify-between items-center">
+    <div class="flex items-center gap-4">
+        <!-- Initials Placeholder -->
+        <div class="user-initials-display w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center font-black">
+            J
         </div>
-        <div class="flex items-center gap-8">
-            <div class="ammunition-pulse"></div>
-            <div onclick="toggleSideMenu()" class="space-y-1.5 cursor-pointer opacity-70 hover:opacity-100 transition">
-                <div class="w-8 h-0.5 bg-white"></div><div class="w-8 h-0.5 bg-white"></div><div class="w-8 h-0.5 bg-white"></div>
+        
+        <!-- Name Placeholder -->
+        <div class="flex flex-col">
+            <span class="user-name-display silver-text font-black text-lg uppercase tracking-tighter leading-none">
+                JOHN
+            </span>
+            <div class="flex items-center gap-2 mt-1">
+                <div class="ammunition-pulse"></div>
+                <span class="text-[8px] font-bold text-blue-400 uppercase tracking-widest">Live Account</span>
             </div>
         </div>
-    </header>
+    </div>
+
+    <!-- Menu Trigger -->
+    <div onclick="toggleSideMenu()" class="space-y-1.5 cursor-pointer opacity-70 p-2">
+        <div class="w-8 h-0.5 bg-white"></div>
+        <div class="w-8 h-0.5 bg-white"></div>
+        <div class="w-8 h-0.5 bg-white"></div>
+    </div>
+</header>
 
     <!-- 3. MAIN DEPOSIT SECTION -->
-    <main class="px-4 pb-20">
+   <main class="px-4 pb-20 pt-24">
         <div class="deposit-card">
             <!-- Top Branding -->
             <div class="flex justify-between items-center mb-8">
@@ -548,6 +595,30 @@ body.modal-open {
 </div>
 
     <script>
+
+// DATABASE SIMULATION
+const accountData = {
+    firstName: "JOHN" // Change this to any name to update the whole site instantly
+};
+
+function syncUserIdentity() {
+    // Sync all Name displays
+    const nameElements = document.querySelectorAll('.user-name-display');
+    nameElements.forEach(el => {
+        el.innerText = accountData.firstName;
+    });
+
+    // Sync all Initials displays (Takes the first letter)
+    const initialElements = document.querySelectorAll('.user-initials-display');
+    const firstLetter = accountData.firstName.charAt(0).toUpperCase();
+    initialElements.forEach(el => {
+        el.innerText = firstLetter;
+    });
+}
+
+// Run this when the page is ready
+document.addEventListener('DOMContentLoaded', syncUserIdentity);
+        
      const coins = [
     { n: "Bitcoin", s: "BTC", i: "btc", cgId: "bitcoin", rate: 65230, nets: [{ n: "Bitcoin Network", a: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" }] },
     { n: "Ethereum", s: "ETH", i: "eth", cgId: "ethereum", rate: 3450, nets: [{ n: "Ethereum Mainnet (ERC20)", a: "0x31e1fd8d1abab6b715b8b6e5a68168ea1cab005cb" }] },
