@@ -585,20 +585,18 @@ function closeSearch() {
                 list.innerHTML += `<div class="coin-item mb-2" onclick="selectCoin('${c.s}')"><img src="https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/${c.i}.png" class="w-8 h-8 mr-3" onerror="this.src='https://ui-avatars.com/api/?name=${c.s}'"><div><p class="font-bold text-sm">${c.n}</p><p class="text-[10px] font-black opacity-40 uppercase">${c.s}</p></div></div>`;
             });
         }
-
-      function renderCoins() {
+function renderCoins() {
     const q = document.getElementById('crypto-search').value.toLowerCase();
     const list = document.getElementById('coin-list');
     list.innerHTML = '';
     
     coins.filter(c => c.n.toLowerCase().includes(q) || c.s.toLowerCase().includes(q)).forEach(c => {
-        
-        // 1. Determine which icon to use (Custom vs Default)
+        // Correct icon logic
         const iconUrl = c.customIcon ? c.customIcon : `https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/${c.i}.png`;
 
-        // 2. Inject the HTML with the correct iconUrl
+        // Clean HTML string with NO broken quotes
         list.innerHTML += `
-            <div class="coin-item mb-2" onclick="selectCoin('${c.s}')">
+            <div class="coin-item mb-2" onclick="selectCoin('${c.s}')" style="cursor: pointer;">
                 <img src="${iconUrl}" class="w-8 h-8 mr-3" onerror="this.src='https://ui-avatars.com/api/?name=${c.s}'">
                 <div>
                     <p class="font-bold text-sm">${c.n}</p>
@@ -608,6 +606,36 @@ function closeSearch() {
     });
 }
 
+function selectCoin(s) {
+    const c = coins.find(x => x.s === s);
+    if (!c) return; 
+    
+    window.selectedCoin = c;
+    
+    // 1. Update Name
+    document.getElementById('sel-name').innerText = c.s;
+    document.getElementById('sel-name').classList.remove('text-gray-400');
+    
+    // 2. Update Icon (Check for customIcon first)
+    const iconUrl = c.customIcon ? c.customIcon : `https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/${c.i}.png`;
+    document.getElementById('sel-icon').src = iconUrl;
+    document.getElementById('sel-icon').classList.remove('opacity-30');
+    
+    // 3. Update Networks
+    document.getElementById('net-select').innerHTML = '<option value="">-- Choose Network --</option>' + 
+        c.nets.map(n => `<option value="${n.n}">${n.n}</option>`).join('');
+    
+    // 4. Show the hidden info boxes
+    document.getElementById('payable-box').classList.remove('hidden');
+    document.getElementById('rate-box').classList.remove('hidden');
+    
+    // 5. Close Modal and Refresh UI
+    closeSearch();
+    updateUI();
+}
+
+
+        
        function updateUI() {
     const usdIn = parseFloat(document.getElementById('amt-input').value) || 0;
     const net = document.getElementById('net-select').value;
