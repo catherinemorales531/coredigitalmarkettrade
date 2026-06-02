@@ -69,11 +69,53 @@
         .info-val { font-size: 13px; font-weight: 900; color: #111827; }
 
         /* MODALS */
-        .modal-overlay { display: none; position: fixed; inset: 0; z-index: 100001; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: white; width: 100%; max-width: 460px; border-radius: 28px; padding: 25px; height: 80vh; display: flex; flex-direction: column; color: #111827; }
+.modal-overlay { 
+    display: none; 
+    position: fixed; 
+    inset: 0; 
+    z-index: 100001; 
+    background: rgba(0,0,0,0.7); 
+    backdrop-filter: blur(8px); 
+    align-items: center; 
+    justify-content: center; 
+    padding: 20px; 
+}
+
+.modal-content { 
+    background: white; 
+    width: 100%; 
+    max-width: 460px; 
+    border-radius: 28px; 
+    padding: 25px; 
+    max-height: 85vh; /* Change height to max-height */
+    display: flex; 
+    flex-direction: column; 
+    color: #111827; 
+    overflow: hidden; /* Keeps the rounded corners clean */
+}
         .coin-item { display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 14px; cursor: pointer; }
         .coin-item:hover { background: #f3f4f6; }
 
+body.modal-open {
+    overflow: hidden !important;
+}
+
+/* s to make the list scrollable */
+#coin-list {
+    flex: 1;
+    overflow-y: auto;
+    margin-top: 15px;
+    padding-right: 5px;
+}
+
+/* Professional Scrollbar Styling */
+#coin-list::-webkit-scrollbar {
+    width: 6px;
+}
+#coin-list::-webkit-scrollbar-thumb {
+    background: #e5e7eb;
+    border-radius: 10px;
+}
         .btn-pay { background: #111827; color: white; width: 100%; padding: 20px; border-radius: 16px; font-weight: 800; text-transform: uppercase; margin-top: 20px; transition: 0.3s; }
         .btn-pay:disabled { opacity: 0.3; cursor: not-allowed; }
         
@@ -423,14 +465,28 @@
         </div>
     </main>
 
-    <!-- SEARCH MODAL -->
-    <div id="search-modal" class="modal-overlay" onclick="closeSearch()">
-        <div class="modal-content shadow-2xl" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-center"><span class="font-black uppercase text-lg">Select Asset</span><button onclick="closeSearch()" class="text-3xl">&times;</button></div>
-            <input type="text" id="crypto-search" placeholder="Search Global Assets..." oninput="renderCoins()">
-            <div id="coin-list" class="coin-list"></div>
+  <!-- SEARCH MODAL -->
+<div id="search-modal" class="modal-overlay" onclick="closeSearch()">
+    <div class="modal-content shadow-2xl" onclick="event.stopPropagation()">
+        
+        <!-- FIXED HEADER (Doesn't scroll) -->
+        <div class="flex justify-between items-center mb-4">
+            <span class="font-black uppercase text-lg tracking-tighter">Select Asset</span>
+            <button onclick="closeSearch()" class="text-3xl text-gray-300 hover:text-black">&times;</button>
         </div>
+
+        <!-- FIXED SEARCH BAR (Doesn't scroll) -->
+        <div class="relative">
+            <input type="text" id="crypto-search" placeholder="Search Global Assets..." oninput="renderCoins()">
+        </div>
+
+        <!-- SCROLLABLE AREA (Only this part moves) -->
+        <div id="coin-list">
+            <!-- JavaScript will inject coins here -->
+        </div>
+        
     </div>
+</div>
 
     
 <!-- LIVE CHAT PLACEHOLDER -->
@@ -509,8 +565,16 @@
         function toggleSub(id) { document.getElementById(id).classList.toggle('active'); }
         function toggleLangMenu() { const d = document.getElementById('lang-dropdown'); d.style.display = (d.style.display === 'block') ? 'none' : 'block'; }
         function changeLang(c, f) { document.getElementById('curr-lang').innerText = c; document.getElementById('curr-flag').src = `https://flagcdn.com/w40/${f}.png`; document.getElementById('lang-dropdown').style.display = 'none'; }
-        function openSearch() { document.getElementById('search-modal').style.display = 'flex'; renderCoins(); }
-        function closeSearch() { document.getElementById('search-modal').style.display = 'none'; }
+       function openSearch() {
+    document.getElementById('search-modal').style.display = 'flex';
+    document.body.classList.add('modal-open'); // This locks the back page
+    renderCoins();
+}
+
+function closeSearch() {
+    document.getElementById('search-modal').style.display = 'none';
+    document.body.classList.remove('modal-open'); // This unlocks the back page
+}
         function toggleFaq(s) { document.getElementById('faq-modal').style.display = s ? 'flex' : 'none'; }
 
         function renderCoins() {
