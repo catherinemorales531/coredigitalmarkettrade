@@ -332,27 +332,6 @@ body { top: 0px !important; }
 }
 .lang-item-row:hover { background: #f3f4f6; }
 
-
-/* Ensure all modals are at the very top layer */
-.modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 999999 !important; /* Extremely high to stay on top */
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px);
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-/* Fix for overlapping content */
-.modal-content {
-    position: relative;
-    z-index: 1000000 !important;
-}
-        
-
         
  </style>
 </head>
@@ -445,18 +424,18 @@ body { top: 0px !important; }
 
      <!-- TOP BRANDING -->
 <div class="flex justify-between items-center mb-8 px-2 w-full">
-    <span class="text-red-600 font-black text-xl tracking-tighter flex-shrink-0 notranslate">Heleket</span>
-    <div class="flex items-center gap-4 flex-shrink-0">
+    <!-- Branding Protected from Translation -->
+    <span class="text-red-600 font-black text-xl tracking-tighter notranslate">Heleket</span>
+    
+    <div class="flex items-center gap-4">
         <button onclick="toggleFaq(true)" class="bold-help-btn">?</button>
         
-        <!-- Flag Pill Trigger -->
+        <!-- THE NEW FLAG PILL UI -->
         <div class="flex items-center gap-2 cursor-pointer bg-[#f8fafc] border border-[#e2e8f0] px-3 py-1.5 rounded-full" onclick="openLangSearch()">
             <img id="active-flag" src="https://flagcdn.com/w40/us.png" class="w-5 h-5 rounded-full object-cover border">
             <span id="active-lang-text" class="text-black font-black text-[11px] uppercase">EN</span>
             <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
         </div>
-    </div>
-</div>
 
         <!-- Hidden Google Element -->
         <div id="google_translate_element"></div>
@@ -773,19 +752,8 @@ setInterval(() => {
     if(mainCount % 10 === 0) saveSession();
 }, 1000);
 
-function openSearch() { 
-    closeLangSearch();
-    document.getElementById('search-modal').style.display = 'flex'; 
-    document.body.classList.add('modal-open');
-    renderCoins(); 
-}
-
-function openLangSearch() { 
-    closeSearch();
-    document.getElementById('lang-search-modal').style.display = 'flex'; 
-    document.body.classList.add('modal-open');
-    renderLanguages(); 
-}
+function openSearch() { document.getElementById('search-modal').style.display = 'flex'; renderCoins(); }
+function closeSearch() { document.getElementById('search-modal').style.display = 'none'; }
 function renderCoins() {
     const q = document.getElementById('crypto-search').value.toLowerCase();
     const list = document.getElementById('coin-list');
