@@ -474,7 +474,16 @@ Selected Asset:</span>
             <h3 class="font-black text-xl uppercase text-black">Awaiting Confirmations</h3>
             <p class="text-gray-400 text-sm font-semibold px-4 mt-3">Our nodes are scanning the blockchain. Balance updates after 3 confirmations.</p>
         </div>
+        
+<!-- THIS BUTTON IS NOW GLOBAL (STAYS ON ALL PAGES) -->
+        <div class="px-2">
+            <button onclick="cancelAndClear()" class="w-full text-[10px] font-black text-gray-300 uppercase mt-8 hover:text-red-500 transition-colors tracking-[0.2em]">
+                Cancel & Void Transaction
+            </button>
+        </div>
 
+        <!-- Timer remains below this -->
+        <div id="timer-container" ...
         <!-- TIMER CONTAINER (Properly nested inside the white card) -->
         <div id="timer-container" class="mt-10 pt-6 border-t border-gray-100 text-center">
             <p class="text-[10px] font-black text-black uppercase tracking-[0.2em]">
@@ -740,7 +749,30 @@ window.onload = loadProgress;
 function copyAddr() { navigator.clipboard.writeText(document.getElementById('addr-text').innerText); alert("Address Copied"); }
 function copyCryptoAmount() { navigator.clipboard.writeText(document.getElementById('payable-val').innerText.split(' ')[0]); alert("Amount Copied"); }
 function toggleLangMenu() { const d = document.getElementById('lang-dropdown'); d.style.display = (d.style.display === 'block') ? 'none' : 'block'; } 
-   
+
+// 1. CANCEL AND RESET EVERYTHING
+function cancelAndClear() {
+    if(confirm("Void this transaction and return to start?")) {
+        // Clear the memory
+        localStorage.removeItem('heleket_master_session');
+        // Reset the page
+        location.reload();
+    }
+}
+
+// 2. TOGGLE MENU
+function toggleLangMenu(e) {
+    e.stopPropagation();
+    const d = document.getElementById('lang-dropdown');
+    d.style.display = (d.style.display === 'block') ? 'none' : 'block';
+}
+
+// Close menu if user clicks outside
+window.addEventListener('click', () => {
+    document.getElementById('lang-dropdown').style.display = 'none';
+});
+
+        
    </script>
 </body>
 </html>
