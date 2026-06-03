@@ -357,11 +357,7 @@ body { top: 0px !important; }
     visibility: hidden !important;
 }
         
-.top-branding-row {
-    position: relative;
-    z-index: 999999 !important; /* Higher than any modal */
-    pointer-events: auto !important;
-}
+
         
  </style>
 </head>
@@ -838,27 +834,24 @@ function renderLanguages() {
 }
 
 // 3. The Bridge to Google Translate
-function switchLanguage(code, flag) {
-    // 1. Instantly update your Flag Pill UI so the user sees the change
+function switchLanguage(code, flag, name) {
+    // 1. Update the UI Pill
     const flagImg = document.getElementById('active-flag');
     const langText = document.getElementById('active-lang-text');
     
     if(flagImg) flagImg.src = `https://flagcdn.com/w40/${flag}.png`;
-    if(langText) langText.innerText = code.toUpperCase();
+    if(langText) langText.innerText = code.split('-')[0].toUpperCase();
     
-    // 2. THE BRIDGE: Try to find the hidden Google dropdown
+    // 2. Trigger Google Translate
     const googleCombo = document.querySelector('.goog-te-combo');
-    
     if (googleCombo) {
-        // If found, change language and trigger the event
         googleCombo.value = code;
         googleCombo.dispatchEvent(new Event('change'));
-        closeLangSearch(); // Close your modal only after successful bridge
     } else {
-        // If NOT found, wait 200ms and try again (Recursion)
-        console.log("Google Engine connecting...");
-        setTimeout(() => switchLanguage(code, flag), 200);
+        console.error("Google Translate is still loading. Please wait a moment.");
     }
+    
+    closeLangSearch();
 }
         
  </script>
