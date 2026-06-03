@@ -464,12 +464,19 @@ body { top: 0px !important; }
    
 
      <!-- TOP BRANDING -->
+<!-- Add the class 'top-branding-row' here -->
 <div class="flex justify-between items-center mb-8 px-2 top-branding-row">
-    <!-- Branding Protected from Translation -->
-    <span class="text-red-600 font-black text-xl tracking-tighter notranslate">Heleket</span>
+    <span class="text-red-600 ... notranslate">Heleket</span>
     
     <div class="flex items-center gap-4">
-        <button onclick="toggleFaq(true)" class="bold-help-btn">?</button>
+        <button onclick="toggleFaq(true)" ...>?</button>
+        
+        <!-- Flag Pill -->
+        <div class="lang-selector ..." onclick="openLangSearch()">
+             <!-- ... flag and EN text ... -->
+        </div>
+    </div>
+</div>
         
         <!-- THE NEW FLAG PILL UI -->
         <div class="flex items-center gap-2 cursor-pointer bg-[#f8fafc] border border-[#e2e8f0] px-3 py-1.5 rounded-full" onclick="openLangSearch()">
