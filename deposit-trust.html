@@ -541,17 +541,26 @@ Selected Asset:</span>
 <div id="search-modal" class="modal-overlay" onclick="closeSearch()">
     <div class="modal-content shadow-2xl" onclick="event.stopPropagation()">
 
-<!-- SEARCHABLE LANGUAGE MODAL -->
+
+
 <div id="lang-search-modal" class="modal-overlay" onclick="closeLangSearch()">
     <div class="modal-content shadow-2xl" onclick="event.stopPropagation()">
+        
         <div class="flex justify-between items-center mb-4">
             <span class="font-black uppercase text-lg tracking-tighter">Select Language</span>
             <button onclick="closeLangSearch()" class="text-3xl">&times;</button>
         </div>
-        <input type="text" id="lang-search-input" placeholder="Search Global Languages..." class="w-full border-2 p-4 rounded-xl font-bold mb-4 outline-none" oninput="renderLanguages()">
+
+        <!-- The Input for Search (Keep this as lang-search-input) -->
+        <input type="text" id="lang-search-input" placeholder="Search Global Languages..." 
+               class="w-full border-2 p-4 rounded-xl font-bold mb-4 outline-none" 
+               oninput="renderLanguages()">
+
+        <!-- Target for JavaScript injection -->
         <div id="lang-list" class="overflow-y-auto flex-1">
             <!-- Languages will be injected here -->
         </div>
+        
     </div>
 </div>
         
@@ -795,21 +804,24 @@ function renderLanguages() {
 
 // 3. The Bridge to Google Translate
 function switchLanguage(code, flag, name) {
-    // Update the Pill UI
-    document.getElementById('active-flag').src = `https://flagcdn.com/w40/${flag}.png`;
-    document.getElementById('active-lang-text').innerText = code.split('-')[0].toUpperCase();
+    // 1. Update the UI Pill
+    const flagImg = document.getElementById('active-flag');
+    const langText = document.getElementById('active-lang-text');
     
-    // Trigger Google Translate logic
+    if(flagImg) flagImg.src = `https://flagcdn.com/w40/${flag}.png`;
+    if(langText) langText.innerText = code.split('-')[0].toUpperCase();
+    
+    // 2. Trigger Google Translate
     const googleCombo = document.querySelector('.goog-te-combo');
     if (googleCombo) {
         googleCombo.value = code;
         googleCombo.dispatchEvent(new Event('change'));
+    } else {
+        console.error("Google Translate is still loading. Please wait a moment.");
     }
     
     closeLangSearch();
 }
-
-
         
  </script>
 <script type="text/javascript">
