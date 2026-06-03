@@ -41,11 +41,20 @@
         @keyframes pulse-ring { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(3); opacity: 0; } }
 
         /* --- BOX MODEL INTEGRITY & HELEKET CARD --- */
-        .deposit-card {
-            background: #ffffff; color: #111827; border-radius: 28px; width: 92%; max-width: 480px;
-            margin: 20px auto; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-            box-sizing: border-box;
-        }
+.deposit-card {
+    background: #ffffff;
+    color: #111827;
+    border-radius: 28px;
+    width: 92%;
+    max-width: 480px;
+    margin: 20px auto;
+    padding: 30px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    display: flex; /* Added */
+    flex-direction: column; /* This forces content to stack top-to-bottom */
+}
+
+        
         .selector-box { border: 2px solid #f3f4f6; border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s; }
         .selector-box:hover { border-color: #111827; }
 
@@ -426,27 +435,32 @@ body.modal-open {
             <div class="flex items-center gap-4">
                 <button onclick="toggleFaq(true)" class="bold-help-btn">?</button>
 
-<div class="lang-selector" onclick="toggleLangMenu(event)">
-    <img id="curr-flag" src="https://flagcdn.com/w40/us.png" class="w-6 h-6 rounded-full object-cover border">
-    <span class="text-black font-black text-sm">EN</span>
-    <svg class="w-3 h-3 text-black" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+
+<!-- TOP BRANDING (FIXED FLEX) -->
+<div class="flex justify-between items-center mb-10 w-full px-1">
+    <!-- Left: Logo -->
+    <span class="text-red-600 font-black text-xl tracking-tighter flex-shrink-0">Heleket</span>
     
-    <!-- DROPDOWN -->
-    <div id="lang-dropdown" class="lang-dropdown shadow-2xl">
-        <div class="lang-item" onclick="changeLang('EN', 'us')">
-            <img src="https://flagcdn.com/w20/us.png"> English
-        </div>
-        <div class="lang-item" onclick="changeLang('ES', 'es')">
-            <img src="https://flagcdn.com/w20/es.png"> Spanish
-        </div>
-        <div class="lang-item" onclick="changeLang('FR', 'fr')">
-            <img src="https://flagcdn.com/w20/fr.png"> French
+    <!-- Right: FAQ + Language -->
+    <div class="flex items-center gap-3">
+        <button onclick="toggleFaq(true)" class="bold-help-btn flex-shrink-0">?</button>
+        
+        <div class="lang-selector relative" onclick="toggleLangMenu(event)">
+            <div class="flex items-center gap-1.5 cursor-pointer">
+                <img id="curr-flag" src="https://flagcdn.com/w40/us.png" class="w-6 h-6 rounded-full object-cover border">
+                <span class="text-black font-black text-sm uppercase">EN</span>
+                <svg class="w-3 h-3 text-black" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+            </div>
+            
+            <!-- DROPDOWN (Ensure CSS from previous step is in your <style> block) -->
+            <div id="lang-dropdown" class="lang-dropdown shadow-2xl">
+                <div class="lang-item" onclick="changeLang('EN', 'us')"><img src="https://flagcdn.com/w20/us.png"> English</div>
+                <div class="lang-item" onclick="changeLang('ES', 'es')"><img src="https://flagcdn.com/w20/es.png"> Spanish</div>
+                <div class="lang-item" onclick="changeLang('FR', 'fr')"><img src="https://flagcdn.com/w20/fr.png"> French</div>
+            </div>
         </div>
     </div>
 </div>
-                
-           
-            </div>
 
         <!-- STEP 1: SELECTION -->
         <div id="step-selection">
