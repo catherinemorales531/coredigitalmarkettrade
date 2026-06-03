@@ -209,8 +209,8 @@ body.modal-open {
     border: 1px solid #ddd;
 }
 
-.lang-dropdown-menu {
-    display: none; /* Hidden by default */
+#lang-dropdown-menu {
+    display: none; 
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
@@ -380,29 +380,35 @@ body.modal-open {
     <!-- 3. MAIN DEPOSIT SECTION -->
 <main class="px-4 pb-20 pt-28">
     <div class="deposit-card relative overflow-hidden">
+      
         <!-- Top Branding -->
         <div class="flex justify-between items-center mb-8 px-2">
             <span class="text-red-600 font-black text-xl tracking-tighter">Heleket</span>
+            
             <div class="flex items-center gap-4">
                 <button onclick="toggleFaq(true)" class="bold-help-btn">?</button>
-
-<div class="lang-selector" onclick="toggleLangMenu()">
-    <img id="curr-flag" src="https://flagcdn.com/w40/us.png" class="w-6 h-6 rounded-full object-cover">
-    <span class="text-black font-black text-sm">EN</span>
-    <svg class="w-3 h-3 text-black" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
-    
-    <!-- THE DROPDOWN ITEMS -->
-    <div id="lang-dropdown" class="lang-dropdown shadow-2xl">
-        <div class="lang-item" onclick="changeLang('EN', 'us')"><img src="https://flagcdn.com/w20/us.png" class="w-5"> English</div>
-        <div class="lang-item" onclick="changeLang('ES', 'es')"><img src="https://flagcdn.com/w20/es.png" class="w-5"> Spanish</div>
-        <div class="lang-item" onclick="changeLang('FR', 'fr')"><img src="https://flagcdn.com/w20/fr.png" class="w-5"> French</div>
-    </div>
-</div>
                 
-           
-            </div>
-        </div>
+                <!-- LANGUAGE SELECTOR START -->
+                <div class="lang-selector relative" onclick="toggleLangMenu(event)">
+                    <div class="flex items-center gap-1.5 cursor-pointer">
+                        <img id="curr-flag" src="https://flagcdn.com/w40/us.png" class="w-6 h-6 rounded-full object-cover border">
+                        <span class="text-black font-black text-sm uppercase">EN</span>
+                        <svg class="w-3 h-3 text-black" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                    </div>
 
+                    <!-- DROPDOWN (Now correctly inside the relative parent) -->
+                    <div id="lang-dropdown-menu" class="shadow-2xl">
+                        <div class="lang-option" onclick="changeLang('EN', 'us')"><img src="https://flagcdn.com/w20/us.png"> English</div>
+                        <div class="lang-option" onclick="changeLang('ES', 'es')"><img src="https://flagcdn.com/w20/es.png"> Spanish</div>
+                        <div class="lang-option" onclick="changeLang('FR', 'fr')"><img src="https://flagcdn.com/w20/fr.png"> French/div>
+                    </div>
+                </div> <!-- Closes lang-selector -->
+            </div> <!-- Closes the flex gap-4 container -->
+        </div> <!-- Closes the Top Branding container -->
+
+        <!-- STEP 1: SELECTION START -->
+        <div id="step-selection">
+        
         <!-- STEP 1: SELECTION -->
         <div id="step-selection">
             <div class="flex justify-between items-baseline border-b pb-4 mb-4 w-full gap-2">
@@ -760,18 +766,21 @@ function cancelAndClear() {
     }
 }
 
-// 2. TOGGLE MENU
+//toggle function
 function toggleLangMenu(e) {
-    e.stopPropagation();
-    const d = document.getElementById('lang-dropdown');
-    d.style.display = (d.style.display === 'block') ? 'none' : 'block';
+    if (e) e.stopPropagation();
+    const d = document.getElementById('lang-dropdown-menu'); // UPDATED ID
+    const isVisible = d.style.display === 'block';
+    d.style.display = isVisible ? 'none' : 'block';
 }
 
-// Close menu if user clicks outside
-window.addEventListener('click', () => {
-    document.getElementById('lang-dropdown').style.display = 'none';
-});
-
+// 2. Update the auto-close listener
+window.onclick = function(event) {
+    const d = document.getElementById('lang-dropdown-menu'); // UPDATED ID
+    if (d && !event.target.closest('.lang-selector')) {
+        d.style.display = 'none';
+    }
+}
         
    </script>
 </body>
