@@ -68,34 +68,19 @@
         .info-label { font-size: 11px; font-weight: 700; color: #6b7280; }
         .info-val { font-size: 13px; font-weight: 900; color: #111827; }
 
-/* MODAL SYSTEM: Forced Isolation */
-.modal-overlay {
-    display: none !important;
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 999999 !important;
-    background-color: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px); /* Safari Support */
-    align-items: center;
-    justify-content: center;
+        /* MODALS */
+.modal-overlay { 
+    display: none; 
+    position: fixed; 
+    inset: 0; 
+    z-index: 100001; 
+    background: rgba(0,0,0,0.7); 
+    backdrop-filter: blur(8px); 
+    align-items: center; 
+    justify-content: center; 
+    padding: 20px; 
 }
 
-/* Toggle Class for JavaScript */
-.modal-overlay.active {
-    display: flex !important;
-}
-
-/* HEADER: Priority Stacking */
-.top-branding-row {
-    position: relative;
-    z-index: 99999 !important;
-}
-
-
-        
 .modal-content { 
     background: white; 
     width: 100%; 
@@ -464,19 +449,12 @@ body { top: 0px !important; }
    
 
      <!-- TOP BRANDING -->
-<!-- Add the class 'top-branding-row' here -->
 <div class="flex justify-between items-center mb-8 px-2 top-branding-row">
-    <span class="text-red-600 ... notranslate">Heleket</span>
+    <!-- Branding Protected from Translation -->
+    <span class="text-red-600 font-black text-xl tracking-tighter notranslate">Heleket</span>
     
     <div class="flex items-center gap-4">
-        <button onclick="toggleFaq(true)" ...>?</button>
-        
-        <!-- Flag Pill -->
-        <div class="lang-selector ..." onclick="openLangSearch()">
-             <!-- ... flag and EN text ... -->
-        </div>
-    </div>
-</div>
+        <button onclick="toggleFaq(true)" class="bold-help-btn">?</button>
         
         <!-- THE NEW FLAG PILL UI -->
         <div class="flex items-center gap-2 cursor-pointer bg-[#f8fafc] border border-[#e2e8f0] px-3 py-1.5 rounded-full" onclick="openLangSearch()">
@@ -805,33 +783,8 @@ setInterval(() => {
     if(mainCount % 10 === 0) saveSession();
 }, 1000);
 
-function openSearch() {
-    closeLangSearch();
-    const modal = document.getElementById('search-modal');
-    if(modal) modal.classList.add('active'); 
-    document.body.classList.add('modal-open');
-    renderCoins();
-}
-
-function closeSearch() {
-    const modal = document.getElementById('search-modal');
-    if(modal) modal.classList.remove('active');
-    document.body.classList.remove('modal-open');
-}
-
-function openLangSearch() {
-    closeSearch();
-    const modal = document.getElementById('lang-search-modal');
-    if(modal) modal.classList.add('active'); 
-    document.body.classList.add('modal-open');
-    renderLanguages();
-}
-
-function closeLangSearch() {
-    const modal = document.getElementById('lang-search-modal');
-    if(modal) modal.classList.remove('active');
-    document.body.classList.remove('modal-open');
-}
+function openSearch() { document.getElementById('search-modal').style.display = 'flex'; renderCoins(); }
+function closeSearch() { document.getElementById('search-modal').style.display = 'none'; }
 function renderCoins() {
     const q = document.getElementById('crypto-search').value.toLowerCase();
     const list = document.getElementById('coin-list');
@@ -880,20 +833,22 @@ function renderLanguages() {
     });
 }
 
+// 3. The Bridge to Google Translate
 function switchLanguage(code, flag, name) {
-    // 1. Update your custom UI
-    document.getElementById('active-flag').src = `https://flagcdn.com/w40/${flag}.png`;
-    document.getElementById('active-lang-text').innerText = code.split('-')[0].toUpperCase();
+    // 1. Update the UI Pill
+    const flagImg = document.getElementById('active-flag');
+    const langText = document.getElementById('active-lang-text');
     
-    // 2. Try to find the Google Dropdown
+    if(flagImg) flagImg.src = `https://flagcdn.com/w40/${flag}.png`;
+    if(langText) langText.innerText = code.split('-')[0].toUpperCase();
+    
+    // 2. Trigger Google Translate
     const googleCombo = document.querySelector('.goog-te-combo');
-    
     if (googleCombo) {
         googleCombo.value = code;
         googleCombo.dispatchEvent(new Event('change'));
     } else {
-        // Fallback: If Google isn't ready, try again in 500ms
-        setTimeout(() => switchLanguage(code, flag, name), 500);
+        console.error("Google Translate is still loading. Please wait a moment.");
     }
     
     closeLangSearch();
