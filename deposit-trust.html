@@ -357,47 +357,27 @@ body { top: 0px !important; }
     visibility: hidden !important;
 }
         
-/* THE PROFESSIONAL LAPTOP ENGINE */
+
+        /* LAPTOP GRID SYSTEM */
 @media (min-width: 1024px) {
-    /* 1. Expand the main card */
     .deposit-card {
         max-width: 920px !important; 
-        padding: 50px !important;
+        padding: 40px !important;
     }
-
-    /* 2. Turn existing Step containers into Split Layouts */
-    #step-selection, #step-payment, #step-verify {
-        display: flex !important;
-        flex-direction: row !important;
-        gap: 60px !important;
-        align-items: flex-start !important;
-        text-align: left !important;
+    .split-layout {
+        display: flex;
+        gap: 50px;
+        align-items: flex-start;
     }
-
-    /* 3. Left Side: Target the first child of every step */
-    #step-selection > div:first-child,
-    #step-payment > p:first-child,
-    #step-verify > h3:first-child {
-        flex: 1 !important;
+    .split-left {
+        flex: 1;
         border-right: 1px solid #f1f5f9;
         padding-right: 40px;
     }
-
-    /* 4. Right Side: Target the interaction area */
-    #step-selection > .space-y-5,
-    #step-payment > div:nth-child(2),
-    #step-verify > div:nth-child(2) {
-        flex: 1 !important;
-        margin-top: 0 !important; /* Remove mobile spacing */
-    }
-
-    /* 5. Fix the "Proceed" Button to be on the right side */
-    #btn-proc {
-        width: 100% !important;
+    .split-right {
+        flex: 1;
     }
 }
-
-        
         
  </style>
 </head>
