@@ -358,6 +358,28 @@ body { top: 0px !important; }
 }
         
 
+/* LAPTOP SPLIT SYSTEM - NO NEW TEXT */
+@media (min-width: 1024px) {
+    .deposit-card {
+        max-width: 900px !important; 
+        padding: 40px !important;
+    }
+    .step-wrapper {
+        display: flex;
+        gap: 40px;
+        align-items: flex-start;
+    }
+    .column-left {
+        flex: 1;
+        border-right: 1px solid #f1f5f9;
+        padding-right: 40px;
+    }
+    .column-right {
+        flex: 1;
+    }
+}
+
+        
         
  </style>
 </head>
@@ -469,11 +491,43 @@ body { top: 0px !important; }
 </div>
 
         <!-- STEP 1: SELECTION (Now correctly inside the card) -->
-        <div id="step-selection">
+       <div id="step-selection" class="w-full">
+    <div class="step-wrapper flex flex-col">
+        <!-- LEFT: Summary & Tracker -->
+        <div class="column-left text-left">
             <div class="flex justify-between items-baseline border-b pb-4 mb-4 w-full gap-2">
                 <span id="lbl-fund" class="text-gray-400 font-[900] text-[10px] tracking-[0.15em] uppercase flex-shrink-0">Amount to Fund:</span>
                 <span id="usd-header" class="text-[18px] sm:text-2xl font-black text-gray-900 whitespace-nowrap tracking-tighter">$0.00 USD</span>
             </div>
+            <div class="h-tracker mt-8">
+                <div id="dot-1" class="h-dot"></div><div id="line-1" class="h-line"></div>
+                <div id="dot-2" class="h-dot"></div><div id="line-2" class="h-line"></div>
+                <div id="dot-3" class="h-dot"></div>
+            </div>
+        </div>
+        <!-- RIGHT: Inputs -->
+        <div class="column-right space-y-5 mt-8 lg:mt-0">
+            <div class="selector-box" onclick="openSearch()">
+                <div class="flex items-center gap-3">
+                    <img id="sel-icon" src="..." class="w-6 h-6 opacity-30">
+                    <span id="sel-name" class="font-bold text-gray-400">Select Asset</span>
+                </div>
+            </div>
+            <select id="net-select" class="w-full border-2 border-gray-100 rounded-xl p-4 font-bold outline-none bg-white" onchange="updateUI()">
+                <option value="">-- Choose Network --</option>
+            </select>
+            <input type="text" id="amt-input" inputmode="decimal" pattern="[0-9.]*" class="w-full border-2 border-gray-100 rounded-xl p-4 font-bold text-lg outline-none focus:border-blue-500" placeholder="0.00" oninput="updateUI()">
+            <div id="payable-box" class="hidden p-5 bg-gray-50 border border-gray-100 rounded-2xl flex justify-between items-center">
+                <div class="flex flex-col">
+                    <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-tight">Net Funding Equivalent <br> in Selected Asset:</span>
+                    <span id="payable-val" class="text-[#2563eb] font-black text-xl tracking-tighter">0.000000 --</span>
+                </div>
+                <button onclick="copyCryptoAmount()" id="copy-btn" class="bg-black text-white text-[10px] font-black px-5 py-2.5 rounded-xl uppercase">Copy</button>
+            </div>
+            <button id="btn-proc" class="btn-pay" disabled onclick="goToStep(2)">Proceed to payment</button>
+        </div>
+    </div>
+</div>
 
         
             <div class="h-tracker mb-8">
@@ -534,10 +588,22 @@ Selected Asset:</span>
         </div>
 
         <!-- STEP 3: VERIFY -->
-        <div id="step-verify" class="hidden text-center py-5">
-            <h3 class="font-black text-xl uppercase text-black">Awaiting Confirmations</h3>
-            <p class="text-gray-400 text-sm font-semibold px-4 mt-3">Our nodes are scanning the blockchain. Balance updates after 3 confirmations.</p>
+      <div id="step-verify" class="hidden w-full">
+    <div class="step-wrapper flex flex-col">
+        <!-- LEFT: Heading -->
+        <div class="column-left text-left">
+            <h3 class="font-black text-xl uppercase text-black mb-4">Awaiting Confirmations</h3>
+            <p class="text-gray-400 text-sm font-semibold leading-relaxed">
+                Our nodes are scanning the blockchain. Your balance will update automatically upon 3 confirmations.
+            </p>
         </div>
+        <!-- RIGHT: Loader & Exit -->
+        <div class="column-right flex flex-col items-center justify-center mt-8 lg:mt-0">
+            <div class="loader-pulse mb-8"><div class="w-8 h-8 bg-emerald-500 rounded-full animate-ping"></div></div>
+            <button class="btn-pay w-full" onclick="location.href='index.html'">Return to Dashboard</button>
+        </div>
+    </div>
+</div>
         
 <!-- THIS BUTTON IS NOW GLOBAL (STAYS ON ALL PAGES) -->
         <div class="px-2">
