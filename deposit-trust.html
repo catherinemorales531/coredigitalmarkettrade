@@ -308,6 +308,30 @@ body.modal-open {
 .goog-te-banner-frame.skiptranslate { display: none !important; }
 body { top: 0px !important; }
         
+/* 1. Prevent Brand Translation */
+.notranslate { 
+    font-family: inherit; 
+}
+
+/*  Hide the default Google Widget */
+#google_translate_element { display: none !important; }
+.goog-te-banner-frame { display: none !important; }
+body { top: 0px !important; }
+
+/* . Language Search Result Hover */
+.lang-item-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: #111827;
+    font-weight: 700;
+}
+.lang-item-row:hover { background: #f3f4f6; }
+
         
  </style>
 </head>
@@ -397,14 +421,26 @@ body { top: 0px !important; }
     <div class="deposit-card relative overflow-hidden">
     
    
-<!-- TOP BRANDING -->
-        <div class="flex justify-between items-center mb-8 px-2">
-            <span class="text-red-600 font-black text-xl tracking-tighter">Heleket</span>
-            <div class="flex items-center gap-4">
-                <button onclick="toggleFaq(true)" class="bold-help-btn">?</button>
-                <div id="google_translate_element"></div>
-            </div>
+
+     <!-- TOP BRANDING -->
+<div class="flex justify-between items-center mb-8 px-2 w-full">
+    <!-- Branding Protected from Translation -->
+    <span class="text-red-600 font-black text-xl tracking-tighter notranslate">Heleket</span>
+    
+    <div class="flex items-center gap-4">
+        <button onclick="toggleFaq(true)" class="bold-help-btn">?</button>
+        
+        <!-- THE NEW FLAG PILL UI -->
+        <div class="flex items-center gap-2 cursor-pointer bg-[#f8fafc] border border-[#e2e8f0] px-3 py-1.5 rounded-full" onclick="openLangSearch()">
+            <img id="active-flag" src="https://flagcdn.com/w40/us.png" class="w-5 h-5 rounded-full object-cover border">
+            <span id="active-lang-text" class="text-black font-black text-[11px] uppercase">EN</span>
+            <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
         </div>
+
+        <!-- Hidden Google Element -->
+        <div id="google_translate_element"></div>
+    </div>
+</div>
 
         <!-- STEP 1: SELECTION (Now correctly inside the card) -->
         <div id="step-selection">
@@ -504,6 +540,21 @@ Selected Asset:</span>
   <!-- SEARCH MODAL -->
 <div id="search-modal" class="modal-overlay" onclick="closeSearch()">
     <div class="modal-content shadow-2xl" onclick="event.stopPropagation()">
+
+<!-- SEARCHABLE LANGUAGE MODAL -->
+<div id="lang-search-modal" class="modal-overlay" onclick="closeLangSearch()">
+    <div class="modal-content shadow-2xl" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-4">
+            <span class="font-black uppercase text-lg tracking-tighter">Select Language</span>
+            <button onclick="closeLangSearch()" class="text-3xl">&times;</button>
+        </div>
+        <input type="text" id="lang-search-input" placeholder="Search Global Languages..." class="w-full border-2 p-4 rounded-xl font-bold mb-4 outline-none" oninput="renderLanguages()">
+        <div id="lang-list" class="overflow-y-auto flex-1">
+            <!-- Languages will be injected here -->
+        </div>
+    </div>
+</div>
+        
         
         <!-- FIXED HEADER (Doesn't scroll) -->
         <div class="flex justify-between items-center mb-4">
@@ -710,7 +761,56 @@ function toggleFaq(s) { document.getElementById('faq-modal').style.display = s ?
 function toggleSideMenu() { document.getElementById('side-nav').classList.toggle('active'); }
 window.onload = loadSession;
     
+
+// 1. Language Data
+const globalLangs = [
+    { n: "English", c: "en", f: "us" },
+    { n: "Spanish", c: "es", f: "es" },
+    { n: "French", c: "fr", f: "fr" },
+    { n: "German", c: "de", f: "de" },
+    { n: "Italian", c: "it", f: "it" },
+    { n: "Chinese", c: "zh-CN", f: "cn" },
+    { n: "Japanese", c: "ja", f: "jp" },
+    { n: "Portuguese", c: "pt", f: "pt" },
+    { n: "Russian", c: "ru", f: "ru" },
+    { n: "Arabic", c: "ar", f: "sa" }
+];
+
+//  Language Search Functions
+function openLangSearch() { document.getElementById('lang-search-modal').style.display = 'flex'; renderLanguages(); }
+function closeLangSearch() { document.getElementById('lang-search-modal').style.display = 'none'; }
+
+function renderLanguages() {
+    const q = document.getElementById('lang-search-input').value.toLowerCase();
+    const list = document.getElementById('lang-list');
+    list.innerHTML = '';
+    globalLangs.filter(l => l.n.toLowerCase().includes(q)).forEach(l => {
+        list.innerHTML += `
+            <div class="lang-item-row" onclick="switchLanguage('${l.c}', '${l.f}', '${l.n}')">
+                <img src="https://flagcdn.com/w40/${l.f}.png" class="w-6 h-6 rounded-full object-cover border">
+                <span>${l.n}</span>
+            </div>`;
+    });
+}
+
+// 3. The Bridge to Google Translate
+function switchLanguage(code, flag, name) {
+    // Update the Pill UI
+    document.getElementById('active-flag').src = `https://flagcdn.com/w40/${flag}.png`;
+    document.getElementById('active-lang-text').innerText = code.split('-')[0].toUpperCase();
     
+    // Trigger Google Translate logic
+    const googleCombo = document.querySelector('.goog-te-combo');
+    if (googleCombo) {
+        googleCombo.value = code;
+        googleCombo.dispatchEvent(new Event('change'));
+    }
+    
+    closeLangSearch();
+}
+
+
+        
  </script>
 <script type="text/javascript">
 function googleTranslateElementInit() {
