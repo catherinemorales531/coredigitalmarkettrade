@@ -332,6 +332,32 @@ body { top: 0px !important; }
 }
 .lang-item-row:hover { background: #f3f4f6; }
 
+      
+/* 1. Ensure the Header Branding is on the very top layer */
+.top-branding-row {
+    position: relative;
+    z-index: 999;
+}
+
+/* 2. Make sure the Flag Pill is physically clickable */
+.lang-selector {
+    position: relative;
+    z-index: 1000;
+    cursor: pointer;
+    pointer-events: auto !important;
+}
+
+/* 3. The "Wall Remover": Completely hide Google's invisible box */
+#google_translate_element {
+    position: absolute !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+}
+        
+
         
  </style>
 </head>
@@ -423,7 +449,7 @@ body { top: 0px !important; }
    
 
      <!-- TOP BRANDING -->
-<div class="flex justify-between items-center mb-8 px-2 w-full">
+<div class="flex justify-between items-center mb-8 px-2 top-branding-row">
     <!-- Branding Protected from Translation -->
     <span class="text-red-600 font-black text-xl tracking-tighter notranslate">Heleket</span>
     
@@ -685,9 +711,14 @@ function loadSession() {
         }, 500);
     }
     mainCount = data.timeLeft || 3600;
-    if (data.step > 1) goToStep(data.step);
+if (data.step > 1) goToStep(data.step); 
+
+ closeSearch(); 
+    closeLangSearch();
+   
 }
 
+        
 async function getLivePrice(cgId) {
     try {
         const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cgId}&vs_currencies=usd`);
